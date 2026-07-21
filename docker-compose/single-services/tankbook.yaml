@@ -25,8 +25,7 @@ services:
     image: ghcr.io/tankbook/tankbook-app:latest
     restart: unless-stopped
     depends_on:
-      db:
-        condition: service_healthy
+      - db
     environment:
       DATABASE_URL: postgresql://${DB_USER:-tankbook}:${DB_PASSWORD:-changeme}@db/tankbook
       SPECIES_DATA_PATH: /app/species-data
