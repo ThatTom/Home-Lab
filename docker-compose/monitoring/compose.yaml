@@ -1,0 +1,31 @@
+services:
+  prometheus:
+    image: prom/prometheus
+    ports:
+      - 9090:9090
+    deploy:
+      replicas: 1
+      placement:
+        constraints:
+          - node.label == monitoring
+      restart_policy:
+        condition: on-failure
+
+  grafana:
+    image: grafana/grafana-enterprise
+    ports:
+      - 3010:3000
+    volumes:
+      - grafana-storage:/var/lib/grafana
+    deploy:
+      replicas: 1
+      placement:
+        constraints:
+          - node.label == monitoring
+      restart_policy:
+        condition: on-failure
+
+volumes:
+  grafana-storage:
+    external: false
+    name: grafana-storage

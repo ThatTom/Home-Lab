@@ -1,0 +1,26 @@
+services:
+  adguard:
+    image: adguard/adguard
+    ports:
+      - 3020:3000
+      - 53:53/tcp
+      - 53:53/udp
+    volumes:
+      - adguard-data:/opt/adguardhome/work
+      - adguard-config:/opt/adguardhome/conf
+    deploy:
+      replicas: 1
+      placement:
+        constraints:
+          - node.label == prod
+      restart_policy:
+        condition: on-failure
+
+volumes:
+  adguard-data:
+    external: false
+    name: adguard-data
+
+  adguard-config:
+    external: false
+    name: adguard-config
