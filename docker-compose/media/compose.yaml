@@ -1,0 +1,25 @@
+services:
+  jellyfin:
+    image: jellyfin/jellyfin:latest
+    ports:
+      - 8096:8096
+    volumes:
+      - jellyfin-config:/config
+      - jellyfin-cache:/cache
+      # - /media:/media - NFS Mount to be configured
+    deploy:
+      replicas: 1
+      placement:
+        constraints:
+          - node.hostname == srv-01
+      restart_policy:
+        condition: on-failure
+    
+volumes:
+  jellyfin-config:
+    external: false
+    name: jellyfin-config
+
+  jellyfin-cache:
+    external: false
+    name: jellyfin-cache
