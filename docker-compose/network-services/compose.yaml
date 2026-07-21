@@ -1,6 +1,6 @@
 services:
   adguard:
-    image: adguard/adguard
+    image: adguard/adguardhome
     ports:
       - 3020:3000
       - 53:53/tcp
