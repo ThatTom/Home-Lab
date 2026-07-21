@@ -1,0 +1,36 @@
+services:
+  db:
+    image: postgres:16-alpine
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: tankbook
+      POSTGRES_USER: ${DB_USER:-tankbook}
+      POSTGRES_PASSWORD: ${DB_PASSWORD:-changeme}
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${DB_USER:-tankbook}"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+  app:
+    image: ghcr.io/tankbook/tankbook-app:latest
+    restart: unless-stopped
+    depends_on:
+      db:
+        condition: service_healthy
+    environment:
+      DATABASE_URL: postgresql://${DB_USER:-tankbook}:${DB_PASSWORD:-changeme}@db/tankbook
+      SPECIES_DATA_PATH: /app/species-data
+      IMAGES_PATH: /app/images
+    volumes:
+      - species_data:/app/species-data
+      - tankbook-images:/app/images
+    ports:
+      - 3030:3000
+
+volumes:
+  postgres_data:
+  species_data:
+  tankbook-images:
