@@ -31,7 +31,7 @@ services:
       OUI_AUTO_UPDATE: ${OUI_AUTO_UPDATE:-1}
       DISCOVERY_MAC_SCAN_MODE: ${DISCOVERY_MAC_SCAN_MODE:-auto}
     ports:
-      - "${RACKPAD_PORT:-3030}:3000"
+      - "${RACKPAD_PORT:-3110}:3000"
     volumes:
       - rackpad_data:/data
     read_only: true
