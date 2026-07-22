@@ -41,13 +41,13 @@ services:
       timeout: 10s
       retries: 3
       start_period: 15s
-  deploy:
-      replicas: 1
-      placement:
-        constraints:
-          - node.hostname == srv-01
-      restart_policy:
-        condition: on-failure
+    deploy:
+        replicas: 1
+        placement:
+          constraints:
+            - node.hostname == srv-01
+        restart_policy:
+          condition: on-failure
 
 volumes:
   trek-data:
