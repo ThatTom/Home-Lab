@@ -1,12 +1,39 @@
 services:
   jellyfin:
-    image: jellyfin/jellyfin:latest
+    image: ghcr.io/jellyfin/jellyfin:10.11.11
     ports:
       - 8096:8096
     volumes:
       - jellyfin-config:/config
       - jellyfin-cache:/cache
       # - /media:/media - NFS Mount to be configured
+    deploy:
+      replicas: 1
+      placement:
+        constraints:
+          - node.hostname == srv-01
+      restart_policy:
+        condition: on-failure
+
+  seerr:
+    image: ghcr.io/seerr-team/seerr:v3.3.0
+    init: true
+    container_name: seerr
+    environment:
+      - LOG_LEVEL=debug
+      - TZ=Europe/London
+      - PORT=5055 #optional
+    ports:
+      - 5055:5055
+    volumes:
+      - seerr-config:/app/config
+    healthcheck:
+      test: wget --no-verbose --tries=1 --spider http://localhost:5055/api/v1/settings/public || exit 1
+      start_period: 20s
+      timeout: 3s
+      interval: 15s
+      retries: 3
+    restart: unless-stopped
     deploy:
       replicas: 1
       placement:
@@ -23,3 +50,7 @@ volumes:
   jellyfin-cache:
     external: false
     name: jellyfin-cache
+
+  seerr-config:
+    external: false
+    name: seerr-config
