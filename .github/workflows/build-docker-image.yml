@@ -1,0 +1,54 @@
+name: Build Docker Images
+
+on:
+  workflow_dispatch:
+  push:
+    paths:
+      - 'docker-images/**'
+      - '.github/workflows/build-docker-image.yml'
+  pull_request:
+    paths:
+      - 'docker-images/**'
+      - '.github/workflows/build-docker-image.yml'
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      packages: write
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: Log in to GitHub Container Registry
+        run: echo "${{ secrets.GITHUB_TOKEN }}" | docker login ghcr.io -u "${{ github.actor }}" --password-stdin
+
+      - name: Discover image directories
+        id: discover
+        run: |
+          echo "dirs<<EOF" >> "$GITHUB_OUTPUT"
+          find docker-images -mindepth 1 -maxdepth 1 -type d | sort >> "$GITHUB_OUTPUT"
+          echo "EOF" >> "$GITHUB_OUTPUT"
+
+      - name: Build and push Docker images
+        run: |
+          repo_owner=$(echo "${{ github.repository_owner }}" | tr '[:upper:]' '[:lower:]')
+          repo_name=$(echo "${{ github.event.repository.name }}" | tr '[:upper:]' '[:lower:]')
+
+          while IFS= read -r dir; do
+            [ -n "$dir" ] || continue
+            if [ -f "$dir/Dockerfile" ]; then
+              image_name=$(basename "$dir")
+              image_tag="ghcr.io/${repo_owner}/${repo_name}/${image_name}:latest"
+              echo "Building and pushing $dir as $image_tag"
+              docker build -t "$image_tag" "$dir"
+              docker push "$image_tag"
+            fi
+          done <<EOF
+          ${{ steps.discover.outputs.dirs }}
+          EOF
