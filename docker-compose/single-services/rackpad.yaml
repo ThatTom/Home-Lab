@@ -51,6 +51,13 @@ services:
       timeout: 5s
       retries: 3
       start_period: 10s
+      deploy:
+      replicas: 1
+      placement:
+        constraints:
+          - node.hostname == srv-01
+      restart_policy:
+        condition: on-failure
 
 volumes:
   rackpad_data:
