@@ -49,6 +49,8 @@ services:
       # - /path/to/periphery.config.toml:/config/config.toml
       ## Optionally mount custom root CA certificate to trust
       # - /path/to/root_ca.crt:/usr/local/share/ca-certificates/root_ca.crt
+    networks:
+      - komodo-network
     deploy:
         # mode: global
         
@@ -64,3 +66,9 @@ services:
 
 volumes:
   keys:
+
+networks:
+  komodo-network:
+    driver: overlay
+    # attachable: true
+    external: false
