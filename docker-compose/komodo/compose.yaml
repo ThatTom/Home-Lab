@@ -23,10 +23,10 @@ services:
       PERIPHERY_ROOT_DIRECTORY: ${PERIPHERY_ROOT_DIRECTORY:-/etc/komodo}
       ## Specify whether to disable the terminals feature
       ## and disallow remote shell access (inside the Periphery container).
-      PERIPHERY_DISABLE_TERMINALS: false
+      PERIPHERY_DISABLE_TERMINALS: "false"
       ## Specify whether to disable the container exec feature
       ## and disallow remote container shell access.
-      PERIPHERY_DISABLE_CONTAINER_EXEC: false
+      PERIPHERY_DISABLE_CONTAINER_EXEC: "false"
       ## If the disk size is overreporting, can use one of these to 
       ## whitelist / blacklist the disks to filter them, whichever is easier.
       ## Accepts comma separated list of paths.
