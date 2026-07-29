@@ -2,16 +2,23 @@ services:
   ollama:
     image: ollama/ollama
     container_name: ollama
-    volumes:
-      - ollama:/root/.ollama
-    environment:
-      - OLLAMA_HOST=0.0.0.0
+    restart: unless-stopped
+
     ports:
       - "11434:11434"
-    deploy:
-      replicas: 1
-      placement:
-        constraints:
-          - node.labels.ai == yes
-      restart_policy:
-        condition: on-failure
+
+    environment:
+      OLLAMA_HOST: "0.0.0.0"
+
+    volumes:
+      - ollama:/root/.ollama
+
+    device_requests:
+      - driver: nvidia
+        count: all
+        capabilities: [gpu]
+
+volumes:
+  ollama:
+    external: false
+    name: ollama

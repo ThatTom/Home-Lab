@@ -20,7 +20,3 @@ volumes:
     open-webui:
         external: false
         name: open-webui
-
-    #ollama:
-    #    external: false
-    #    name: ollama
