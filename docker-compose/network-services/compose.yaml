@@ -49,6 +49,9 @@ services:
           - node.role == manager
       restart_policy:
         condition: on-failure
+    networks:
+      - diagon-alley
+
 
 volumes:
   adguard-data:
@@ -58,3 +61,7 @@ volumes:
   adguard-config:
     external: false
     name: adguard-config
+
+networks:
+  diagon-alley:
+    external: true
