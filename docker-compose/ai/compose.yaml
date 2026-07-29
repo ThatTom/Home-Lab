@@ -1,0 +1,22 @@
+services:
+  open-webui:
+    image: ghcr.io/open-webui/open-webui:main
+    ports:
+      - 3030:8080
+    environment:
+      - OLLAMA_BASE_URL=192.168.100.14:11434
+    volumes:
+      - open-webui:/app/backend/data
+    container_name: open-webui
+    deploy:
+      replicas: 1
+      placement:
+        constraints:
+          - node.labels.ai == yes
+      restart_policy:
+        condition: on-failure
+
+volumes:
+    open-webui:
+        external: true
+        name: open-webui
