@@ -13,10 +13,9 @@ services:
     volumes:
       - ollama:/root/.ollama
 
-    device_requests:
-      - driver: nvidia
-        count: all
-        capabilities: [gpu]
+    deploy: {}
+
+    runtime: nvidia
 
 volumes:
   ollama:
