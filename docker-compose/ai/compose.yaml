@@ -16,23 +16,6 @@ services:
       restart_policy:
         condition: on-failure
 
-  #ollama:
-  #  image: ollama/ollama
-  #  container_name: ollama
-  #  volumes:
-  #    - ollama:/root/.ollama
-  #  environment:
-  #    - OLLAMA_HOST=0.0.0.0
-  #  ports:
-  #    - "11434:11434"
-  #  deploy:
-  #    replicas: 1
-  #    placement:
-  #      constraints:
-  #        - node.labels.ai == yes
-  #    restart_policy:
-  #      condition: on-failure
-
 volumes:
     open-webui:
         external: false
