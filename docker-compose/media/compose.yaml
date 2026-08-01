@@ -65,7 +65,7 @@ services:
       - WEBUI_PORTS=7878/tcp 
     volumes:
       - radarr-config:/config
-      - movies:/movies
+      - movies:/mnt
     deploy:
       replicas: 1
       placement:
@@ -87,7 +87,7 @@ services:
       - WEBUI_PORTS=8989/tcp 
     volumes:
       - sonarr-config:/config
-      - shows:/shows
+      - shows:/mnt
     deploy:
       replicas: 1
       placement:
