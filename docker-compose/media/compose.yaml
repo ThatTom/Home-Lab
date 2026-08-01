@@ -44,7 +44,50 @@ services:
       timeout: 3s
       interval: 15s
       retries: 3
-    restart: unless-stopped
+    deploy:
+      replicas: 1
+      placement:
+        constraints:
+          - node.labels.media == yes
+      restart_policy:
+        condition: on-failure
+
+  radarr:
+    container_name: radarr
+    image: ghcr.io/hotio/radarr
+    ports:
+      - "7878:7878"
+    environment:
+      - PUID=1000
+      - PGID=1000
+      - UMASK=002
+      - TZ=Europe/London
+      - WEBUI_PORTS=7878/tcp 
+    volumes:
+      - radarr-config:/config
+      - movies:/movies
+    deploy:
+      replicas: 1
+      placement:
+        constraints:
+          - node.labels.media == yes
+      restart_policy:
+        condition: on-failure
+
+  sonarr:
+    container_name: sonarr
+    image: ghcr.io/hotio/sonarr
+    ports:
+      - "8989:8989"
+    environment:
+      - PUID=1000
+      - PGID=1000
+      - UMASK=002
+      - TZ=Europe/London
+      - WEBUI_PORTS=8989/tcp 
+    volumes:
+      - sonarr-config:/config
+      - shows:/shows
     deploy:
       replicas: 1
       placement:
@@ -58,13 +101,21 @@ volumes:
     external: false
     name: jellyfin-config
 
-  jellyfin-cache:
-    external: false
-    name: jellyfin-cache
-
   seerr-config:
     external: false
     name: seerr-config
+
+  radarr-config:
+    external: false
+    name: radarr-config
+
+  sonarr-config:
+    external: false
+    name: sonarr-config
+
+  jellyfin-cache:
+    external: false
+    name: jellyfin-cache
 
   movies:
     driver: local
