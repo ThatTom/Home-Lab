@@ -9,10 +9,10 @@ services:
       - jellyfin-cache:/cache
 
       # Uses the shared bind mounts configured in the volumes section below to access media on the host
-      - /mnt/movies:/media/movies
-      # - /mnt/shows:/media/shows
-      # - /mnt/books:/media/books
-      # - /mnt/music:/media/music
+      - movies:/movies
+      #- /mnt/shows:/shows
+      #- /mnt/books:/books
+      #- /mnt/music:/music
     networks:
       - media
     deploy:
@@ -65,6 +65,13 @@ volumes:
   seerr-config:
     external: false
     name: seerr-config
+
+  movies:
+    driver: local
+    driver_opts:
+      type: none
+      device: /mnt/movies
+      o: bind
 
 networks:
   media:
