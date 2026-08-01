@@ -4,6 +4,8 @@ services:
     restart: unless-stopped
     ports:
       - "5800:5800"
+    environment:
+      WEB_FILE_MANAGER: "1"
     volumes:
       - makemkv-config:/config:rw"
       - raw-ingest:/output:rw"
@@ -17,14 +19,6 @@ services:
       - "5801:5800"
     volumes:
       - mkvtoolnix-config:/config:rw
-      - raw-ingest:/raw-ingest:rw
-      - filtered-ingest:/filtered-ingest:rw
-
-  FileGator:
-    image: filegator/filegator
-    ports:
-      - "5802:8080"
-    volumes:
       - raw-ingest:/raw-ingest:rw
       - filtered-ingest:/filtered-ingest:rw
 
