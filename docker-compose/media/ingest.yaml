@@ -13,7 +13,7 @@ services:
       replicas: 1
       placement:
         constraints:
-          - node.hostname == srv-01
+          - node.hostname == srv-lo-5
       restart_policy:
         condition: on-failure
 
