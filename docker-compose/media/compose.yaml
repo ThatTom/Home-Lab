@@ -10,9 +10,9 @@ services:
 
       # Uses the shared bind mounts configured in the volumes section below to access media on the host
       - /mnt/movies:/media/movies
-      - /mnt/shows:/media/shows
-      - /mnt/books:/media/books
-      - /mnt/music:/media/music
+      # - /mnt/shows:/media/shows
+      # - /mnt/books:/media/books
+      # - /mnt/music:/media/music
     networks:
       - media
     deploy:
