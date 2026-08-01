@@ -10,7 +10,7 @@ services:
       - ingest:/output:rw"
     devices:
       - "/dev/sr0:/dev/sr0"
-      - "/dev/sdb:/dev/sdb"
+      - "/dev/sg0:/dev/sg0"
 
 volumes:
   makemkv-config:
