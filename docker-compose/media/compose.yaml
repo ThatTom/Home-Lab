@@ -10,9 +10,9 @@ services:
 
       # Uses the shared bind mounts configured in the volumes section below to access media on the host
       - movies:/movies
-      #- /mnt/shows:/shows
-      #- /mnt/books:/books
-      #- /mnt/music:/music
+      - shows:/shows
+      - books:/books
+      - music:/music
     networks:
       - media
     deploy:
@@ -71,6 +71,27 @@ volumes:
     driver_opts:
       type: none
       device: /mnt/movies
+      o: bind
+
+  shows:
+    driver: local
+    driver_opts:
+      type: none
+      device: /mnt/shows
+      o: bind
+
+  books:
+    driver: local
+    driver_opts:
+      type: none
+      device: /mnt/books
+      o: bind
+
+  music:
+    driver: local
+    driver_opts:
+      type: none
+      device: /mnt/music
       o: bind
 
 networks:
