@@ -68,11 +68,11 @@ volumes:
 
   # Each host with the media tag will have the following bind mounts on their system using NFS
   movies:
-    driver: local
-    driver_opts:
-      type: none
-      device: /mnt/movies
-      o: bind
+      driver: local
+      driver_opts:
+        type: none
+        device: /mnt/movies
+        o: bind
 
   shows:
     driver: local
