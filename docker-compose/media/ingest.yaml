@@ -1,0 +1,20 @@
+services:
+  makemkv:
+    image: jlesage/makemkv
+    ports:
+      - "5800:5800"
+    volumes:
+      - "makemkv-config:/config:rw"
+      # - "/home/user:/storage:ro"
+      - ingest:/output:rw"
+    devices:
+      - "/dev/sr0:/dev/sr0"
+
+volumes:
+  makemkv-config:
+    external: false
+    name: makemkv-config
+
+  ingest:
+    external: false
+    name: ingest
