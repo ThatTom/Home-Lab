@@ -5,7 +5,7 @@ services:
     ports:
       - "5800:5800"
     environment:
-      WEB_FILE_MANAGER: "1"
+      - WEB_FILE_MANAGER=1
     volumes:
       - makemkv-config:/config:rw"
       - raw-ingest:/output:rw"
