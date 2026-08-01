@@ -9,6 +9,7 @@ services:
       - ingest:/output:rw"
     devices:
       - "/dev/sr0:/dev/sr0"
+      - "/dev/sg2:/dev/sg2"
     deploy:
       replicas: 1
       placement:
