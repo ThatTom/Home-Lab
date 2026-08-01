@@ -4,16 +4,22 @@ services:
     ports:
       - 8096:8096
     volumes:
+      # Uses the docker volumes configured in the volumes section below to persist Jellyfin configuration and cache data
       - jellyfin-config:/config
       - jellyfin-cache:/cache
-      # - /media:/media - NFS Mount to be configured
+
+      # Uses the shared bind mounts configured in the volumes section below to access media on the host
+      - movies:/media/movies
+      - shows:/media/shows
+      - books:/media/books
+      - music:/media/music
     networks:
       - media
     deploy:
       replicas: 1
       placement:
         constraints:
-          - node.hostname == srv-01
+          - node.labels.media == yes
       restart_policy:
         condition: on-failure
 
@@ -28,6 +34,7 @@ services:
     ports:
       - 5055:5055
     volumes:
+      # Uses the docker volumes configured in the volumes section below to persist Seerr configuration data
       - seerr-config:/app/config
     networks:
       - media
@@ -42,7 +49,7 @@ services:
       replicas: 1
       placement:
         constraints:
-          - node.hostname == srv-01
+          - node.labels.media == yes
       restart_policy:
         condition: on-failure
     
@@ -58,6 +65,35 @@ volumes:
   seerr-config:
     external: false
     name: seerr-config
+
+  # Each host with the media tag will have the following bind mounts on their system using NFS
+  movies:
+    driver: local
+    driver_opts:
+      type: none
+      device: /mnt/movies
+      o: bind
+
+  shows:
+    driver: local
+    driver_opts:
+      type: none
+      device: /mnt/shows
+      o: bind
+
+  books:
+    driver: local
+    driver_opts:
+      type: none
+      device: /mnt/books
+      o: bind
+
+  music:
+    driver: local
+    driver_opts:
+      type: none
+      device: /mnt/music
+      o: bind
 
 networks:
   media:
