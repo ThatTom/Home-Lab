@@ -1,6 +1,7 @@
 services:
   makemkv:
     image: jlesage/makemkv
+    restart: unless-stopped
     ports:
       - "5800:5800"
     volumes:
@@ -9,14 +10,7 @@ services:
       - ingest:/output:rw"
     devices:
       - "/dev/sr0:/dev/sr0"
-      - "/dev/sg2:/dev/sg2"
-    deploy:
-      replicas: 1
-      placement:
-        constraints:
-          - node.hostname == srv-lo-5
-      restart_policy:
-        condition: on-failure
+      - "/dev/sdb:/dev/sdb"
 
 volumes:
   makemkv-config:
