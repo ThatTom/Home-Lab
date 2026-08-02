@@ -7,8 +7,8 @@ services:
     environment:
       - WEB_FILE_MANAGER=1
     volumes:
-      - makemkv-config:/config:rw"
-      - raw-ingest:/output:rw"
+      - makemkv-config:/config:rw
+      - raw-ingest:/output:rw
     devices:
       - "/dev/sr0:/dev/sr0"
       - "/dev/sg0:/dev/sg0"
@@ -20,7 +20,19 @@ services:
     volumes:
       - mkvtoolnix-config:/config:rw
       - raw-ingest:/raw-ingest:rw
-      - filtered-ingest:/filtered-ingest:rw
+      - movies-ingest:/storage/movies-ingest:rw
+      - shows-ingest:/storage/shows-ingest:rw
+
+  handbrake:
+    image: jlesage/handbrake
+    ports:
+      - "5802:5800"
+    volumes:
+      - handbrake-config:/config:rw
+      - movies-ingest:/watch/movies:rw
+      - shows-ingest:/watch/shows:rw
+      - movies:/movies:rw
+      - shows:/shows:rw
 
 volumes:
   makemkv-config:
@@ -31,10 +43,32 @@ volumes:
     external: false
     name: mkvtoolnix-config
 
+  handbrake-config:
+    external: false
+    name: handbrake-config
+
   raw-ingest:
     external: false
     name: raw-ingest
 
-  filtered-ingest:
+  movies-ingest:
     external: false
-    name: filtered-ingest
+    name: movies-ingest
+
+  shows-ingest:
+    external: false
+    name: shows-ingest
+
+  movies:
+    driver: local
+    driver_opts:
+      type: none
+      device: /mnt/movies
+      o: bind
+
+  shows:
+    driver: local
+    driver_opts:
+      type: none
+      device: /mnt/shows
+      o: bind
