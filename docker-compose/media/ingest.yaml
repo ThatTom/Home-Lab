@@ -23,13 +23,23 @@ services:
       - filebot-config:/config:rw
       - raw-ingest:/storage:rw
 
-  mkvtoolnix:
-    image: jlesage/mkvtoolnix
+  #mkvtoolnix:
+  #  image: jlesage/mkvtoolnix
+  #  ports:
+  #    - "5802:5800"
+  #  volumes:
+  #    - mkvtoolnix-config:/config:rw
+  #    - raw-ingest:/storage/raw-ingest:rw
+  #    - movies-ingest:/storage/movies-ingest:rw
+  #    - shows-ingest:/storage/shows-ingest:rw
+
+  mkvcleaver:
+    image: jlesage/mkvcleaver
     ports:
       - "5802:5800"
     volumes:
-      - mkvtoolnix-config:/config:rw
-      - raw-ingest:/storage/raw-ingest:rw
+      - mkvcleaver-config:/config:rw
+      - raw-ingest:/storage:rw
       - movies-ingest:/storage/movies-ingest:rw
       - shows-ingest:/storage/shows-ingest:rw
 
@@ -56,6 +66,10 @@ volumes:
   mkvtoolnix-config:
     external: false
     name: mkvtoolnix-config
+
+  mkvcleaver-config:
+    external: false
+    name: mkvcleaver-config
 
   handbrake-config:
     external: false
