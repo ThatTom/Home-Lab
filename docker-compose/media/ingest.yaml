@@ -19,7 +19,7 @@ services:
       - "5801:5800"
     volumes:
       - mkvtoolnix-config:/config:rw
-      - raw-ingest:/raw-ingest:rw
+      - raw-ingest:/storage/raw-ingest:rw
       - movies-ingest:/storage/movies-ingest:rw
       - shows-ingest:/storage/shows-ingest:rw
 
