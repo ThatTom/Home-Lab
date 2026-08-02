@@ -17,6 +17,8 @@ services:
     image: jlesage/filebot
     ports:
       - "5801:5800"
+    environment:
+      - WEB_FILE_MANAGER=1
     volumes:
       - filebot-config:/config:rw
       - raw-ingest:/storage:rw
