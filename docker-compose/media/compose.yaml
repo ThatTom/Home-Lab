@@ -66,6 +66,8 @@ services:
     volumes:
       - radarr-config:/config
       - movies:/movies
+    networks:
+      - media
     deploy:
       replicas: 1
       placement:
@@ -88,6 +90,8 @@ services:
     volumes:
       - sonarr-config:/config
       - shows:/shows
+    networks:
+      - media
     deploy:
       replicas: 1
       placement:
