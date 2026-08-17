@@ -24,7 +24,7 @@ services:
     volumes:
       - data:/usr/src/paperless/data
       - media:/usr/src/paperless/media
-      # - ./export:/usr/src/paperless/export
+      - /home/tomt/export:/usr/src/paperless/export
       - /mnt/consume:/usr/src/paperless/consume
     env_file: .env
     environment:
