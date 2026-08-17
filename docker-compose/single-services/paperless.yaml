@@ -4,6 +4,14 @@ services:
     restart: unless-stopped
     volumes:
       - redisdata:/data
+    deploy:
+      replicas: 1
+      placement:
+        constraints:
+          - node.hostname == srv-01
+      restart_policy:
+        condition: on-failure
+        
   webserver:
     image: ghcr.io/paperless-ngx/paperless-ngx:latest
     restart: unless-stopped
@@ -25,6 +33,14 @@ services:
       PAPERLESS_TIKA_ENABLED: 1
       PAPERLESS_TIKA_GOTENBERG_ENDPOINT: http://gotenberg:3000
       PAPERLESS_TIKA_ENDPOINT: http://tika:9998
+    deploy:
+      replicas: 1
+      placement:
+        constraints:
+          - node.hostname == srv-01
+      restart_policy:
+        condition: on-failure
+        
   gotenberg:
     image: docker.io/gotenberg/gotenberg:8.34
     restart: unless-stopped
@@ -34,9 +50,24 @@ services:
       - "gotenberg"
       - "--chromium-disable-javascript=true"
       - "--chromium-allow-list=file:///tmp/.*"
+    deploy:
+      replicas: 1
+      placement:
+        constraints:
+          - node.hostname == srv-01
+      restart_policy:
+        condition: on-failure
+        
   tika:
     image: docker.io/apache/tika:latest
     restart: unless-stopped
+    deploy:
+      replicas: 1
+      placement:
+        constraints:
+          - node.hostname == srv-01
+      restart_policy:
+        condition: on-failure
     
 volumes:
   data:
