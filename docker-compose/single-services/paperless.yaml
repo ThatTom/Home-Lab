@@ -33,6 +33,9 @@ services:
       PAPERLESS_TIKA_ENABLED: 1
       PAPERLESS_TIKA_GOTENBERG_ENDPOINT: http://gotenberg:3000
       PAPERLESS_TIKA_ENDPOINT: http://tika:9998
+      PAPERLESS_URL: https://documents.hogwartsnetwork.co.uk
+      PAPERLESS_ALLOWED_HOSTS: documents.hogwartsnetwork.co.uk
+      PAPERLESS_CSRF_TRUSTED_ORIGINS: https://documents.hogwartsnetwork.co.uk
     networks:
       - diagon-alley
       - paperless-internal
