@@ -1,6 +1,6 @@
 services:
   server:
-    image: gitea/gitea:latest
+    image: gitea/gitea:1.27
     networks:
       - diagon-alley
     volumes:
