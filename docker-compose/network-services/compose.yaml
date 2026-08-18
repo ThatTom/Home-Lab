@@ -16,7 +16,7 @@ services:
       restart_policy:
         condition: on-failure
 
- traefik:
+  traefik:
     image: traefik:v3.7
     command:
       # Enable Swarm provider
