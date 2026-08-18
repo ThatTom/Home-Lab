@@ -13,8 +13,6 @@ services:
       - SETGID
     tmpfs:
       - /tmp:noexec,nosuid,size=64m
-    ports:
-      - "3120:3000"
     environment:
       - NODE_ENV=production
       - PORT=3000
@@ -34,7 +32,8 @@ services:
     volumes:
       - trek-data:/app/data
       - trek-uploads:/app/uploads
-    restart: unless-stopped
+    networks:
+      - diagon-alley
     healthcheck:
       test: ["CMD", "wget", "-qO-", "http://localhost:3000/api/health"]
       interval: 30s
@@ -46,6 +45,18 @@ services:
         placement:
           constraints:
             - node.hostname == srv-01
+        labels:
+          # Enable Traefik
+          - "traefik.enable=true"
+          # Tell Traefik which network to use
+          - "traefik.swarm.network=diagon-alley"
+          # HTTP router
+          - "traefik.http.routers.trek.rule=Host(`travel.hogwartsnetwork.co.uk`)"
+          - "traefik.http.routers.trek.entrypoints=websecure"
+          # HTTPS
+          - "traefik.http.routers.trek.tls=true"
+          # Paperless internal port
+          - "traefik.http.services.trek.loadbalancer.server.port=3000"
         restart_policy:
           condition: on-failure
 
@@ -57,3 +68,7 @@ volumes:
   trek-uploads:
     external: false
     name: trek-uploads
+
+networks:
+  diagon-alley:
+    external: true
