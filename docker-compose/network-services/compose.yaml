@@ -60,7 +60,6 @@ services:
         - "traefik.http.routers.traefik-dashboard.entrypoints=websecure"
         - "traefik.http.routers.traefik-dashboard.tls=true"
         - "traefik.http.routers.traefik-dashboard.service=api@internal"
-        - "traefik.http.services.traefik.loadbalancer.server.port=8080"
 
 volumes:
   adguard-data:
