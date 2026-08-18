@@ -1,8 +1,6 @@
 services:
   server:
-    image: docker.gitea.com/gitea:1.27.2
-    container_name: gitea
-    restart: always
+    image: gitea/gitea:latest
     networks:
       - diagon-alley
     volumes:
