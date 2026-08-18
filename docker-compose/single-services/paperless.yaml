@@ -47,7 +47,7 @@ services:
         # Tell Traefik which network to use
         - "traefik.swarm.network=diagon-alley"
         # HTTP router
-        - "traefik.http.routers.paperless.rule=Host(`paperless.example.com`)"
+        - "traefik.http.routers.paperless.rule=Host(`documents.hogwartsnetwork.co.uk`)"
         - "traefik.http.routers.paperless.entrypoints=websecure"
         # HTTPS
         - "traefik.http.routers.paperless.tls=true"
