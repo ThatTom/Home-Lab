@@ -53,4 +53,4 @@ networks:
 
   monitoring-internal:
     external: false
-    name: paperless-internal
+    name: monitoring-internal
