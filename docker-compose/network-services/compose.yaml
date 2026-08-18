@@ -56,7 +56,10 @@ services:
           - node.role == manager
       labels:
         - "traefik.enable=true"
-
+        - "traefik.http.routers.traefik-dashboard.rule=Host(`traefik.hogwartsnetwork.co.uk`)"
+        - "traefik.http.routers.traefik-dashboard.entrypoints=websecure"
+        - "traefik.http.routers.traefik-dashboard.tls=true"
+        - "traefik.http.routers.traefik-dashboard.service=api@internal"
 
 volumes:
   adguard-data:
