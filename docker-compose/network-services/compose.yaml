@@ -21,37 +21,42 @@ services:
     environment:
       - CF_DNS_API_TOKEN=${CF_DNS_API_TOKEN}
     command:
-      # Enable Swarm provider
-      - "--providers.swarm=true"
-      - "--providers.swarm.endpoint=unix:///var/run/docker.sock"
-      - "--providers.swarm.watch=true"
-      - "--providers.swarm.exposedbydefault=false"
-      - "--providers.swarm.network=diagon-alley"
+    # Providers
+    - "--providers.swarm=true"
+    - "--providers.swarm.endpoint=unix:///var/run/docker.sock"
+    - "--providers.swarm.watch=true"
+    - "--providers.swarm.exposedbydefault=false"
+    - "--providers.swarm.network=diagon-alley"
 
-      # EntryPoints
-      - "--entrypoints.web.address=:80"
-      - "--entrypoints.websecure.address=:443"
+    # EntryPoints
+    - "--entrypoints.web.address=:80"
+    - "--entrypoints.websecure.address=:443"
 
-      # Configure HTTP to HTTPS Redirection
-      - "--entrypoints.web.http.redirections.entrypoint.to=websecure"
-      - "--entrypoints.web.http.redirections.entrypoint.scheme=https"
-      - "--entrypoints.web.http.redirections.entrypoint.permanent=true"
-      
-      # Dashboard
-      - "--api.dashboard=true"
-      - "--api.insecure=true"
+    # HTTP -> HTTPS
+    - "--entrypoints.web.http.redirections.entrypoint.to=websecure"
+    - "--entrypoints.web.http.redirections.entrypoint.scheme=https"
+    - "--entrypoints.web.http.redirections.entrypoint.permanent=true"
 
-      # Observability
-      - "--log.level=INFO" # Set the Log Level e.g INFO, DEBUG
-      - "--accesslog=true" # Enable Access Logs
-      - "--metrics.prometheus=true"  # Enable Prometheus
+    # HTTPS / TLS
+    - "--entrypoints.websecure.http.tls=true"
+    - "--entrypoints.websecure.http.tls.certresolver=cloudflare"
 
-      # Certioficate Resolver
-      - "--certificatesresolvers.cloudflare.acme.dnschallenge=true"
-      - "--certificatesresolvers.cloudflare.acme.dnschallenge.provider=cloudflare"
-      - "--certificatesresolvers.cloudflare.acme.email=admin@hogwartsnetwork.co.uk"
-      - "--certificatesresolvers.cloudflare.acme.storage=/letsencrypt/acme.json"
-      - "--entrypoints.websecure.http.tls.certresolver=cloudflare"
+    # Dashboard
+    - "--api.dashboard=true"
+    - "--api.insecure=true"
+
+    # Logging
+    - "--log.level=INFO"
+    - "--accesslog=true"
+
+    # Metrics
+    - "--metrics.prometheus=true"
+
+    # Cloudflare ACME DNS Challenge
+    - "--certificatesresolvers.cloudflare.acme.email=admin@hogwartsnetwork.co.uk"
+    - "--certificatesresolvers.cloudflare.acme.storage=/letsencrypt/acme.json"
+    - "--certificatesresolvers.cloudflare.acme.dnschallenge=true"
+    - "--certificatesresolvers.cloudflare.acme.dnschallenge.provider=cloudflare"
     ports:
       - target: 80
         published: 80
@@ -67,6 +72,7 @@ services:
         mode: host
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock:ro
+      - traefik-letsencrypt:/letsencrypt
     networks:
       - diagon-alley
     deploy:
@@ -83,6 +89,10 @@ volumes:
   adguard-config:
     external: false
     name: adguard-config
+
+  traefik-letsencrypt:
+    external: false
+    name: traefik-letsencrypt
 
 networks:
   diagon-alley:
