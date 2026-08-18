@@ -72,5 +72,4 @@ volumes:
 
 networks:
   diagon-alley:
-    driver: overlay
-    attachable: true
+    external: true
