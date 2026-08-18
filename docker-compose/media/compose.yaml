@@ -31,7 +31,7 @@ services:
         - "traefik.http.routers.jellyfin.entrypoints=websecure"
         # HTTPS
         - "traefik.http.routers.jellyfin.tls=true"
-        - "traefik.http.routers.paperless.tls.certresolver=cloudflare"
+        - "traefik.http.routers.jellyfin.tls.certresolver=cloudflare"
         # Paperless internal port
         - "traefik.http.services.jellyfin.loadbalancer.server.port=8096"
 
