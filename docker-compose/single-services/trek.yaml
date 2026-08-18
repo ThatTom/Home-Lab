@@ -17,10 +17,10 @@ services:
       - NODE_ENV=production
       - PORT=3000
       - ENCRYPTION_KEY=${ENCRYPTION_KEY:-}   # generate with: openssl rand -hex 32
-      - TZ=${TZ:-UTC}
+      - TZ=Europe/London
       - LOG_LEVEL=${LOG_LEVEL:-info}
-      - ALLOWED_ORIGINS=${ALLOWED_ORIGINS:-}
-      - APP_URL=${APP_URL:-}                 # required for OIDC + email links
+      - ALLOWED_ORIGINS=travel.hogwartsnetwork.co.uk
+      - APP_URL=travel.hogwartsnetwork.co.uk                 # required for OIDC + email links
       # - FORCE_HTTPS=true                   # behind a TLS-terminating proxy
       - TRUST_PROXY=1
       # - OIDC_ISSUER=https://auth.example.com
