@@ -65,7 +65,7 @@ services:
 
   radarr:
     container_name: radarr
-    image: ghcr.io/hotio/radarr
+    image: ghcr.io/hotio/radarr:release-6.3.0.10514
     ports:
       - "7878:7878"
     environment:
@@ -89,7 +89,7 @@ services:
 
   sonarr:
     container_name: sonarr
-    image: ghcr.io/hotio/sonarr
+    image: ghcr.io/hotio/sonarr:release-4.0.19.2979
     ports:
       - "8989:8989"
     environment:
