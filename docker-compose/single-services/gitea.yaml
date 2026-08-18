@@ -25,6 +25,7 @@ services:
         - "traefik.http.routers.gitea.entrypoints=websecure"
         # HTTPS
         - "traefik.http.routers.gitea.tls=true"
+        - "traefik.http.routers.gitea.tls.certresolver=cloudflare"
         # Paperless internal port
         - "traefik.http.services.gitea.loadbalancer.server.port=3000"
       restart_policy:
