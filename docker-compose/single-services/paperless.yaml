@@ -39,7 +39,9 @@ services:
       - diagon-alley
       - paperless-internal
     labels:
+      - "traefik.enable=true"
       - "traefik.http.routers.paperless.rule=Host(`documents.hogwartsnetwork.co.uk`)"
+      - "traefik.http.routers.paperless.entrypoints=WEB"
     deploy:
       replicas: 1
       placement:
