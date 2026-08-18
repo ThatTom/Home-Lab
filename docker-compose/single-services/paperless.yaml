@@ -1,7 +1,6 @@
 services:
   broker:
     image: docker.io/valkey/valkey:9-alpine
-    restart: unless-stopped
     volumes:
       - redisdata:/data
     networks:
@@ -16,7 +15,6 @@ services:
         
   webserver:
     image: ghcr.io/paperless-ngx/paperless-ngx:latest
-    restart: unless-stopped
     depends_on:
       - broker
       - gotenberg
@@ -47,7 +45,7 @@ services:
         # Enable Traefik
         - "traefik.enable=true"
         # Tell Traefik which network to use
-        - "traefik.swarm.network=traefik-public"
+        - "traefik.swarm.network=diagon-alley"
         # HTTP router
         - "traefik.http.routers.paperless.rule=Host(`paperless.example.com`)"
         - "traefik.http.routers.paperless.entrypoints=websecure"
@@ -60,7 +58,6 @@ services:
         
   gotenberg:
     image: docker.io/gotenberg/gotenberg:8.34
-    restart: unless-stopped
     # The gotenberg chromium route is used to convert .eml files. We do not
     # want to allow external content like tracking pixels or even javascript.
     command:
@@ -79,7 +76,6 @@ services:
         
   tika:
     image: docker.io/apache/tika:latest
-    restart: unless-stopped
     networks:
       - paperless-internal
     deploy:
