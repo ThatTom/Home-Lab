@@ -71,7 +71,7 @@ services:
         # HTTPS
         - "traefik.http.routers.rackpad.tls=true"
         # Paperless internal port
-        - "traefik.http.services.rackpad.loadbalancer.server.port=3000"
+        - "traefik.http.services.rackpad.loadbalancer.server.port=3110"
 
 volumes:
   rackpad_data:
