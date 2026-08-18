@@ -55,7 +55,7 @@ services:
           - "traefik.http.routers.trek.entrypoints=websecure"
           # HTTPS
           - "traefik.http.routers.trek.tls=true"
-          - "traefik.http.routers.paperless.tls.certresolver=cloudflare"
+          - "traefik.http.routers.trek.tls.certresolver=cloudflare"
           # Paperless internal port
           - "traefik.http.services.trek.loadbalancer.server.port=3000"
         restart_policy:
