@@ -37,6 +37,7 @@ services:
       PAPERLESS_ALLOWED_HOSTS: documents.hogwartsnetwork.co.uk
       PAPERLESS_CSRF_TRUSTED_ORIGINS: https://documents.hogwartsnetwork.co.uk
       PAPERLESS_WORKER_TIMEOUT: 86400
+      PAPERLESS_TIME_ZONE: Europe/London
     networks:
       - diagon-alley
       - paperless-internal
