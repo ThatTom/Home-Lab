@@ -133,6 +133,19 @@ volumes:
     external: false
     name: traefik-letsencrypt
 
+  etc_wireguard:
+    external: false
+    name: etc_wireguard
+
 networks:
   diagon-alley:
     external: true
+
+  wg:
+    driver: bridge
+    enable_ipv6: true
+    ipam:
+      driver: default
+      config:
+        - subnet: 10.42.42.0/24
+        - subnet: fdcc:ad94:bacf:61a3::/64
