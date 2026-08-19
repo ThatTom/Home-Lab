@@ -83,6 +83,23 @@ services:
       restart_policy:
         condition: on-failure
 
+  wgdashboard:
+    image: ghcr.io/wgdashboard/wgdashboard:latest
+    restart: unless-stopped
+    container_name: wgdashboard
+
+    ports:
+      - 10086:10086/tcp
+      - 51820:51820/udp
+
+    volumes:
+      - aconf:/etc/amnezia/amneziawg
+      - conf:/etc/wireguard
+      - data:/data
+
+    cap_add:
+      - NET_ADMIN
+
 volumes:
   adguard-data:
     external: false
@@ -95,6 +112,18 @@ volumes:
   traefik-letsencrypt:
     external: false
     name: traefik-letsencrypt
+
+  aconf:
+    external: false
+    name: aconf
+
+  conf:
+    external: false
+    name: conf
+
+  data:
+    external: false
+    name: data
   
 networks:
   diagon-alley:
