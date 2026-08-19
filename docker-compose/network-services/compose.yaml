@@ -90,7 +90,7 @@ services:
     ports:
       - target: 51820
         published: 51820
-        protocol: tcp
+        protocol: udp
         mode: host
     volumes:
       - aconf:/etc/amnezia/amneziawg
