@@ -34,7 +34,7 @@ services:
 
       labels:
         - "traefik.enable=true"
-        - "traefik.docker.network=traefik"
+        - "traefik.docker.network=diagon-alley"
 
         # -------------------------------------------------
         # BookLogr API
@@ -83,7 +83,7 @@ services:
 
       labels:
         - "traefik.enable=true"
-        - "traefik.docker.network=traefik"
+        - "traefik.docker.network=diagon-alley"
 
         # -------------------------------------------------
         # BookLogr Web
