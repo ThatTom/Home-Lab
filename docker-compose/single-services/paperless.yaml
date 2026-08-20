@@ -28,8 +28,8 @@ services:
       - /mnt/consume:/usr/src/paperless/consume
     env_file: .env
     environment:
-      PAPERLESS_CONSUMER_DELETE_DUPLICATES: TRUE
-      PAPERLESS_CONSUMER_RECURSIVE: TRUE
+      PAPERLESS_CONSUMER_DELETE_DUPLICATES: true
+      PAPERLESS_CONSUMER_RECURSIVE: true
       PAPERLESS_CONSUMER_POLLING_INTERVAL: 30
       
       PAPERLESS_REDIS: redis://broker:6379
