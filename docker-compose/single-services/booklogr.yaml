@@ -1,0 +1,44 @@
+services:
+  booklogr-api:
+    image: mozzo/booklogr:v1.11.1
+      env_file:
+        - .env
+      ports:
+        - 5000:5000
+      volumes:
+        - ./data:/app/instance
+
+  booklogr-web:
+    image: mozzo/booklogr-web:v1.11.1
+    env_file:
+      - .env
+    networks:
+      - diagon-alley
+    environment:
+      - BL_API_ENDPOINT=http://localhost:5000/ # CHANGE THIS TO POINT TO THE EXTERNAL ADRESS THE USER CAN ACCESS
+      - BL_GOOGLE_ID= # Leave empty to disable google login. To enable, write in your Google Client ID.
+      - BL_DEMO_MODE=false
+    deploy:
+      replicas: 1
+      placement:
+        constraints:
+          - node.hostname == srv-lo-1
+      labels:
+        # Enable Traefik
+        - "traefik.enable=true"
+        # Tell Traefik which network to use
+        - "traefik.swarm.network=diagon-alley"
+        # HTTP router
+        - "traefik.http.routers.booklogr.rule=Host(`books.hogwartsnetwork.co.uk`)"
+        - "traefik.http.routers.booklogr.entrypoints=websecure"
+        # HTTPS
+        - "traefik.http.routers.booklogr.tls=true"
+        - "traefik.http.routers.booklogr.tls.certresolver=cloudflare"
+        # Paperless internal port
+        - "traefik.http.services.booklogr.loadbalancer.server.port=80"
+      restart_policy:
+        condition: on-failure
+
+networks:
+  diagon-alley:
+    external: true
