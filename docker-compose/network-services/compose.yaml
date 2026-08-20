@@ -52,6 +52,12 @@ services:
     # Metrics
     - "--metrics.prometheus=true"
 
+    # Use public DNS resolvers for propagation checks
+    - "--certificatesresolvers.cloudflare.acme.dnschallenge.resolvers=1.1.1.1:53,8.8.8.8:53"
+
+      # Give DNS time to propagate
+    - "--certificatesresolvers.cloudflare.acme.dnschallenge.delaybeforecheck=10"
+
     # Cloudflare ACME DNS Challenge
     - "--certificatesresolvers.cloudflare.acme.email=admin@hogwartsnetwork.co.uk"
     - "--certificatesresolvers.cloudflare.acme.storage=/letsencrypt/acme.json"
