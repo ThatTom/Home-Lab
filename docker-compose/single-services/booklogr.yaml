@@ -25,7 +25,7 @@ services:
       - diagon-alley
       - booklogr-internal
     environment:
-      - BL_API_ENDPOINT=http://booklogr-api:5000/ # CHANGE THIS TO POINT TO THE EXTERNAL ADRESS THE USER CAN ACCESS
+      - BL_API_ENDPOINT=booklogr-api:5000 # CHANGE THIS TO POINT TO THE EXTERNAL ADRESS THE USER CAN ACCESS
       # - BL_GOOGLE_ID= # Leave empty to disable google login. To enable, write in your Google Client ID.
       - BL_DEMO_MODE=false
     deploy:
