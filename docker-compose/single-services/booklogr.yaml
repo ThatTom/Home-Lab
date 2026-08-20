@@ -39,14 +39,12 @@ services:
       labels:
         - "traefik.enable=true"
         - "traefik.docker.network=diagon-alley"
-    
-        # BookLogr API
-        - "traefik.http.routers.booklogr-api.rule=Host(`books.hogwartsnetwork.co.uk`) && PathPrefix(`/api`)"
+      
+        - "traefik.http.routers.booklogr-api.rule=Host(`books-api.hogwartsnetwork.co.uk`)"
         - "traefik.http.routers.booklogr-api.entrypoints=websecure"
         - "traefik.http.routers.booklogr-api.tls=true"
         - "traefik.http.routers.booklogr-api.tls.certresolver=cloudflare"
-        - "traefik.http.routers.booklogr-api.priority=100"
-    
+      
         - "traefik.http.routers.booklogr-api.service=booklogr-api"
         - "traefik.http.services.booklogr-api.loadbalancer.server.port=5000"
 
@@ -55,7 +53,7 @@ services:
 
     environment:
       # Browser-accessible API endpoint
-      BL_API_ENDPOINT: https://books.hogwartsnetwork.co.uk
+      BL_API_ENDPOINT: https://books-api.hogwartsnetwork.co.uk
 
       # Leave blank to disable Google login
       BL_GOOGLE_ID: ""
@@ -87,14 +85,12 @@ services:
       labels:
         - "traefik.enable=true"
         - "traefik.docker.network=diagon-alley"
-    
-        # BookLogr frontend
+      
         - "traefik.http.routers.booklogr.rule=Host(`books.hogwartsnetwork.co.uk`)"
         - "traefik.http.routers.booklogr.entrypoints=websecure"
         - "traefik.http.routers.booklogr.tls=true"
         - "traefik.http.routers.booklogr.tls.certresolver=cloudflare"
-        - "traefik.http.routers.booklogr.priority=10"
-    
+      
         - "traefik.http.routers.booklogr.service=booklogr"
         - "traefik.http.services.booklogr.loadbalancer.server.port=80"
 
