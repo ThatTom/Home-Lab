@@ -32,6 +32,10 @@ services:
     deploy:
       replicas: 1
 
+      placement:
+        constraints:
+          - node.hostname == srv-01
+
       labels:
         - "traefik.enable=true"
         - "traefik.docker.network=diagon-alley"
@@ -80,6 +84,10 @@ services:
 
     deploy:
       replicas: 1
+
+      placement:
+        constraints:
+          - node.hostname == srv-01
 
       labels:
         - "traefik.enable=true"
