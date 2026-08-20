@@ -1,6 +1,6 @@
 services:
   rackpad:
-    image: ghcr.io/kobii-git/rackpad:latest
+    image: ghcr.io/kobii-git/rackpad:v1.7.3
     environment:
       NODE_ENV: production
       HOST: 0.0.0.0
