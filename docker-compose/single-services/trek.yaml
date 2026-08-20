@@ -16,19 +16,15 @@ services:
     environment:
       - NODE_ENV=production
       - PORT=3000
-      - ENCRYPTION_KEY=${ENCRYPTION_KEY:-}   # generate with: openssl rand -hex 32
+      - ENCRYPTION_KEY=${ENCRYPTION_KEY:-}
       - TZ=Europe/London
       - LOG_LEVEL=${LOG_LEVEL:-info}
-      - ALLOWED_ORIGINS=travel.hogwartsnetwork.co.uk
-      - APP_URL=travel.hogwartsnetwork.co.uk                 # required for OIDC + email links
-      - FORCE_HTTPS=true                   # behind a TLS-terminating proxy
-      # - TRUST_PROXY=1
-      # - OIDC_ISSUER=https://auth.example.com
-      # - OIDC_CLIENT_ID=trek
-      # - OIDC_CLIENT_SECRET=supersecret
-      # - OIDC_DISPLAY_NAME=SSO
-      # - OIDC_ADMIN_CLAIM=groups
-      # - OIDC_ADMIN_VALUE=app-trek-admins
+
+      # Reverse proxy / public URL
+      - ALLOWED_ORIGINS=https://travel.hogwartsnetwork.co.uk
+      - APP_URL=https://travel.hogwartsnetwork.co.uk
+      - FORCE_HTTPS=true
+      - TRUST_PROXY=1
     volumes:
       - trek-data:/app/data
       - trek-uploads:/app/uploads
