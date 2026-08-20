@@ -31,7 +31,7 @@ services:
         - "traefik.enable=true"
         
         # Network Traefik should use
-        - "traefik.docker.network=diagon-alley"
+        - "traefik.swarm.network=diagon-alley"
         
         # HTTP router
         - "traefik.http.routers.rackpad.rule=Host(`rackpad.hogwartsnetwork.co.uk`)"
