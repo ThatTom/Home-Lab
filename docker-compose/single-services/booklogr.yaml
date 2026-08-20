@@ -53,8 +53,8 @@ services:
 
     environment:
       # Browser-accessible API endpoint
-      BL_API_ENDPOINT: https://books-api.hogwartsnetwork.co.uk
-
+      BL_API_ENDPOINT: https://books-api.hogwartsnetwork.co.uk/
+      
       # Leave blank to disable Google login
       BL_GOOGLE_ID: ""
 
