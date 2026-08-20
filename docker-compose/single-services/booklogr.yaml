@@ -1,61 +1,108 @@
 services:
+
   booklogr-api:
     image: mozzo/booklogr:v1.11.1
-    env_file:
-      - .env
-    #ports:
-    #  - 5000:5000
-    networks:
-      - booklogr-internal
+
+    environment:
+      DATABASE_URL: sqlite:///books.db
+      AUTH_SECRET_KEY: ${BOOKLOGR_AUTH_SECRET_KEY}
+
+      # Authentication
+      AUTH_ALLOW_REGISTRATION: "true"
+      AUTH_REQUIRE_VERIFICATION: "false"
+
+      # Single-user mode
+      SINGLE_USER_MODE: "false"
+
+      # Exports
+      EXPORT_FOLDER: /app/instance/export_data
+
+      # Email - leave blank unless you want email functionality
+      MAIL_SERVER: ""
+      MAIL_USERNAME: ""
+      MAIL_PASSWORD: ""
+      MAIL_SENDER: ""
+
     volumes:
-      - booklogr-data:/app/instance
+      - booklogr_data:/app/instance
+
+    networks:
+      - diagon-alley
+
     deploy:
       replicas: 1
-      placement:
-        constraints:
-          - node.hostname == srv-01
-      restart_policy:
-        condition: on-failure
+
+      labels:
+        - "traefik.enable=true"
+        - "traefik.docker.network=traefik"
+
+        # -------------------------------------------------
+        # BookLogr API
+        # -------------------------------------------------
+
+        - "traefik.http.routers.booklogr-api.rule=Host(`books.hogwartsnetwork.co.uk`) && PathPrefix(`/api`)"
+        - "traefik.http.routers.booklogr-api.entrypoints=websecure"
+        - "traefik.http.routers.booklogr-api.tls=true"
+        - "traefik.http.routers.booklogr-api.tls.certresolver=cloudflare"
+
+        - "traefik.http.routers.booklogr-api.service=booklogr-api"
+        - "traefik.http.services.booklogr-api.loadbalancer.server.port=5000"
+
+        # Ensure API router wins over the frontend router
+        - "traefik.http.routers.booklogr-api.priority=100"
 
   booklogr-web:
     image: mozzo/booklogr-web:v1.11.1
-    env_file:
-      - .env
+
+    environment:
+      # Browser-accessible API endpoint
+      BL_API_ENDPOINT: https://books.hogwartsnetwork.co.uk/
+
+      # Leave blank to disable Google login
+      BL_GOOGLE_ID: ""
+
+      BL_DEMO_MODE: "false"
+
+      # Normal authentication
+      BL_SINGLE_USER_MODE: "false"
+
+      # Update checking
+      BL_CHECK_UPDATES: "true"
+
+      # Allow normal email/password login
+      BL_ALLOW_MANUAL_LOGIN: "true"
+
+      # Allow users to register
+      VITE_ALLOW_REGISTRATION: "true"
+
     networks:
       - diagon-alley
-      - booklogr-internal
-    environment:
-      - BL_API_ENDPOINT=booklogr-api:5000 # CHANGE THIS TO POINT TO THE EXTERNAL ADRESS THE USER CAN ACCESS
-      # - BL_GOOGLE_ID= # Leave empty to disable google login. To enable, write in your Google Client ID.
-      - BL_DEMO_MODE=false
+
     deploy:
       replicas: 1
-      placement:
-        constraints:
-          - node.hostname == srv-01
+
       labels:
-        # Enable Traefik
         - "traefik.enable=true"
-        # Tell Traefik which network to use
-        - "traefik.swarm.network=diagon-alley"
-        # HTTP router
+        - "traefik.docker.network=traefik"
+
+        # -------------------------------------------------
+        # BookLogr Web
+        # -------------------------------------------------
+
         - "traefik.http.routers.booklogr.rule=Host(`books.hogwartsnetwork.co.uk`)"
         - "traefik.http.routers.booklogr.entrypoints=websecure"
-        # HTTPS
         - "traefik.http.routers.booklogr.tls=true"
         - "traefik.http.routers.booklogr.tls.certresolver=cloudflare"
-        # Paperless internal port
-        - "traefik.http.services.booklogr.loadbalancer.server.port=80"
-      restart_policy:
-        condition: on-failure
 
-volumes:
-  booklogr-data:
-    external: false
-    name: booklogr-data
+        - "traefik.http.routers.booklogr.service=booklogr"
+        - "traefik.http.services.booklogr.loadbalancer.server.port=80"
+
+        # Lower priority than the API router
+        - "traefik.http.routers.booklogr.priority=10"
 
 networks:
   diagon-alley:
     external: true
 
-  booklogr-internal:
+volumes:
+  booklogr_data:
