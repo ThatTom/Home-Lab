@@ -7,9 +7,6 @@ services:
       - gitea:/data
       #- /etc/timezone:/etc/timezone:ro
       #- /etc/localtime:/etc/localtime:ro
-    # ports:
-     # - "3000:3000"
-     # - "222:22"
     deploy:
       replicas: 1
       placement:
