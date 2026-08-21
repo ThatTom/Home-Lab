@@ -1,0 +1,31 @@
+services:
+  homepage:
+    image: ghcr.io/gethomepage/homepage:latest
+    networks:
+      - diagon-alley
+    environment:
+      HOMEPAGE_ALLOWED_HOSTS: https://dashboard.hogwartsnetwork.co.uk # required, may need port. See gethomepage.dev/installation/#homepage_allowed_hosts
+    volumes:
+      - homepage-config:/app/config # Make sure your local config directory exists
+      - /var/run/docker.sock:/var/run/docker.sock:ro # optional, for docker integrations
+    deploy:
+      replicas: 1
+      placement:
+        constraints:
+          - node.hostname == srv-01
+      labels:
+        - "traefik.enable=true"
+        - "traefik.docker.network=diagon-alley"
+        - "traefik.http.routers.dashboard.rule=Host(`dashboard.hogwartsnetwork.co.uk`)"
+        - "traefik.http.routers.dashboard.entrypoints=websecure"
+        - "traefik.http.routers.dashboard.tls=true"
+        - "traefik.http.routers.dashboard.tls.certresolver=cloudflare"
+        - "traefik.http.routers.dashboard.service=booklogr-api"
+        - "traefik.http.services.dashboard.loadbalancer.server.port=3000"
+
+networks:
+  diagon-alley:
+    external: true
+
+volumes:
+  booklogr_data:
