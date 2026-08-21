@@ -28,4 +28,4 @@ networks:
     external: true
 
 volumes:
-  booklogr_data:
+  homepage-config:
