@@ -82,13 +82,13 @@ services:
           # Tell Traefik which network to use
           - "traefik.swarm.network=diagon-alley"
           # HTTP router
-          - "traefik.http.routers.git-mittor.rule=Host(`git-mirror.hogwartsnetwork.co.uk`)"
-          - "traefik.http.routers.git-mittor.entrypoints=websecure"
+          - "traefik.http.routers.git-mirror.rule=Host(`git-mirror.hogwartsnetwork.co.uk`)"
+          - "traefik.http.routers.git-mirror.entrypoints=websecure"
           # HTTPS
-          - "traefik.http.routers.git-mittor.tls=true"
-          - "traefik.http.routers.git-mittor.tls.certresolver=cloudflare"
+          - "traefik.http.routers.git-mirror.tls=true"
+          - "traefik.http.routers.git-mirror.tls.certresolver=cloudflare"
           # Paperless internal port
-          - "traefik.http.services.git-mittor.loadbalancer.server.port=4321"
+          - "traefik.http.services.git-mirror.loadbalancer.server.port=4321"
         restart_policy:
           condition: on-failure
 
