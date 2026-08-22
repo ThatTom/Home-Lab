@@ -41,6 +41,10 @@ services:
           restart_policy:
             condition: on-failure
 
+networks:
+  diagon-alley:
+    external: true
+
 secrets:
   authelia_session_secret:
     external: true
