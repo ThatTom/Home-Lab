@@ -1,31 +1,38 @@
 services:
-  homepage:
-    image: ghcr.io/gethomepage/homepage:latest
-    networks:
-      - diagon-alley
-    environment:
-      HOMEPAGE_ALLOWED_HOSTS: dashboard.hogwartsnetwork.co.uk # required, may need port. See gethomepage.dev/installation/#homepage_allowed_hosts
-    volumes:
-      - homepage-config:/app/config # Make sure your local config directory exists
-      - /var/run/docker.sock:/var/run/docker.sock:ro # optional, for docker integrations
-    deploy:
-      replicas: 1
-      placement:
-        constraints:
-          - node.hostname == srv-01
-      labels:
-        - "traefik.enable=true"
-        - "traefik.docker.network=diagon-alley"
-        - "traefik.http.routers.dashboard.rule=Host(`dashboard.hogwartsnetwork.co.uk`)"
-        - "traefik.http.routers.dashboard.entrypoints=websecure"
-        - "traefik.http.routers.dashboard.tls=true"
-        - "traefik.http.routers.dashboard.tls.certresolver=cloudflare"
-        - "traefik.http.routers.dashboard.service=dashboard"
-        - "traefik.http.services.dashboard.loadbalancer.server.port=3000"
-
+    homepage:
+        image: ghcr.io/gethomepage/homepage:latest
+        networks:
+            - diagon-alley
+        environment:
+            HOMEPAGE_ALLOWED_HOSTS: ${HOMEPAGE_ALLOWED_HOSTS} # required, may need port. See gethomepage.dev/installation/#homepage_allowed_hosts
+            HOMEPAGE_AUTH_ENABLED: ${HOMEPAGE_AUTH_ENABLED}
+            HOMEPAGE_EXTERNAL_URL: ${HOMEPAGE_EXTERNAL_URL}
+            HOMEPAGE_OIDC_ISSUER: ${HOMEPAGE_OIDC_ISSUER}
+            HOMEPAGE_OIDC_CLIENT_ID: ${HOMEPAGE_OIDC_CLIENT_ID}
+            HOMEPAGE_OIDC_CLIENT_SECRET: ${HOMEPAGE_OIDC_CLIENT_SECRET}
+            HOMEPAGE_OIDC_NAME: ${HOMEPAGE_OIDC_NAME}
+            
+        volumes:
+            - homepage-config:/app/config # Make sure your local config directory exists
+            - /var/run/docker.sock:/var/run/docker.sock:ro # optional, for docker integrations
+        deploy:
+            replicas: 1
+            placement:
+                constraints:
+                    - node.hostname == srv-01
+            labels:
+                - "traefik.enable=true"
+                - "traefik.docker.network=diagon-alley"
+                - "traefik.http.routers.dashboard.rule=Host(`dashboard.hogwartsnetwork.co.uk`)"
+                - "traefik.http.routers.dashboard.entrypoints=websecure"
+                - "traefik.http.routers.dashboard.tls=true"
+                - "traefik.http.routers.dashboard.tls.certresolver=cloudflare"
+                - "traefik.http.routers.dashboard.service=dashboard"
+                - "traefik.http.services.dashboard.loadbalancer.server.port=3000"
+        
 networks:
-  diagon-alley:
-    external: true
-
+    diagon-alley:
+        external: true
+        
 volumes:
-  homepage-config:
+    homepage-config:
