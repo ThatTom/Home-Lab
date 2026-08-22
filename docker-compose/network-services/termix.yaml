@@ -1,28 +1,28 @@
 services:
     termix:
-    image: ghcr.io/lukegus/termix:latest
-    networks:
-        - diagon-alley
-    volumes:
-        - termix-data:/app/data
-    environment:
-        PORT: '8080'
-    deploy:
-        replicas: 1
-        placement:
-            constraints:
-                - node.hostname == rpi-1
-        labels:
-            - "traefik.enable=true"
-            - "traefik.swarm.network=diagon-alley"
-            - "traefik.http.routers.termix.rule=Host(`terminal.hogwartsnetwork.co.uk`)"
-            - "traefik.http.routers.termix.entrypoints=websecure"
-            - "traefik.http.routers.termix.tls=true"
-            - "traefik.http.routers.termix.tls.certresolver=cloudflare"
-            - "traefik.http.services.termix.loadbalancer.server.port=8080"
-    
-    restart_policy:
-        condition: on-failure
+        image: ghcr.io/lukegus/termix:latest
+        networks:
+            - diagon-alley
+        volumes:
+            - termix-data:/app/data
+        environment:
+            PORT: '8080'
+        deploy:
+            replicas: 1
+            placement:
+                constraints:
+                    - node.hostname == rpi-1
+            labels:
+                - "traefik.enable=true"
+                - "traefik.swarm.network=diagon-alley"
+                - "traefik.http.routers.termix.rule=Host(`terminal.hogwartsnetwork.co.uk`)"
+                - "traefik.http.routers.termix.entrypoints=websecure"
+                - "traefik.http.routers.termix.tls=true"
+                - "traefik.http.routers.termix.tls.certresolver=cloudflare"
+                - "traefik.http.services.termix.loadbalancer.server.port=8080"
+        
+        restart_policy:
+            condition: on-failure
 
 networks:
     diagon-alley:
