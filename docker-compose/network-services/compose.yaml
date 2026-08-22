@@ -21,13 +21,17 @@ services:
     environment:
       - CF_DNS_API_TOKEN=${CF_DNS_API_TOKEN}
     command:
-    # Providers
-    - "--providers.swarm=true"
+    # Docker provider
     - "--providers.docker=true"
+    - "--providers.docker.exposedbydefault=false"
+    - "--providers.docker.network=diagon-alley"
+
+    # Docker Swarm provider
+    - "--providers.swarm=true"
     - "--providers.swarm.endpoint=unix:///var/run/docker.sock"
+    - "--providers.swarm.network=diagon-alley"
     - "--providers.swarm.watch=true"
     - "--providers.swarm.exposedbydefault=false"
-    - "--providers.swarm.network=diagon-alley"
 
     # EntryPoints
     - "--entrypoints.web.address=:80"
