@@ -6,6 +6,7 @@ services:
         environment:
             HOMEPAGE_ALLOWED_HOSTS: ${HOMEPAGE_ALLOWED_HOSTS} # required, may need port. See gethomepage.dev/installation/#homepage_allowed_hosts
             HOMEPAGE_AUTH_ENABLED: ${HOMEPAGE_AUTH_ENABLED}
+            HOMEPAGE_AUTH_SECRET: ${HOMEPAGE_AUTH_SECRET}
             HOMEPAGE_EXTERNAL_URL: ${HOMEPAGE_EXTERNAL_URL}
             HOMEPAGE_OIDC_ISSUER: ${HOMEPAGE_OIDC_ISSUER}
             HOMEPAGE_OIDC_CLIENT_ID: ${HOMEPAGE_OIDC_CLIENT_ID}
