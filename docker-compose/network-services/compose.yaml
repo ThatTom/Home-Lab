@@ -77,10 +77,10 @@ services:
         published: 443
         protocol: tcp
         mode: host
-      - target: 8080
-        published: 8020
-        protocol: tcp
-        mode: host
+      #- target: 8080
+      #  published: 8020
+      #  protocol: tcp
+      #  mode: host
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock:ro
       - traefik-letsencrypt:/letsencrypt
@@ -93,6 +93,19 @@ services:
           - node.hostname == rpi-1
       restart_policy:
         condition: on-failure
+      labels:
+        # Enable Traefik
+        - "traefik.enable=true"
+        # Tell Traefik which network to use
+        - "traefik.swarm.network=diagon-alley"
+        # HTTP router
+        - "traefik.http.routers.traefik.rule=Host(`traefik.hogwartsnetwork.co.uk`)"
+        - "traefik.http.routers.traefik.entrypoints=websecure"
+        # HTTPS
+        - "traefik.http.routers.traefik.tls=true"
+        - "traefik.http.routers.traefik.tls.certresolver=cloudflare"
+        # Paperless internal port
+        - "traefik.http.services.traefik.loadbalancer.server.port=8080"
 
   authelia:
     image: authelia/authelia:latest
