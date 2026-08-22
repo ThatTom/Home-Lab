@@ -21,8 +21,8 @@ services:
                 - "traefik.http.routers.termix.tls.certresolver=cloudflare"
                 - "traefik.http.services.termix.loadbalancer.server.port=8080"
         
-        restart_policy:
-            condition: on-failure
+            restart_policy:
+                condition: on-failure
 
 networks:
     diagon-alley:
