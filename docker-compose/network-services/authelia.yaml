@@ -1,0 +1,52 @@
+services:
+    authelia:
+        image: authelia/authelia:latest
+        networks:
+          - diagon-alley
+        volumes:
+          - /opt/authelia/config:/config
+          - /opt/authelia/data:/data
+        secrets:
+          - authelia_session_secret
+          - authelia_storage_encryption_key
+          - authelia_jwt_secret
+        environment:
+          X_AUTHELIA_CONFIG_FILTERS: template
+          AUTHELIA_SESSION_SECRET_FILE: /run/secrets/authelia_session_secret
+          AUTHELIA_STORAGE_ENCRYPTION_KEY_FILE: /run/secrets/authelia_storage_encryption_key
+          AUTHELIA_IDENTITY_VALIDATION_RESET_PASSWORD_JWT_SECRET_FILE: /run/secrets/authelia_jwt_secret
+        deploy:
+          replicas: 1
+          placement:
+            constraints:
+              - node.hostname == rpi-1
+          labels:
+            - "traefik.enable=true"
+            - "traefik.swarm.network=diagon-alley"
+    
+            # Authelia web interface
+            - "traefik.http.routers.authelia.rule=Host(`auth.hogwartsnetwork.co.uk`)"
+            - "traefik.http.routers.authelia.entrypoints=websecure"
+            - "traefik.http.routers.authelia.tls=true"
+            - "traefik.http.routers.authelia.tls.certresolver=cloudflare"
+    
+            # Authelia listens on 9091
+            - "traefik.http.services.authelia.loadbalancer.server.port=9091"
+    
+            # ForwardAuth middleware
+            - "traefik.http.middlewares.authelia.forwardauth.address=http://authelia:9091/api/authz/forward-auth"
+            - "traefik.http.middlewares.authelia.forwardauth.trustForwardHeader=true"
+            - "traefik.http.middlewares.authelia.forwardauth.authResponseHeaders=Remote-User,Remote-Groups,Remote-Email,Remote-Name"
+    
+          restart_policy:
+            condition: on-failure
+
+secrets:
+  authelia_session_secret:
+    external: true
+
+  authelia_storage_encryption_key:
+    external: true
+
+  authelia_jwt_secret:
+    external: true
