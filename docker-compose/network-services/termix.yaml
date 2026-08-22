@@ -1,8 +1,8 @@
 services:
     termix:
         image: ghcr.io/lukegus/termix:latest
-        networks:
-            - diagon-alley
+        #networks:
+        #    - diagon-alley
         volumes:
             - termix-data:/app/data
         ports:
