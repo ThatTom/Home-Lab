@@ -1,0 +1,100 @@
+services:
+    traefik:
+        image: traefik:v3.7
+        environment:
+          - CF_DNS_API_TOKEN=${CF_DNS_API_TOKEN}
+        command:
+        # Docker provider
+        - "--providers.docker=true"
+        - "--providers.docker.exposedbydefault=false"
+        - "--providers.docker.network=diagon-alley"
+    
+        # Docker Swarm provider
+        - "--providers.swarm=true"
+        - "--providers.swarm.endpoint=unix:///var/run/docker.sock"
+        - "--providers.swarm.network=diagon-alley"
+        - "--providers.swarm.watch=true"
+        - "--providers.swarm.exposedbydefault=false"
+    
+        # EntryPoints
+        - "--entrypoints.web.address=:80"
+        - "--entrypoints.websecure.address=:443"
+    
+        # HTTP -> HTTPS
+        - "--entrypoints.web.http.redirections.entrypoint.to=websecure"
+        - "--entrypoints.web.http.redirections.entrypoint.scheme=https"
+        - "--entrypoints.web.http.redirections.entrypoint.permanent=true"
+    
+        # HTTPS / TLS
+        - "--entrypoints.websecure.http.tls=true"
+        - "--entrypoints.websecure.http.tls.certresolver=cloudflare"
+    
+        # Dashboard
+        - "--api.dashboard=true"
+        - "--api.insecure=true"
+    
+        # Logging
+        - "--log.level=INFO"
+        - "--accesslog=true"
+    
+        # Metrics
+        - "--metrics.prometheus=true"
+    
+        # Use public DNS resolvers for propagation checks
+        - "--certificatesresolvers.cloudflare.acme.dnschallenge.resolvers=1.1.1.1:53,8.8.8.8:53"
+    
+          # Give DNS time to propagate
+        - "--certificatesresolvers.cloudflare.acme.dnschallenge.delaybeforecheck=10"
+    
+        # Cloudflare ACME DNS Challenge
+        - "--certificatesresolvers.cloudflare.acme.email=admin@hogwartsnetwork.co.uk"
+        - "--certificatesresolvers.cloudflare.acme.storage=/letsencrypt/acme.json"
+        - "--certificatesresolvers.cloudflare.acme.dnschallenge=true"
+        - "--certificatesresolvers.cloudflare.acme.dnschallenge.provider=cloudflare"
+        ports:
+          - target: 80
+            published: 80
+            protocol: tcp
+            mode: host
+          - target: 443
+            published: 443
+            protocol: tcp
+            mode: host
+          #- target: 8080
+          #  published: 8020
+          #  protocol: tcp
+          #  mode: host
+        volumes:
+          - /var/run/docker.sock:/var/run/docker.sock:ro
+          - traefik-letsencrypt:/letsencrypt
+        networks:
+          - diagon-alley
+        deploy:
+          replicas: 1
+          placement:
+            constraints:
+              - node.hostname == rpi-1
+          restart_policy:
+            condition: on-failure
+          labels:
+            # Enable Traefik
+            - "traefik.enable=true"
+            # Tell Traefik which network to use
+            - "traefik.swarm.network=diagon-alley"
+            # HTTP router
+            - "traefik.http.routers.traefik.rule=Host(`traefik.hogwartsnetwork.co.uk`)"
+            - "traefik.http.routers.traefik.entrypoints=websecure"
+            # HTTPS
+            - "traefik.http.routers.traefik.tls=true"
+            - "traefik.http.routers.traefik.tls.certresolver=cloudflare"
+            # Paperless internal port
+            - "traefik.http.services.traefik.loadbalancer.server.port=8080"
+
+volumes:
+  traefik-letsencrypt:
+    external: false
+    name: traefik-letsencrypt
+  
+networks:
+  diagon-alley:
+    external: true
