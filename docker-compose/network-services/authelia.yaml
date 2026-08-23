@@ -16,8 +16,8 @@ services:
           AUTHELIA_STORAGE_ENCRYPTION_KEY_FILE: /run/secrets/authelia_storage_encryption_key
           AUTHELIA_IDENTITY_VALIDATION_RESET_PASSWORD_JWT_SECRET_FILE: /run/secrets/authelia_jwt_secret
         depends_on:
-          lldap:
-            condition: service_healthy
+            lldap:
+                condition: service_healthy
         deploy:
           replicas: 1
           placement:
