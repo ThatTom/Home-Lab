@@ -6,12 +6,7 @@ services:
     environment:
       DOMAIN: ${DOMAIN}
     volumes:
-      - type: volume
-        source: docker-volumes
-        target: /data/
-        volume:
-          subpath: vaultwarden-data # The subdirectory inside the volume
-    
+        - vaultwarden:/data/
     deploy:
         replicas: 1
         placement:
@@ -32,9 +27,6 @@ networks:
         external: true
 
 volumes:
-    docker-volumes:
-        driver: local
-        driver_opts:
-          type: nfs
-          o: addr=192.168.100.5,rw,nfsvers=4
-          device: ":/mnt/Hogwarts-Vault/DockerVolumes"
+    vaultwarden:
+        external: false
+        name: vaultwarden
