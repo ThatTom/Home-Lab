@@ -30,10 +30,11 @@ services:
 networks:
     diagon-alley:
         external: true
-        
-docker-volumes:
-    driver: local
-    driver_opts:
-      type: nfs
-      o: addr=192.168.100.5,rw,nfsvers=4
-      device: ":/mnt/Hogwarts-Vault/DockerVolumes"
+
+volumes:
+    docker-volumes:
+        driver: local
+        driver_opts:
+          type: nfs
+          o: addr=192.168.100.5,rw,nfsvers=4
+          device: ":/mnt/Hogwarts-Vault/DockerVolumes"
