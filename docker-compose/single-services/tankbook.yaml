@@ -2,6 +2,8 @@ services:
   db:
     image: postgres:16-alpine
     restart: unless-stopped
+    networks:
+      - tankbook-internal
     environment:
       POSTGRES_DB: tankbook
       POSTGRES_USER: ${DB_USER:-tankbook}
@@ -26,6 +28,9 @@ services:
     restart: unless-stopped
     depends_on:
       - db
+    networks:
+      - diagon-alley
+      - tankbook-internal
     environment:
       DATABASE_URL: postgresql://${DB_USER:-tankbook}:${DB_PASSWORD:-changeme}@db/tankbook
       SPECIES_DATA_PATH: /app/species-data
@@ -42,8 +47,30 @@ services:
           - node.hostname == rpi-1
       restart_policy:
         condition: on-failure
+      labels:
+        #Enable Traefik
+        - "traefik.enable=true"
+        
+        # Network Traefik should use
+        - "traefik.swarm.network=diagon-alley"
+        
+        # HTTP router
+        - "traefik.http.routers.tankbook.rule=Host(`tankbook.hogwartsnetwork.co.uk`)"
+        - "traefik.http.routers.tankbook.entrypoints=websecure"
+        - "traefik.http.routers.tankbook.tls=true"
+        - "traefik.http.routers.tankbook.tls.certresolver=cloudflare"
+
+        # Rackpad listens on 3000 internally
+        - "traefik.http.services.tankbook.loadbalancer.server.port=3000"
 
 volumes:
   postgres_data:
   species_data:
   tankbook-images:
+
+networks:
+  diagon-alley:
+    external: true
+
+  tankbook-internal:
+    external: false
