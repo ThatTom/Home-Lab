@@ -10,7 +10,7 @@ services:
         - "--providers.docker.network=diagon-alley"
 
         # File provider
-        - "--providers.file.directory=/static-traefik-configs"
+        - "--providers.file.directory=./static-traefik-configs"
         - "--providers.file.watch=true"
         
         # Docker Swarm provider
