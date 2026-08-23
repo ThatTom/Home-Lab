@@ -5,6 +5,12 @@ services:
       - TZ=Europe/London
     volumes:
       - termix_data:/app/data
+      
+      - type: volume
+        source: docker-volumes
+        target: /app/data
+        volume:
+          subpath: termix # The subdirectory inside the volume
     networks:
       - diagon-alley
     labels:
@@ -28,3 +34,11 @@ networks:
 
 volumes:
   termix_data:
+
+volumes:
+  docker-volumes:
+    driver: local
+    driver_opts:
+      type: nfs
+      o: addr=192.168.100.5,rw,nfsvers=4
+      device: ":/mnt/Hogwarts-Vault/DockerVolumes"
