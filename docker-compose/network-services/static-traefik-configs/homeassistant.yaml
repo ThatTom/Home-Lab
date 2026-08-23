@@ -1,0 +1,17 @@
+http:
+  routers:
+    homeassistant:
+      rule: "Host(`homeassistant.hogwartsnetwork.co.uk`)"
+      entryPoints:
+        - websecure
+      service: homeassistant
+      middlewares:
+        - authelia@docker
+      tls:
+        certResolver: cloudflare
+
+  services:
+    homeassistant:
+      loadBalancer:
+        servers:
+          - url: "http://192.168.100.34:8123"
