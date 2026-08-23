@@ -13,7 +13,7 @@ services:
         - "traefik.enable=true"
 
         # Router
-        - "traefik.http.routers.termix.rule=Host(`termix.hogwartsnetwork.co.uk`)"
+        - "traefik.http.routers.termix.rule=Host(`terminal.hogwartsnetwork.co.uk`)"
         - "traefik.http.routers.termix.entrypoints=websecure"
         - "traefik.http.routers.termix.tls=true"
         - "traefik.http.routers.termix.tls.certresolver=cloudflare"
