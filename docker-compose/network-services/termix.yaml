@@ -7,9 +7,7 @@ services:
       - termix_data:/app/data
     networks:
       - diagon-alley
-    deploy:
-      replicas: 1
-      labels:
+    labels:
         - "traefik.enable=true"
 
         # Router
@@ -19,7 +17,10 @@ services:
         - "traefik.http.routers.termix.tls.certresolver=cloudflare"
 
         # Service
-        - "traefik.http.services.termix.loadbalancer.server.port=3000"
+        - "traefik.http.services.termix.loadbalancer.server.port=8080"
+
+        # Network
+        - "traefik.docker.network=diagon-alley"
 
 networks:
   diagon-alley:
