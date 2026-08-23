@@ -73,14 +73,7 @@ services:
           - traefik-letsencrypt:/letsencrypt
         networks:
           - diagon-alley
-        deploy:
-          replicas: 1
-          placement:
-            constraints:
-              - node.hostname == rpi-1
-          restart_policy:
-            condition: on-failure
-          labels:
+        labels:
             # Enable Traefik
             - "traefik.enable=true"
             # Tell Traefik which network to use
