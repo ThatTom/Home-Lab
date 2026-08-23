@@ -1,7 +1,3 @@
-volumes:
-  lldap_data:
-    driver: local
-
 services:
   lldap:
     image: lldap/lldap:stable
