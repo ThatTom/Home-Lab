@@ -3,7 +3,14 @@ services:
     image: ghcr.io/jellyfin/jellyfin:10.11.11
     volumes:
       # Uses the docker volumes configured in the volumes section below to persist Jellyfin configuration and cache data
-      - jellyfin-config:/config
+      # - jellyfin-config:/config
+      
+      - type: volume
+        source: docker-volumes
+        target: /config
+        volume:
+          subpath: jellyfin-config # The subdirectory inside the volume
+      
       - jellyfin-cache:/cache
 
       # Uses the shared bind mounts configured in the volumes section below to access media on the host
@@ -113,9 +120,16 @@ services:
         condition: on-failure
     
 volumes:
-  jellyfin-config:
-    external: false
-    name: jellyfin-config
+  #jellyfin-config:
+  #  external: false
+  #  name: jellyfin-config
+
+  docker-volumes:
+    driver: local
+    driver_opts:
+      type: nfs
+      o: addr=192.168.100.5,rw,nfsvers=4
+      device: ":/mnt/Hogwarts-Vault/DockerVolumes"
 
   seerr-config:
     external: false
