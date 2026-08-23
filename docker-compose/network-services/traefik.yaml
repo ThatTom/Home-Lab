@@ -10,7 +10,7 @@ services:
         - "--providers.docker.network=diagon-alley"
 
         # File provider
-        - "--providers.file.filename=/etc/traefik/dynamic/homeassistant.yaml"
+        - "--providers.file.filename=/etc/traefik/dynamic/homeassistant-v2.yaml"
         - "--providers.file.watch=true"
         
         # Docker Swarm provider
@@ -73,7 +73,7 @@ services:
           - traefik-letsencrypt:/letsencrypt
         configs:
           - source: traefik-homeassistant
-            target: /etc/traefik/dynamic/homeassistant.yaml
+            target: /etc/traefik/dynamic/homeassistant-v2.yaml
         networks:
           - diagon-alley
         labels:
