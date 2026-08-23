@@ -35,7 +35,6 @@ networks:
 volumes:
   termix_data:
 
-volumes:
   docker-volumes:
     driver: local
     driver_opts:
