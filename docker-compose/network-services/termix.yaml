@@ -4,7 +4,7 @@ services:
     environment:
       - TZ=Europe/London
     volumes:
-      - termix_data:/app/data
+      # - termix_data:/app/data
       
       - type: volume
         source: docker-volumes
@@ -33,7 +33,7 @@ networks:
     external: true
 
 volumes:
-  termix_data:
+  # termix_data:
 
   docker-volumes:
     driver: local
