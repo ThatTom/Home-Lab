@@ -13,11 +13,11 @@ services:
     volumes:
       - lldap:/data
     environment:
-      - TZ: Europe/London
-      - LLDAP_JWT_SECRET: ${LLDAP_JWT_SECRET}
-      - LLDAP_KEY_SEED: ${LLDAP_KEY_SEED}
-      - LLDAP_LDAP_BASE_DN: ${LLDAP_LDAP_BASE_DN}
-      - LLDAP_LDAP_USER_PASS: ${LLDAP_LDAP_USER_PASS} # If the password contains '$', escape it (e.g. Pas$$word sets Pas$word)
+      TZ: Europe/London
+      LLDAP_JWT_SECRET: ${LLDAP_JWT_SECRET}
+      LLDAP_KEY_SEED: ${LLDAP_KEY_SEED}
+      LLDAP_LDAP_BASE_DN: ${LLDAP_LDAP_BASE_DN}
+      LLDAP_LDAP_USER_PASS: ${LLDAP_LDAP_USER_PASS} # If the password contains '$', escape it (e.g. Pas$$word sets Pas$word)
       # If using LDAPS, set enabled true and configure cert and key path
       # - LLDAP_LDAPS_OPTIONS__ENABLED=true
       # - LLDAP_LDAPS_OPTIONS__CERT_FILE=/path/to/certfile.crt
