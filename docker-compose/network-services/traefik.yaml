@@ -6,6 +6,7 @@ services:
         command:
         # Docker provider
         - "--providers.docker=true"
+        - "--providers.docker.endpoint=unix:///var/run/docker.sock"
         - "--providers.docker.exposedbydefault=false"
         - "--providers.docker.network=diagon-alley"
 
