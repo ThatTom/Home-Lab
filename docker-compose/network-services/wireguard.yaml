@@ -8,7 +8,7 @@ services:
       # WireGuard port, needs to match the port in wg-portal interface config (add one port mapping for each interface)
       - "51820:51820/udp" 
       # Web UI port
-      # - "8888:8888/tcp"
+      - "8888:8888/tcp"
     sysctls:
       - net.ipv4.conf.all.src_valid_mark=1
     volumes:
