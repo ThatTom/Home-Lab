@@ -5,9 +5,9 @@ services:
         networks:
             - diagon-alley
         environment:
-            LEAFWIKI_JWT_SECRET: ${LEAFWIKI_JWT_SECRET}your-secret
-            LEAFWIKI_ADMIN_PASSWORD: ${LEAFWIKI_ADMIN_PASSWORD}your-password
-            LEAFWIKI_ALLOW_INSECURE: ${LEAFWIKI_ALLOW_INSECURE} true
+            LEAFWIKI_JWT_SECRET: ${LEAFWIKI_JWT_SECRET}
+            LEAFWIKI_ADMIN_PASSWORD: ${LEAFWIKI_ADMIN_PASSWORD}
+            LEAFWIKI_ALLOW_INSECURE: ${LEAFWIKI_ALLOW_INSECURE}
         image: ghcr.io/perber/leafwiki:latest
         deploy:
             replicas: 1
