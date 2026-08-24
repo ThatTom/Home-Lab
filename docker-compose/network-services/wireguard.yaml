@@ -19,7 +19,7 @@ services:
       replicas: 1
       placement:
         constraints:
-          - node.hostname == rpi-1
+          - node.hostname == rpi-2
       labels:
         - "traefik.enable=true"
         - "traefik.swarm.network=diagon-alley"
