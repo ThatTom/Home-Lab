@@ -1,8 +1,9 @@
 services:
   adguard:
     image: adguard/adguardhome
+    networks:
+        - diagon-alley
     ports:
-      - 3020:80
       - 53:53/tcp
       - 53:53/udp
     volumes:
@@ -12,9 +13,21 @@ services:
       replicas: 1
       placement:
         constraints:
-          - node.hostname == srv-01
+          - node.hostname == ??
       restart_policy:
         condition: on-failure
+      labels:
+          - "traefik.enable=true"
+          - "traefik.swarm.network=diagon-alley"
+
+          # Authelia web interface
+          - "traefik.http.routers.adguard.rule=Host(`adguard.hogwartsnetwork.co.uk`)"
+          - "traefik.http.routers.adguard.entrypoints=websecure"
+          - "traefik.http.routers.adguard.tls=true"
+          - "traefik.http.routers.adguard.tls.certresolver=cloudflare"
+    
+          # Authelia listens on 9091
+          - "traefik.http.services.adguard.loadbalancer.server.port=3020"
 
 volumes:
   adguard-data:
