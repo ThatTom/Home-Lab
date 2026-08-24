@@ -1,49 +1,45 @@
 services:
-  wg-portal:
-    image: wgportal/wg-portal:v2
+  wg-easy:
+    #environment:
+    #  Optional:
+    #  - PORT=51821
+    #  - HOST=0.0.0.0
+    #  - INSECURE=false
+
+    image: ghcr.io/wg-easy/wg-easy:15
+    container_name: wg-easy
+    networks:
+      wg:
+        ipv4_address: 10.42.42.42
+        ipv6_address: fdcc:ad94:bacf:61a3::2a
+    volumes:
+      - etc_wireguard:/etc/wireguard
+      - /lib/modules:/lib/modules:ro
+    ports:
+      - "51820:51820/udp"
+      - "51821:51821/tcp"
+    restart: unless-stopped
     cap_add:
       - NET_ADMIN
-    ports:
-      # host port : container port
-      # WireGuard port, needs to match the port in wg-portal interface config (add one port mapping for each interface)
-      - "51820:51820/udp" 
-      # Web UI port
-      - "8888:8888/tcp"
+      - SYS_MODULE
+      # - NET_RAW # ⚠️ Uncomment if using Podman
     sysctls:
+      - net.ipv4.ip_forward=1
       - net.ipv4.conf.all.src_valid_mark=1
-    volumes:
-      # host path : container path
-      - wireguard-data:/app/data
-      - wireguard-config:/app/config
-    deploy:
-      replicas: 1
-      placement:
-        constraints:
-          - node.hostname == rpi-2
-      labels:
-        - "traefik.enable=true"
-        - "traefik.swarm.network=diagon-alley"
-    
-        # Authelia web interface
-        - "traefik.http.routers.wireguard.rule=Host(`wireguard.hogwartsnetwork.co.uk`)"
-        - "traefik.http.routers.wireguard.entrypoints=websecure"
-        - "traefik.http.routers.wireguard.tls=true"
-        - "traefik.http.routers.wireguard.tls.certresolver=cloudflare"
-    
-        # Authelia listens on 9091
-        - "traefik.http.services.wireguard.loadbalancer.server.port=8888"
-      restart_policy:
-        condition: on-failure
+      - net.ipv6.conf.all.disable_ipv6=0
+      - net.ipv6.conf.all.forwarding=1
+      - net.ipv6.conf.default.forwarding=1
 
 volumes:
-    wireguard-data:
-        external: false
-        name: wireguard-data
-    
-    wireguard-config:
-        external: false
-        name: wireguard-config
+  etc_wireguard:
+
 
 networks:
-  diagon-alley:
-    external: true
+  wg:
+    driver: bridge
+    enable_ipv6: true
+    ipam:
+      driver: default
+      config:
+        - subnet: 10.42.42.0/24
+        - subnet: fdcc:ad94:bacf:61a3::/64
