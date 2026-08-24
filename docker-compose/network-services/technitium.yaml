@@ -1,23 +1,29 @@
 services:
   technitium:
-    image: technitium/dns-server:15.4.0
+    image: technitium/dns-server:latest
 
     hostname: technitium
 
     environment:
-      - DNS_SERVER_DOMAIN=dns.hogwartsnetwork.co.uk
-      - DNS_SERVER_LOG_USING_LOCAL_TIME=true
+      DNS_SERVER_DOMAIN: dns.hogwartsnetwork.co.uk
+      DNS_SERVER_LOG_USING_LOCAL_TIME: "true"
 
     volumes:
-      - /mnt/docker/technitium:/etc/dns
+      - technitium_config:/etc/dns
+
+    ports:
+      - target: 53
+        published: 53
+        protocol: tcp
+        mode: host
+
+      - target: 53
+        published: 53
+        protocol: udp
+        mode: host
 
     networks:
-      lan:
-        ipv4_address: 192.168.100.6
-
-      diagon-alley:
-        aliases:
-          - technitium
+      - diagon-alley
 
     deploy:
       replicas: 1
@@ -30,24 +36,17 @@ services:
         - "traefik.enable=true"
         - "traefik.docker.network=diagon-alley"
 
-        # Technitium Web UI
+        # HTTP router
         - "traefik.http.routers.technitium.rule=Host(`dns.hogwartsnetwork.co.uk`)"
         - "traefik.http.routers.technitium.entrypoints=websecure"
         - "traefik.http.routers.technitium.tls=true"
-        - "traefik.http.routers.technitium.service=technitium"
 
+        # Technitium web interface
         - "traefik.http.services.technitium.loadbalancer.server.port=5380"
 
 networks:
-
   diagon-alley:
     external: true
 
-  lan:
-    driver: macvlan
-    driver_opts:
-      parent: eth0
-
-    ipam:
-      config:
-        - subnet: 192.168.100.0/24
+volumes:
+  technitium_config:
