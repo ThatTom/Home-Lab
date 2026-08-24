@@ -1,0 +1,26 @@
+services:
+  wg-portal:
+    image: wgportal/wg-portal:v2
+    cap_add:
+      - NET_ADMIN
+    ports:
+      # host port : container port
+      # WireGuard port, needs to match the port in wg-portal interface config (add one port mapping for each interface)
+      - "51820:51820/udp" 
+      # Web UI port
+      - "8888:8888/tcp"
+    sysctls:
+      - net.ipv4.conf.all.src_valid_mark=1
+    volumes:
+      # host path : container path
+      - wireguard-data:/app/data
+      - wireguard-config:/app/config
+
+volumes:
+    wireguard-data:
+        external: false
+        name: wireguard-data
+    
+    wireguard-config:
+        external: false
+        name: wireguard-config
