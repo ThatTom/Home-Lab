@@ -24,7 +24,7 @@ services:
 
       placement:
         constraints:
-          - node.hostname == srv-01
+          - node.hostname == rpi-2
 
       labels:
         - "traefik.enable=true"
