@@ -8,20 +8,24 @@ services:
         # expose port and/or use serving via traefik
         networks:
           - diagon-alley
-        labels:
-            - "traefik.enable=true"
+        deploy:
+          replicas: 1
     
-            # Router
+          placement:
+            constraints:
+              - node.hostname == srv-01
+    
+          labels:
+            - "traefik.enable=true"
+            - "traefik.docker.network=diagon-alley"
+    
+            # HTTP router
             - "traefik.http.routers.lubelogger.rule=Host(`cars.hogwartsnetwork.co.uk`)"
             - "traefik.http.routers.lubelogger.entrypoints=websecure"
             - "traefik.http.routers.lubelogger.tls=true"
-            - "traefik.http.routers.lubelogger.tls.certresolver=cloudflare"
     
-            # Service
+            # Technitium web interface
             - "traefik.http.services.lubelogger.loadbalancer.server.port=8080"
-    
-            # Network
-            - "traefik.docker.network=diagon-alley"
     
 volumes:
     lubelogger-data:
