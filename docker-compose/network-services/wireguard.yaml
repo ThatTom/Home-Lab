@@ -10,6 +10,7 @@ services:
       wg:
         ipv4_address: 10.42.42.42
         ipv6_address: fdcc:ad94:bacf:61a3::2a
+      diagon-alley:
     volumes:
       - etc_wireguard:/etc/wireguard
       - /lib/modules:/lib/modules:ro
@@ -17,8 +18,6 @@ services:
       - "51820:51820/udp"
       - "51821:51821/tcp"
     restart: unless-stopped
-    networks:
-      - diagon-alley
     cap_add:
       - NET_ADMIN
       - SYS_MODULE
