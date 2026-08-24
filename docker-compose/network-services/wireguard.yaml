@@ -8,13 +8,32 @@ services:
       # WireGuard port, needs to match the port in wg-portal interface config (add one port mapping for each interface)
       - "51820:51820/udp" 
       # Web UI port
-      - "8888:8888/tcp"
+      # - "8888:8888/tcp"
     sysctls:
       - net.ipv4.conf.all.src_valid_mark=1
     volumes:
       # host path : container path
       - wireguard-data:/app/data
       - wireguard-config:/app/config
+    deploy:
+      replicas: 1
+      placement:
+        constraints:
+          - node.hostname == rpi-1
+      labels:
+        - "traefik.enable=true"
+        - "traefik.swarm.network=diagon-alley"
+    
+        # Authelia web interface
+        - "traefik.http.routers.wireguard.rule=Host(`wireguard.hogwartsnetwork.co.uk`)"
+        - "traefik.http.routers.wireguard.entrypoints=websecure"
+        - "traefik.http.routers.wireguard.tls=true"
+        - "traefik.http.routers.wireguard.tls.certresolver=cloudflare"
+    
+        # Authelia listens on 9091
+        - "traefik.http.services.wireguard.loadbalancer.server.port=8888"
+      restart_policy:
+        condition: on-failure
 
 volumes:
     wireguard-data:
@@ -24,3 +43,7 @@ volumes:
     wireguard-config:
         external: false
         name: wireguard-config
+
+networks:
+  diagon-alley:
+    external: true
