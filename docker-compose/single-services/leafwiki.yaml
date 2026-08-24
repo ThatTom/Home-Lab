@@ -1,0 +1,39 @@
+services:
+    leafwiki:
+        volumes:
+            - leafwiki:/data
+        networks:
+            - diagon-alley
+        environment:
+            LEAFWIKI_JWT_SECRET: ${LEAFWIKI_JWT_SECRET}your-secret
+            LEAFWIKI_ADMIN_PASSWORD: ${LEAFWIKI_ADMIN_PASSWORD}your-password
+            LEAFWIKI_ALLOW_INSECURE: ${LEAFWIKI_ALLOW_INSECURE} true
+        image: ghcr.io/perber/leafwiki:latest
+        deploy:
+            replicas: 1
+            placement:
+                constraints:
+                    - node.hostname == rpi-1
+            restart_policy:
+                condition: on-failure
+            labels:
+                - "traefik.enable=true"
+                - "traefik.swarm.network=diagon-alley"
+                
+                # Authelia web interface
+                - "traefik.http.routers.leafwiki.rule=Host(`wiki.hogwartsnetwork.co.uk`)"
+                - "traefik.http.routers.leafwiki.entrypoints=websecure"
+                - "traefik.http.routers.leafwiki.tls=true"
+                - "traefik.http.routers.leafwiki.tls.certresolver=cloudflare"
+                
+                # Authelia listens on 9091
+                - "traefik.http.services.leafwiki.loadbalancer.server.port=8080"
+
+volumes:
+  leafwiki:
+    external: false
+    name: leafwiki
+  
+networks:
+  diagon-alley:
+    external: true
