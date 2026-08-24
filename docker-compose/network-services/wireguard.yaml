@@ -17,6 +17,8 @@ services:
       - "51820:51820/udp"
       - "51821:51821/tcp"
     restart: unless-stopped
+    networks:
+      - diagon-alley
     cap_add:
       - NET_ADMIN
       - SYS_MODULE
@@ -27,6 +29,20 @@ services:
       - net.ipv6.conf.all.disable_ipv6=0
       - net.ipv6.conf.all.forwarding=1
       - net.ipv6.conf.default.forwarding=1
+    labels:
+        - "traefik.enable=true"
+
+        # Router
+        - "traefik.http.routers.wireguard.rule=Host(`wireguard.hogwartsnetwork.co.uk`)"
+        - "traefik.http.routers.wireguard.entrypoints=websecure"
+        - "traefik.http.routers.wireguard.tls=true"
+        - "traefik.http.routers.wireguard.tls.certresolver=cloudflare"
+
+        # Service
+        - "traefik.http.services.wireguard.loadbalancer.server.port=51821"
+
+        # Network
+        - "traefik.docker.network=diagon-alley"
 
 volumes:
   etc_wireguard:
@@ -40,3 +56,6 @@ networks:
       config:
         - subnet: 10.42.42.0/24
         - subnet: fdcc:ad94:bacf:61a3::/64
+
+  diagon-alley:
+    external: true
