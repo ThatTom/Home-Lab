@@ -1,6 +1,8 @@
 services:
   jellyfin:
     image: ghcr.io/jellyfin/jellyfin:10.11.11
+    ports:
+      - "8096:8096/tcp"
     volumes:
       # Uses the docker volumes configured in the volumes section below to persist Jellyfin configuration and cache data
       - jellyfin-config:/config
