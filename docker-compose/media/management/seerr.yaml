@@ -49,3 +49,7 @@ volumes:
 networks:
   diagon-alley:
     external: true
+
+  media:
+    driver: overlay
+    external: false
