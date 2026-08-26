@@ -8,7 +8,7 @@ services:
     environment:
       - "TZ=Europe/London"
       - "DIUN_WATCH_WORKERS=20"
-      - "DIUN_WATCH_SCHEDULE=0 */6 * * *"
+      - "DIUN_WATCH_SCHEDULE=*/30 * * * *"
       - "DIUN_WATCH_JITTER=30s"
       - "DIUN_PROVIDERS_DOCKER=true"
       - "DIUN_PROVIDERS_SWARM=true"
