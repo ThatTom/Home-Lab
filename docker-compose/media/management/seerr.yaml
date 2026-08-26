@@ -2,7 +2,8 @@ services:
   seerr:
     image: ghcr.io/seerr-team/seerr:v3.4.1
     init: true
-    container_name: seerr
+    ports:
+        - 5055:5055
     environment:
       - LOG_LEVEL=debug
       - TZ=Europe/London
