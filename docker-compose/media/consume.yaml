@@ -31,6 +31,8 @@ services:
       restart_policy:
         condition: on-failure
       labels:
+        # Enable DIUN monitoring    
+        - "diun.enable=true"
         # Enable Traefik
         - "traefik.enable=true"
         # Tell Traefik which network to use
