@@ -76,8 +76,7 @@ volumes:
 
 networks:
   media:
-    driver: overlay
-    external: false
+    external: true
 
   diagon-alley:
     external: true
