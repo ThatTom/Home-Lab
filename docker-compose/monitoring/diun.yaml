@@ -1,0 +1,34 @@
+services:
+  diun:
+    image: crazymax/diun:latest
+    command: serve
+    volumes:
+      - "diun-data:/data"
+      - "/var/run/docker.sock:/var/run/docker.sock"
+    environment:
+      - "TZ=Europe/London"
+      - "DIUN_WATCH_WORKERS=20"
+      - "DIUN_WATCH_SCHEDULE=0 */6 * * *"
+      - "DIUN_WATCH_JITTER=30s"
+      - "DIUN_PROVIDERS_DOCKER=true"
+      - "DIUN_PROVIDERS_SWARM=true"
+    healthcheck:
+      test: ["CMD", "diun", "healthcheck"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+      start_period: 60s
+    labels:
+      - "diun.enable=true"
+    deploy:
+      replicas: 1
+      placement:
+        constraints:
+          - node.hostname == rpi-1
+      labels:
+          - "diun.enable=true"
+
+volumes:
+  diun-data:
+    external: false
+    name: diun-data
