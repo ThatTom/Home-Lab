@@ -50,8 +50,6 @@ volumes:
 
 networks:
   media:
-    driver: overlay
-    # attachable: true
     external: true
 
   diagon-alley:
