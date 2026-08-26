@@ -33,13 +33,13 @@ services:
         # Tell Traefik which network to use
         - "traefik.swarm.network=diagon-alley"
         # HTTP router
-        - "traefik.http.routers.jellyfin.rule=Host(`seerr.hogwartsnetwork.co.uk`)"
-        - "traefik.http.routers.jellyfin.entrypoints=websecure"
+        - "traefik.http.routers.seerr.rule=Host(`seerr.hogwartsnetwork.co.uk`)"
+        - "traefik.http.routers.seerr.entrypoints=websecure"
         # HTTPS
-        - "traefik.http.routers.jellyfin.tls=true"
-        - "traefik.http.routers.jellyfin.tls.certresolver=cloudflare"
+        - "traefik.http.routers.seerr.tls=true"
+        - "traefik.http.routers.seerr.tls.certresolver=cloudflare"
         # Paperless internal port
-        - "traefik.http.services.jellyfin.loadbalancer.server.port=5055"
+        - "traefik.http.services.seerr.loadbalancer.server.port=5055"
 
 volumes:
   seerr-config:
