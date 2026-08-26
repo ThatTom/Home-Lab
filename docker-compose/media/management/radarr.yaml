@@ -28,13 +28,13 @@ services:
         # Tell Traefik which network to use
         - "traefik.swarm.network=diagon-alley"
         # HTTP router
-        - "traefik.http.routers.jellyfin.rule=Host(`radarr.hogwartsnetwork.co.uk`)"
-        - "traefik.http.routers.jellyfin.entrypoints=websecure"
+        - "traefik.http.routers.radarr.rule=Host(`radarr.hogwartsnetwork.co.uk`)"
+        - "traefik.http.routers.radarr.entrypoints=websecure"
         # HTTPS
-        - "traefik.http.routers.jellyfin.tls=true"
-        - "traefik.http.routers.jellyfin.tls.certresolver=cloudflare"
+        - "traefik.http.routers.radarr.tls=true"
+        - "traefik.http.routers.radarr.tls.certresolver=cloudflare"
         # Paperless internal port
-        - "traefik.http.services.jellyfin.loadbalancer.server.port=7878"
+        - "traefik.http.services.radarr.loadbalancer.server.port=7878"
     
 volumes:
   radarr-config:
