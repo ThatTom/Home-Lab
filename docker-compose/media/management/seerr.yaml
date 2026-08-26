@@ -52,4 +52,5 @@ networks:
 
   media:
     driver: overlay
+    attachable: true
     external: false
