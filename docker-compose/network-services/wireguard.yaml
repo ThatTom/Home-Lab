@@ -3,18 +3,17 @@ services:
     image: ghcr.io/wgdashboard/wgdashboard:latest
     restart: unless-stopped
     container_name: wgdashboard
-
     ports:
       - 10086:10086/tcp
       - 51820:51820/udp
-
     volumes:
       - aconf:/etc/amnezia/amneziawg
       - conf:/etc/wireguard
       - data:/data
-
     cap_add:
       - NET_ADMIN
+    labels:
+      - "diun.enable=true"
 
 volumes:
   aconf:
