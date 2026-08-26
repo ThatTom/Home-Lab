@@ -1,6 +1,5 @@
 services:
   radarr:
-    container_name: radarr
     image: ghcr.io/hotio/radarr:release-6.3.0.10514
     environment:
       - PUID=0
