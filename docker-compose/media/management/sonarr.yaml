@@ -1,0 +1,55 @@
+services:
+    sonarr:
+        image: ghcr.io/hotio/sonarr:release-4.0.19.2979
+        environment:
+          - PUID=0
+          - PGID=0
+          - UMASK=002
+          - TZ=Europe/London
+          - WEBUI_PORTS=8989/tcp 
+        volumes:
+          - sonarr-config:/config
+          - shows:/shows
+        networks:
+          - media
+        deploy:
+          replicas: 1
+          placement:
+            constraints:
+              - node.labels.media == yes
+          restart_policy:
+            condition: on-failure
+          labels:
+            # Enable DIUN monitoring    
+            - "diun.enable=true"
+            # Enable Traefik
+            - "traefik.enable=true"
+            # Tell Traefik which network to use
+            - "traefik.swarm.network=diagon-alley"
+            # HTTP router
+            - "traefik.http.routers.sonarr.rule=Host(`sonarr.hogwartsnetwork.co.uk`)"
+            - "traefik.http.routers.sonarr.entrypoints=websecure"
+            # HTTPS
+            - "traefik.http.routers.sonarr.tls=true"
+            - "traefik.http.routers.sonarr.tls.certresolver=cloudflare"
+            # Paperless internal port
+            - "traefik.http.services.sonarr.loadbalancer.server.port=8989"
+
+volumes:
+    sonarr-config:
+        external: false
+        name: sonarr-config
+
+    shows:
+    driver: local
+    driver_opts:
+      type: none
+      device: /mnt/shows
+      o: bind
+
+networks:
+  media:
+    external: true
+
+  diagon-alley:
+    external: true
