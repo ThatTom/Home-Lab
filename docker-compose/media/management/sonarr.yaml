@@ -12,6 +12,7 @@ services:
           - shows:/shows
         networks:
           - media
+          - diagon-alley
         deploy:
           replicas: 1
           placement:
