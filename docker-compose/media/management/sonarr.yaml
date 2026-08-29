@@ -39,13 +39,13 @@ volumes:
     sonarr-config:
         external: false
         name: sonarr-config
-
+    
     shows:
-    driver: local
-    driver_opts:
-      type: none
-      device: /mnt/shows
-      o: bind
+        driver: local
+        driver_opts:
+            type: none
+            device: /mnt/shows
+            o: bind
 
 networks:
   media:
