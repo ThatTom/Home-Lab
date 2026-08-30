@@ -1,11 +1,9 @@
 services:
   spindle:
     image: ghcr.io/thattom/spindle:latest
-    container_name: spindle
-    restart: unless-stopped
     networks:
-      - internal        # same network as sonarr/radarr — never exposed externally
-      - traefik-public  # only network traefik touches
+      - media        # same network as sonarr/radarr — never exposed externally
+      - diagon-alley  # only network traefik touches
     volumes:
       - spindle-image-cache:/app/cache/images
     environment:
