@@ -47,13 +47,13 @@ services:
         # Tell Traefik which network to use
         - "traefik.swarm.network=diagon-alley"
         # HTTP router
-        - "traefik.http.routers.radarr.rule=Host(`spindle.hogwartsnetwork.co.uk`)"
-        - "traefik.http.routers.radarr.entrypoints=websecure"
+        - "traefik.http.routers.spindle.rule=Host(`spindle.hogwartsnetwork.co.uk`)"
+        - "traefik.http.routers.spindle.entrypoints=websecure"
         # HTTPS
-        - "traefik.http.routers.radarr.tls=true"
-        - "traefik.http.routers.radarr.tls.certresolver=cloudflare"
+        - "traefik.http.routers.spindle.tls=true"
+        - "traefik.http.routers.spindle.tls.certresolver=cloudflare"
         # Paperless internal port
-        - "traefik.http.services.radarr.loadbalancer.server.port=3000"
+        - "traefik.http.services.spindle.loadbalancer.server.port=3000"
 
 networks:
   media:
