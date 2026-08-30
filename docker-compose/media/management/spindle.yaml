@@ -1,0 +1,68 @@
+services:
+  spindle:
+    image: ghcr.io/thattom/spindle:latest
+    container_name: spindle
+    restart: unless-stopped
+    networks:
+      - internal        # same network as sonarr/radarr — never exposed externally
+      - traefik-public  # only network traefik touches
+    volumes:
+      - spindle-image-cache:/app/cache/images
+    environment:
+      - SONARR_URL=http://sonarr:8989
+      - SONARR_API_KEY=${SONARR_API_KEY}
+      - RADARR_URL=http://radarr:7878
+      - RADARR_API_KEY=${RADARR_API_KEY}
+      # Optional: pin a specific root folder / quality profile for wishlist
+      # adds. If unset, Spindle just uses whichever Sonarr/Radarr report first.
+      - SONARR_ROOT_FOLDER=${SONARR_ROOT_FOLDER:-}
+      - SONARR_QUALITY_PROFILE_ID=${SONARR_QUALITY_PROFILE_ID:-}
+      - RADARR_ROOT_FOLDER=${RADARR_ROOT_FOLDER:-}
+      - RADARR_QUALITY_PROFILE_ID=${RADARR_QUALITY_PROFILE_ID:-}
+      # Optional — how often (seconds) the frontend auto-refreshes from
+      # Radarr/Sonarr while open. 0 disables it. Default 60 if unset.
+      - SYNC_INTERVAL_SECONDS=${SYNC_INTERVAL_SECONDS:-60}
+      - LIBRARY_CACHE_TTL_MS=${LIBRARY_CACHE_TTL_MS:-90000}
+      # Optional — barcode scanning works without this (UPCitemdb's free
+      # trial tier), set it to switch to their paid endpoint if needed.
+      - UPCITEMDB_API_KEY=${UPCITEMDB_API_KEY:-}
+      # Optional — enables the "People" (cast/crew) section. Requires a
+      # free TMDB account; without it, People just shows "not configured".
+      - TMDB_API_KEY=${TMDB_API_KEY:-}
+      # Optional — set to require a login (see .env.example). Unset means
+      # no auth at all; requests from a private/local network address skip
+      # the login screen unless AUTH_TRUST_LOCAL_NETWORK is set to false.
+      - AUTH_PASSWORD=${AUTH_PASSWORD:-}
+      - AUTH_TRUST_LOCAL_NETWORK=${AUTH_TRUST_LOCAL_NETWORK:-}
+    deploy:
+      replicas: 1
+      placement:
+        constraints:
+          - node.labels.media == yes
+      restart_policy:
+        condition: on-failure
+      labels:
+        # Enable DIUN monitoring    
+        - "diun.enable=true"
+        # Enable Traefik
+        - "traefik.enable=true"
+        # Tell Traefik which network to use
+        - "traefik.swarm.network=diagon-alley"
+        # HTTP router
+        - "traefik.http.routers.radarr.rule=Host(`spindle.hogwartsnetwork.co.uk`)"
+        - "traefik.http.routers.radarr.entrypoints=websecure"
+        # HTTPS
+        - "traefik.http.routers.radarr.tls=true"
+        - "traefik.http.routers.radarr.tls.certresolver=cloudflare"
+        # Paperless internal port
+        - "traefik.http.services.radarr.loadbalancer.server.port=3000"
+
+networks:
+  media:
+    external: true
+  
+  diagon-alley:
+    external: true
+
+volumes:
+  spindle-image-cache:
