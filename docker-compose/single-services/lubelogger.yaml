@@ -16,6 +16,8 @@ services:
               - node.hostname == srv-01
     
           labels:
+            - "diun.enable=true"
+
             - "traefik.enable=true"
             - "traefik.docker.network=diagon-alley"
     
