@@ -14,6 +14,8 @@ services:
     networks:
       - diagon-alley
     labels:
+        - "diun.enable=true"
+        
         - "traefik.enable=true"
 
         # Router
