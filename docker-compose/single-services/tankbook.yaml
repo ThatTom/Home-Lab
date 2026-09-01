@@ -48,6 +48,8 @@ services:
       restart_policy:
         condition: on-failure
       labels:
+        - "diun.enable=true"
+
         #Enable Traefik
         - "traefik.enable=true"
         
