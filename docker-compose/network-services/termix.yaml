@@ -1,6 +1,7 @@
 services:
   termix:
-    image: ghcr.io/lukegus/termix:beta-2.7.1-beta.20260822
+    image: ghcr.io/lukegus/termix:beta-2.7.1-beta.
+    restart: unless-stopped
     environment:
       - TZ=Europe/London
     volumes:
