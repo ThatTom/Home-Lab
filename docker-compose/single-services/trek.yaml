@@ -42,6 +42,8 @@ services:
           constraints:
             - node.hostname == srv-01
         labels:
+          - "diun.enable=true"
+
           # Enable Traefik
           - "traefik.enable=true"
           # Tell Traefik which network to use
