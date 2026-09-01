@@ -78,6 +78,8 @@ services:
         networks:
           - diagon-alley
         labels:
+            - "diun.enable=true"
+            
             # Enable Traefik
             - "traefik.enable=true"
             # Tell Traefik which network to use
