@@ -13,6 +13,8 @@ services:
         constraints:
           - node.labels.ai == yes
       labels:
+        - "diun.enable=true"
+        
         - "traefik.enable=true"
         - "traefik.docker.network=diagon-alley"
       
