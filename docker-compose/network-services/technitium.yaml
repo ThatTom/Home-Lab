@@ -33,6 +33,8 @@ services:
           - node.hostname == rpi-2
 
       labels:
+        - "diun.enable=true"
+        
         - "traefik.enable=true"
         - "traefik.docker.network=diagon-alley"
 
