@@ -17,6 +17,8 @@ services:
             restart_policy:
                 condition: on-failure
             labels:
+                - "diun.enable=true"
+
                 - "traefik.enable=true"
                 - "traefik.swarm.network=diagon-alley"
                 
