@@ -21,6 +21,8 @@ services:
             constraints:
               - node.hostname == rpi-1
           labels:
+            - "diun.enable=true"
+
             - "traefik.enable=true"
             - "traefik.swarm.network=diagon-alley"
     
