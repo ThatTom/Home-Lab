@@ -28,7 +28,7 @@ services:
         condition: on-failure
       placement:
         constraints:
-          - node.hostname == srv-01
+          - node.hostname == rpi-1
 
       labels:
         - "diun.enable=true"
