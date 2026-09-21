@@ -17,6 +17,7 @@ services:
 
     volumes:
       - rackpad_data:/data
+      - /var/run/docker.sock:/var/run/docker.sock
 
     networks:
       - diagon-alley
