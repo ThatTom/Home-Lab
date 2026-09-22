@@ -1,17 +1,21 @@
 services:
   ntfy:
     image: binwiederhier/ntfy
-    command:
-      - serve
+    command: serve
     environment:
-      - TZ=Europe/London    # optional: set desired timezone
+      NTFY_BASE_URL: "https://ntfy.hogwartsnetwork.co.uk"
+      NTFY_BEHIND_PROXY: "true"
+      NTFY_AUTH_FILE: "/var/lib/ntfy/auth.db"
+      NTFY_ENABLE_LOGIN: "true"
+      NTFY_CACHE_FILE: "/var/cache/ntfy/cache.db"
+      NTFY_UPSTREAM_BASE_URL: "https://ntfy.hogwartsnetwork.co.uk"
+      TZ: "Europe/London"
     volumes:
+      - ntfy-lib:/var/lib/ntfy
       - ntfy-cache:/var/cache/ntfy
       - ntfy-etc:/etc/ntfy
     networks:
       - diagon-alley
-    #ports:
-    #  - 80:80
     healthcheck: # optional: remember to adapt the host:port to your environment
         test: ["CMD-SHELL", "wget -q --tries=1 http://localhost:80/v1/health -O - | grep -Eo '\"healthy\"\\s*:\\s*true' || exit 1"]
         interval: 60s
@@ -42,6 +46,10 @@ services:
             condition: on-failure
 
 volumes:
+  ntfy-lib:
+    external: false
+    name: ntfy-lib
+    
   ntfy-cache:
     external: false
     name: ntfy-cache
