@@ -1,6 +1,6 @@
 services:
     authelia:
-        image: authelia/authelia:latest
+        image: authelia/authelia:4.39
         networks:
           - diagon-alley
         volumes:
@@ -25,23 +25,69 @@ services:
 
             - "traefik.enable=true"
             - "traefik.swarm.network=diagon-alley"
-    
+
             # Authelia web interface
             - "traefik.http.routers.authelia.rule=Host(`auth.hogwartsnetwork.co.uk`)"
             - "traefik.http.routers.authelia.entrypoints=websecure"
             - "traefik.http.routers.authelia.tls=true"
             - "traefik.http.routers.authelia.tls.certresolver=cloudflare"
-    
+
             # Authelia listens on 9091
             - "traefik.http.services.authelia.loadbalancer.server.port=9091"
-    
+
             # ForwardAuth middleware
             - "traefik.http.middlewares.authelia.forwardauth.address=http://authelia:9091/api/authz/forward-auth"
             - "traefik.http.middlewares.authelia.forwardauth.trustForwardHeader=true"
             - "traefik.http.middlewares.authelia.forwardauth.authResponseHeaders=Remote-User,Remote-Groups,Remote-Email,Remote-Name"
-    
+
+          # Swarm ignores depends_on. Authelia exits if LDAP is unreachable
+          # at startup, so keep retrying until lldap is healthy.
           restart_policy:
             condition: on-failure
+            delay: 10s
+            max_attempts: 0   # unlimited
+            window: 60s
+
+    lldap:
+        image: lldap/lldap:stable
+        networks:
+          - diagon-alley
+        volumes:
+          - lldap:/data
+        environment:
+          TZ: Europe/London
+          LLDAP_JWT_SECRET: ${LLDAP_JWT_SECRET}
+          LLDAP_KEY_SEED: ${LLDAP_KEY_SEED}
+          LLDAP_LDAP_BASE_DN: ${LLDAP_LDAP_BASE_DN}
+          LLDAP_LDAP_USER_PASS: ${LLDAP_LDAP_USER_PASS}
+        healthcheck:
+          test: ["CMD", "/app/lldap", "healthcheck", "--config-file", "/data/lldap_config.toml"]
+          interval: 30s
+          timeout: 5s
+          retries: 3
+          start_period: 20s
+        deploy:
+          replicas: 1
+          placement:
+            constraints:
+              - node.hostname == rpi-1
+          labels:
+            - "diun.enable=true"
+
+            - "traefik.enable=true"
+            - "traefik.swarm.network=diagon-alley"
+
+            # LLDAP web interface
+            - "traefik.http.routers.lldap.rule=Host(`lldap.hogwartsnetwork.co.uk`)"
+            - "traefik.http.routers.lldap.entrypoints=websecure"
+            - "traefik.http.routers.lldap.tls=true"
+            - "traefik.http.routers.lldap.tls.certresolver=cloudflare"
+
+            # LLDAP web UI listens on 17170
+            - "traefik.http.services.lldap.loadbalancer.server.port=17170"
+          restart_policy:
+            condition: on-failure
+            delay: 5s
 
 networks:
   diagon-alley:
@@ -50,9 +96,11 @@ networks:
 secrets:
   authelia_session_secret:
     external: true
-
   authelia_storage_encryption_key:
     external: true
-
   authelia_jwt_secret:
     external: true
+
+volumes:
+  lldap:
+    name: lldap
