@@ -4,6 +4,8 @@ services:
     environment:
       - WUD_AUTH_ADMIN_USER=${WUD_AUTH_ADMIN_USER}
       - WUD_AUTH_ADMIN_PASSWORD=${WUD_AUTH_ADMIN_PASSWORD}
+      - WUD_WATCHER_SWARM_LOCAL_SOCKET=/var/run/docker.sock
+      - WUD_WATCHER_SWARM_LOCAL_CRON=0 2 * * *
     networks:
       - diagon-alley
     volumes:
