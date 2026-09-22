@@ -7,8 +7,8 @@ services:
       - TZ=Europe/London    # optional: set desired timezone
     user: UID:GID # optional: replace with your own user/group or uid/gid
     volumes:
-      - /var/cache/ntfy:/var/cache/ntfy
-      - /etc/ntfy:/etc/ntfy
+      - ntfy-cache:/var/cache/ntfy
+      - ntfy-etc:/etc/ntfy
     networks:
       - diagon-alley
     #ports:
@@ -41,6 +41,15 @@ services:
             - "traefik.http.services.ntfy.loadbalancer.server.port=80"
         restart_policy:
             condition: on-failure
+
+volumes:
+  ntfy-cache:
+    external: false
+    name: ntfy-cache
+
+  ntfy-etc:
+    external: false
+    name: ntfy-etc
 
 networks:
   diagon-alley:
