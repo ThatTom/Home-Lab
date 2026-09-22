@@ -6,6 +6,9 @@ services:
       - WUD_AUTH_ADMIN_PASSWORD=${WUD_AUTH_ADMIN_PASSWORD}
       - WUD_WATCHER_SWARM_LOCAL_SOCKET=/var/run/docker.sock
       - WUD_WATCHER_SWARM_LOCAL_CRON=0 2 * * *
+      - WUD_TRIGGER_NTFY_LOCAL_URL=https://ntfy.hogwartsnetwork.co.uk
+      - WUD_TRIGGER_NTFY_LOCAL_TOPIC=wud
+      - WUD_TRIGGER_NTFY_LOCAL_AUTH_TOKEN=${WUD_TRIGGER_NTFY_LOCAL_AUTH_TOKEN}
     networks:
       - diagon-alley
     volumes:
