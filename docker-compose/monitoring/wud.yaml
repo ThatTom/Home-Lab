@@ -2,8 +2,8 @@ services:
   whatsupdocker:
     image: getwud/wud:latest
     environment:
-      - WUD_AUTH_ADMIN_USER=admin
-      - WUD_AUTH_ADMIN_PASSWORD=MySecurePassword123
+      - WUD_AUTH_ADMIN_USER=${WUD_AUTH_ADMIN_USER}
+      - WUD_AUTH_ADMIN_PASSWORD=${WUD_AUTH_ADMIN_PASSWORD}
     networks:
       - diagon-alley
     volumes:
