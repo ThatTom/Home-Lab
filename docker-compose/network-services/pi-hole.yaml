@@ -26,7 +26,14 @@ services:
       # Optional, if Pi-hole should get some more processing time
       - SYS_NICE
     restart: unless-stopped
+    networks:
+      docker_single_services:
+        ipv4_address: 192.168.100.210  # Must be unique and within the macvlan subnet
 
 volumes:
   data:
     name: data
+
+networks:
+  docker_single_services:
+    external: true  # Tells Docker to use the pre-existing network
