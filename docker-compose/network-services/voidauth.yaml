@@ -1,0 +1,52 @@
+services:
+    voidauth: 
+        image: voidauth/voidauth:latest
+        volumes:
+            - voidauth-config:/app/config
+            - voidauth-db:/app/db
+        networks:
+          - diagon-alley
+        # Only required for declaring OIDC Apps via docker labels (see OIDC-Setup documentation)
+        # - /var/run/docker.sock:/var/run/docker.sock:ro
+        #ports:
+            # - "3000:3000" # may not be needed, depending on reverse-proxy setup
+            # - "3890:3890" # only needed if LDAP Server is enabled
+        environment:
+        # Required environment variables
+        # See https://voidauth.app/#/Getting-Started?id=environment-variables for a list of possible environment variables
+            APP_URL: https://auth.hogwartsnetwork.co.uk # required, ex. https://auth.example.com
+            STORAGE_KEY: ${STORAGE_KEY} # required
+            DB_ADAPTER: sqlite
+        deploy:
+          replicas: 1
+          placement:
+            constraints:
+              - node.hostname == rpi-1
+          labels:
+            - "diun.enable=true"
+
+            - "traefik.enable=true"
+            - "traefik.swarm.network=diagon-alley"
+
+            # LLDAP web interface
+            - "traefik.http.routers.voidauth.rule=Host(`auth.hogwartsnetwork.co.uk`)"
+            - "traefik.http.routers.voidauth.entrypoints=websecure"
+            - "traefik.http.routers.voidauth.tls=true"
+            - "traefik.http.routers.voidauth.tls.certresolver=cloudflare"
+
+            # LLDAP web UI listens on 17170
+            - "traefik.http.services.voidauth.loadbalancer.server.port=3000"
+          restart_policy:
+            condition: on-failure
+            delay: 5s
+
+networks:
+    diagon-alley:
+        external: true
+
+volumes:
+    voidauth-config:
+        name: voidauth-config
+
+    voidauth-db:
+        name: voidauth-db
