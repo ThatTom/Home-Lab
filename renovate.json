@@ -4,7 +4,7 @@
   "enabledManagers": ["docker-compose"],
   "timezone": "Europe/London",
   "docker-compose": {
-      "managerFilePatterns": ["/(^|/)stack\\.ya?ml$/"]
+    "managerFilePatterns": ["/^docker-compose/.+\\.ya?ml$/"]
   },
 
   "minimumReleaseAge": "7 days",
@@ -15,6 +15,11 @@
   "labels": ["renovate"],
 
   "packageRules": [
+    {
+      "matchDatasources": ["docker"],
+      "matchPackageNames": ["ghcr.io/**"],
+      "minimumReleaseAgeBehaviour": "timestamp-optional"
+    },
     {
       "matchUpdateTypes": ["major"],
       "labels": ["renovate", "major"],
