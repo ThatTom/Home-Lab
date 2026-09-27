@@ -1,0 +1,28 @@
+{
+  "$schema": "https://docs.renovatebot.com/renovate-schema.json",
+  "extends": ["config:recommended"],
+  "enabledManagers": ["docker-compose"],
+  "timezone": "Europe/London",
+  "docker-compose": {
+      "managerFilePatterns": ["/(^|/)stack\\.ya?ml$/"]
+  },
+
+  "minimumReleaseAge": "7 days",
+  "internalChecksFilter": "strict",
+
+  "prHourlyLimit": 0,
+  "prConcurrentLimit": 10,
+  "labels": ["renovate"],
+
+  "packageRules": [
+    {
+      "matchUpdateTypes": ["major"],
+      "labels": ["renovate", "major"],
+      "dependencyDashboardApproval": true
+    },
+    {
+      "matchPackageNames": ["ghcr.io/immich-app/**", "vaultwarden/server"],
+      "labels": ["renovate", "careful"]
+    }
+  ]
+}
