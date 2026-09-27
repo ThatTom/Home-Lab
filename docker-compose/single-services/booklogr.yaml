@@ -56,7 +56,7 @@ services:
         - "traefik.http.services.booklogr-api.loadbalancer.server.port=5000"
 
   booklogr-web:
-    image: mozzo/booklogr-web:v1.11.1
+    image: mozzo/booklogr-web:v1.12.0
 
     environment:
       # Browser-accessible API endpoint
