@@ -14,7 +14,7 @@ services:
         condition: on-failure
         
   webserver:
-    image: ghcr.io/paperless-ngx/paperless-ngx:3.0.5
+    image: ghcr.io/paperless-ngx/paperless-ngx:3.2.1
     depends_on:
       - broker
       - gotenberg
