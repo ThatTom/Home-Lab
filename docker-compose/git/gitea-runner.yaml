@@ -8,6 +8,6 @@ services:
       GITEA_RUNNER_NAME: srv-01
       CONFIG_FILE: /config.yaml
     volumes:
-      - /opt/gitea-runner/config.yaml:/config.yaml
-      - /opt/gitea-runner/data:/data
-      - /var/run/docker.sock:/var/run/docker.sock
+        - /opt/act_runner/config.yaml:/config.yaml
+        - /opt/act_runner/data:/data
+        - /var/run/docker.sock:/var/run/docker.sock
