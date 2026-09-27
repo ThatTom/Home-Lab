@@ -1,7 +1,7 @@
 services:
 
   booklogr-api:
-    image: mozzo/booklogr:v1.11.1
+    image: mozzo/booklogr:v1.12.0
 
     environment:
       DATABASE_URL: sqlite:///books.db
