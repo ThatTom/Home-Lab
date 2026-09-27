@@ -3,7 +3,7 @@ services:
     image: gitea/runner:4.0.0
     restart: unless-stopped
     environment:
-      GITEA_INSTANCE_URL: https://gitea.hogwartsnetwork.co.uk
+      GITEA_INSTANCE_URL: https://git.hogwartsnetwork.co.uk
       GITEA_RUNNER_REGISTRATION_TOKEN: ${RUNNER_TOKEN}
       GITEA_RUNNER_NAME: srv-01
       CONFIG_FILE: /config.yaml
