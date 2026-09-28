@@ -26,6 +26,11 @@ services:
         - "traefik.http.routers.gitea.tls.certresolver=cloudflare"
         # Paperless internal port
         - "traefik.http.services.gitea.loadbalancer.server.port=3000"
+        # SSH TCP Router
+        - "traefik.tcp.routers.gitea-ssh.entrypoints=gitea_ssh"
+        - "traefik.tcp.routers.gitea-ssh.rule=HostSNI(`*`)"
+        - "traefik.tcp.routers.gitea-ssh.service=gitea-ssh-svc"
+        - "traefik.tcp.services.gitea-ssh-svc.loadbalancer.server.port=22"
       restart_policy:
         condition: on-failure
 
