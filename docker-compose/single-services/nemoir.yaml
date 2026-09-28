@@ -10,9 +10,7 @@ services:
       - nemoir-data:/data
     networks:
       - diagon-alley
-    env_file:
-      - path: .env
-        required: false
+    env_file: .env
     deploy:
       replicas: 1
       placement:
