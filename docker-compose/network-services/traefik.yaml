@@ -25,6 +25,7 @@ services:
         # EntryPoints
         - "--entrypoints.web.address=:80"
         - "--entrypoints.websecure.address=:443"
+        - "--entrypoints.gitea_ssh.address=:2222"
     
         # HTTP -> HTTPS
         - "--entrypoints.web.http.redirections.entrypoint.to=websecure"
