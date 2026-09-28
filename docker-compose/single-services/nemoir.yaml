@@ -1,0 +1,23 @@
+services:
+  nemoir:
+    # Built and pushed by .gitea/workflows/docker-build.yml. Pin to a version
+    # (e.g. :1.2.0) or commit (e.g. :sha-abc1234) instead of :latest if preferred.
+    image: git.hogwartsnetwork.co.uk/thatt0m/nemoir:latest
+    pull_policy: always
+    container_name: nemoir
+    restart: unless-stopped
+    ports:
+      - "3000:3000"
+    env_file:
+      - path: .env
+        required: false
+    volumes:
+      # SQLite database + cached cover images live here - back this up.
+      # To use a host folder instead (e.g. ./data:/data), make it writable by
+      # the container user first: sudo chown -R 1000:1000 ./data
+      - nemoir-data:/data
+
+volumes:
+  nemoir-data:
+    # Fixed name so the data doesn't depend on the folder the repo is cloned into.
+    name: nemoir-data
