@@ -3,11 +3,6 @@ services:
     # Built and pushed by .gitea/workflows/docker-build.yml. Pin to a version
     # (e.g. :1.2.0) or commit (e.g. :sha-abc1234) instead of :latest if preferred.
     image: git.hogwartsnetwork.co.uk/thatt0m/nemoir:latest
-    pull_policy: always
-    container_name: nemoir
-    restart: unless-stopped
-    ports:
-      - "3000:3000"
     env_file:
       - path: .env
         required: false
@@ -16,8 +11,31 @@ services:
       # To use a host folder instead (e.g. ./data:/data), make it writable by
       # the container user first: sudo chown -R 1000:1000 ./data
       - nemoir-data:/data
+    networks:
+      - diagon-alley
+    deploy:
+      replicas: 1
+      placement:
+        constraints:
+          - node.hostname == rpi-2
+
+      labels:
+        - "traefik.enable=true"
+        - "traefik.docker.network=diagon-alley"
+      
+        - "traefik.http.routers.nemoir.rule=Host(`books.hogwartsnetwork.co.uk`)"
+        - "traefik.http.routers.nemoir.entrypoints=websecure"
+        - "traefik.http.routers.nemoir.tls=true"
+        - "traefik.http.routers.nemoir.tls.certresolver=cloudflare"
+      
+        - "traefik.http.routers.nemoir.service=booklogr"
+        - "traefik.http.services.nemoir.loadbalancer.server.port=3000"
 
 volumes:
   nemoir-data:
     # Fixed name so the data doesn't depend on the folder the repo is cloned into.
     name: nemoir-data
+
+networks:
+  diagon-alley:
+    external: true
