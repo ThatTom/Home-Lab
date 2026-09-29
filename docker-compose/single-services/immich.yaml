@@ -1,6 +1,6 @@
 services:
   immich-server:
-    image: ghcr.io/immich-app/immich-server:v3.2.2
+    image: ghcr.io/immich-app/immich-server:v3.2.4
     volumes:
       - libary:/data
       - /etc/localtime:/etc/localtime:ro
