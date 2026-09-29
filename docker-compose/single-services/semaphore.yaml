@@ -7,6 +7,20 @@ services:
             SEMAPHORE_ADMIN_PASSWORD: ${SEMAPHORE_ADMIN_PASSWORD}
             SEMAPHORE_ADMIN_NAME: ${SEMAPHORE_ADMIN_NAME}
             SEMAPHORE_ADMIN_EMAIL: ${SEMAPHORE_ADMIN_EMAIL}
+            SEMAPHORE_OIDC_PROVIDERS: |
+              {
+                "voidauth": {
+                  "display_name": "Hogwarts SSO",
+                  "provider_url": "${SEMAPHORE_OIDC_ISSUER}",
+                  "client_id": "${SEMAPHORE_OIDC_CLIENT_ID}",
+                  "client_secret": "${SEMAPHORE_OIDC_CLIENT_SECRET}",
+                  "redirect_url": "https://semaphore.hogwartsnetwork.co.uk/api/auth/oidc/voidauth/redirect",
+                  "scopes": ["openid", "profile", "email"],
+                  "username_claim": "preferred_username",
+                  "email_claim": "email",
+                  "name_claim": "name"
+                }
+              }
         volumes:
             - semaphore_data:/var/lib/semaphore
             - semaphore_config:/etc/semaphore
