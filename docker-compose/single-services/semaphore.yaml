@@ -1,0 +1,38 @@
+services:
+    semaphore:
+        image: semaphoreui/semaphore:v2.19.12
+        environment:
+            SEMAPHORE_DB_DIALECT: sqlite
+            SEMAPHORE_ADMIN: ${SEMAPHORE_ADMIN}
+            SEMAPHORE_ADMIN_PASSWORD: ${SEMAPHORE_ADMIN_PASSWORD}
+            SEMAPHORE_ADMIN_NAME: ${SEMAPHORE_ADMIN_NAME}
+            SEMAPHORE_ADMIN_EMAIL: ${SEMAPHORE_ADMIN_EMAIL}
+        volumes:
+            - semaphore_data:/var/lib/semaphore
+            - semaphore_config:/etc/semaphore
+            - semaphore_tmp:/tmp/semaphore
+        networks:
+            - diagon-alley
+        deploy:
+          replicas: 1
+          placement:
+            constraints:
+              - node.hostname == srv-02
+          labels:
+            - "diun.enable=true"
+            
+            - "traefik.enable=true"
+            - "traefik.docker.network=diagon-alley"
+            - "traefik.http.routers.semaphore.rule=Host(`semaphore.hogwartsnetwork.co.uk`)"
+            - "traefik.http.routers.semaphore.entrypoints=websecure"
+            - "traefik.http.routers.semaphore.tls=true"
+            - "traefik.http.routers.semaphore.tls.certresolver=cloudflare"
+            - "traefik.http.services.semaphore-api.loadbalancer.server.port=3000"
+volumes:
+    semaphore_data:
+    semaphore_config:
+    semaphore_tmp:
+
+networks:
+  diagon-alley:
+    external: true
