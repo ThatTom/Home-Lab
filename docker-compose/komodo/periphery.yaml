@@ -1,73 +1,44 @@
+###############################################
+# 🦎 KOMODO PERIPHERY - SWARM STACK (GLOBAL) #
+###############################################
+## One Periphery per node, outbound mode (Periphery dials Core).
+##
+## Deploy from a manager, after the komodo stack is up:
+##   cd ~/komodo
+##   set -a; . ./periphery.env; set +a
+##   docker stack deploy -c periphery-stack.yml komodo-periphery --detach=false
+
 services:
   periphery:
-    image: ghcr.io/moghtech/komodo-periphery:2.3
+    image: ghcr.io/moghtech/komodo-periphery:${COMPOSE_KOMODO_IMAGE_TAG:-2}
     init: true
-    ## Full variable list + descriptions are available here:
-    ## 🦎 https://github.com/moghtech/komodo/blob/main/config/periphery.config.toml 🦎
-    environment:
-      ## The address of Komodo Core to connect to.
-      PERIPHERY_CORE_ADDRESS: 192.168.100.10:9120
-      ## The name of the Komodo Server to connect as.
-      ## Must match existing server.
-      PERIPHERY_CONNECT_AS: "{{.Node.Hostname}}"
-      ## Optional. Create a Server Onboarding Key in the Komodo UI.
-      ## This allows Periphery to create a new Server in the UI with the above name,
-      ## and can be ommitted once the Server exists in Komodo.
-      PERIPHERY_ONBOARDING_KEY: ${PERIPHERY_ONBOARDING_KEY}
-      ## List of accepted Core public keys.
-      ## File will be auto written if doesn't exist to match first Core it connects to.
-      PERIPHERY_CORE_PUBLIC_KEYS: file:/config/keys/core.pub
-      ## Specify the root directory used by Periphery agent.
-      ## All your compose files and repos need to be inside this directory
-      ## for Periphery to interact with them.
-      PERIPHERY_ROOT_DIRECTORY: ${PERIPHERY_ROOT_DIRECTORY:-/etc/komodo}
-      ## Specify whether to disable the terminals feature
-      ## and disallow remote shell access (inside the Periphery container).
-      PERIPHERY_DISABLE_TERMINALS: "false"
-      ## Specify whether to disable the container exec feature
-      ## and disallow remote container shell access.
-      PERIPHERY_DISABLE_CONTAINER_EXEC: "false"
-      ## If the disk size is overreporting, can use one of these to
-      ## whitelist / blacklist the disks to filter them, whichever is easier.
-      ## Accepts comma separated list of paths.
-      ## Usually whitelisting just /etc/hostname gives correct size for single root disk.
-      PERIPHERY_INCLUDE_DISK_MOUNTS: /etc/hostname
-      # PERIPHERY_EXCLUDE_DISK_MOUNTS: /snap,/etc/repos
-    volumes:
-      ## Mount private key storage volume
-      - keys:/config/keys
-      ## Mount external docker socket
-      - /var/run/docker.sock:/var/run/docker.sock
-      ## Allow Periphery to see processes outside of container
-      - /proc:/proc
-      ## Specify the Periphery agent root directory.
-      ## Must be the same inside and outside the container,
-      ## or docker will get confused. See https://github.com/moghtech/komodo/discussions/180.
-      ## Default: /etc/komodo.
-      - ${PERIPHERY_ROOT_DIRECTORY:-/etc/komodo}:${PERIPHERY_ROOT_DIRECTORY:-/etc/komodo}
-      ## Optionally mount a custom periphery.config.toml
-      # - /path/to/periphery.config.toml:/config/config.toml
-      ## Optionally mount custom root CA certificate to trust
-      # - /path/to/root_ca.crt:/usr/local/share/ca-certificates/root_ca.crt
+    env_file: ./periphery.env        # onboarding key, root dir, core public key
     networks:
-      - komodo-network
+      - komodo-link
+    environment:
+      # Core's service name in the "komodo" stack, over the komodo-link overlay
+      PERIPHERY_CORE_ADDRESS: ws://komodo_core:9120
+      # Swarm template - each task connects as its node's hostname
+      PERIPHERY_CONNECT_AS: "{{.Node.Hostname}}"
+    volumes:
+      - keys:/config/keys            # per-node volume, keeps each node's keypair
+      - /var/run/docker.sock:/var/run/docker.sock
+      - /proc:/proc
+      - ${PERIPHERY_ROOT_DIRECTORY:-/etc/komodo}:${PERIPHERY_ROOT_DIRECTORY:-/etc/komodo}
     deploy:
-      # mode: global
-
-      # Only for testing, remove for production
-      replicas: 1
-      placement:
-        constraints:
-          - node.hostname == srv-01
-      # Only for testing, remove for production
-
+      mode: global
       restart_policy:
-        condition: on-failure
+        condition: any
+        delay: 10s
+      update_config:
+        parallelism: 1
+        failure_action: rollback
+      labels:
+        komodo.skip: ""
 
 volumes:
   keys:
 
 networks:
-  komodo-network:
-    driver: overlay
-    # attachable: true
+  komodo-link:
+    external: true
