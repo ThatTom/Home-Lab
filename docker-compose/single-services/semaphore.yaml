@@ -7,6 +7,7 @@ services:
             SEMAPHORE_ADMIN_PASSWORD: ${SEMAPHORE_ADMIN_PASSWORD}
             SEMAPHORE_ADMIN_NAME: ${SEMAPHORE_ADMIN_NAME}
             SEMAPHORE_ADMIN_EMAIL: ${SEMAPHORE_ADMIN_EMAIL}
+            SEMAPHORE_WEB_ROOT: https://semaphore.hogwartsnetwork.co.uk
             SEMAPHORE_OIDC_PROVIDERS: |
               {
                 "voidauth": {
