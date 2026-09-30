@@ -77,8 +77,6 @@ services:
     networks:
       - diagon-alley
     labels:
-      # Image update monitoring
-      - "diun.enable=true"
       # Traefik
       - "traefik.enable=true"
       - "traefik.swarm.network=diagon-alley"

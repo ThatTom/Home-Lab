@@ -21,8 +21,6 @@ services:
         constraints:
           - node.hostname == srv-01
       labels:
-        # Image update monitoring
-        - "diun.enable=true"
         # Traefik
         - "traefik.enable=true"
         - "traefik.docker.network=diagon-alley"

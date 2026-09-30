@@ -33,8 +33,6 @@ services:
       restart_policy:
         condition: on-failure
       labels:
-        # Image update monitoring
-        - "diun.enable=true"
         # Traefik
         - "traefik.enable=true"
         - "traefik.swarm.network=diagon-alley"
@@ -85,7 +83,7 @@ Only the keys a service needs are included, always in the below order
 
 - `environment` uses the map form (`KEY: value`) rather than the list form (`- KEY=value`), with `true`/`false` and other values YAML would otherwise reinterpret (e.g. `"002"`) quoted
 - `ports` in the short form are always quoted (`"8080:80"`)
-- `labels` use the quoted list form and are grouped under the comments `Image update monitoring`, `Traefik`, `Router` and `Service`, in that order, with any extra groups (middlewares, TCP routers) after
+- `labels` use the quoted list form and are grouped under the comments `Traefik`, `Router` and `Service`, in that order, with any extra groups (middlewares, TCP routers) after
 - Swarm services set their labels and restart behaviour under `deploy`; service level `labels` and `restart` are only used by compose files deployed outside of the swarm
 
 All images defined should also have a statically set version rather than using :latest to allow for easier version control, updating and pre-release testing

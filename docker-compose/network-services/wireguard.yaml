@@ -11,9 +11,6 @@ services:
       - aconf:/etc/amnezia/amneziawg
       - conf:/etc/wireguard
       - data:/data
-    labels:
-      # Image update monitoring
-      - "diun.enable=true"
     restart: unless-stopped
 
 volumes:

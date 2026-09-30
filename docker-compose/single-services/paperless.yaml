@@ -52,8 +52,6 @@ services:
       restart_policy:
         condition: on-failure
       labels:
-        # Image update monitoring
-        - "diun.enable=true"
         # Traefik
         - "traefik.enable=true"
         - "traefik.swarm.network=diagon-alley"
