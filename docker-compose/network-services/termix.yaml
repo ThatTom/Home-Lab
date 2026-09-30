@@ -1,33 +1,30 @@
 services:
   termix:
     image: ghcr.io/lukegus/termix:beta-2.8.0-beta.20260831
-    restart: unless-stopped
     environment:
-      - TZ=Europe/London
+      TZ: Europe/London
     volumes:
-        - termix_data:/app/data
+      - termix_data:/app/data
     networks:
       - diagon-alley
     labels:
-        - "diun.enable=true"
-        
-        - "traefik.enable=true"
+      # Image update monitoring
+      - "diun.enable=true"
+      # Traefik
+      - "traefik.enable=true"
+      - "traefik.docker.network=diagon-alley"
+      # Router
+      - "traefik.http.routers.termix.rule=Host(`terminal.hogwartsnetwork.co.uk`)"
+      - "traefik.http.routers.termix.entrypoints=websecure"
+      - "traefik.http.routers.termix.tls=true"
+      - "traefik.http.routers.termix.tls.certresolver=cloudflare"
+      # Service
+      - "traefik.http.services.termix.loadbalancer.server.port=8080"
+    restart: unless-stopped
 
-        # Router
-        - "traefik.http.routers.termix.rule=Host(`terminal.hogwartsnetwork.co.uk`)"
-        - "traefik.http.routers.termix.entrypoints=websecure"
-        - "traefik.http.routers.termix.tls=true"
-        - "traefik.http.routers.termix.tls.certresolver=cloudflare"
-
-        # Service
-        - "traefik.http.services.termix.loadbalancer.server.port=8080"
-
-        # Network
-        - "traefik.docker.network=diagon-alley"
+volumes:
+  termix_data:
 
 networks:
   diagon-alley:
     external: true
-
-volumes:
-  termix_data:

@@ -1,37 +1,37 @@
 services:
   open-webui:
-    image: ghcr.io/open-webui/open-webui:main
-    networks:
-      - diagon-alley
+    image: ghcr.io/open-webui/open-webui:v0.11.4
     environment:
-      - OLLAMA_BASE_URL=192.168.100.14:11434
+      OLLAMA_BASE_URL: "192.168.100.14:11434"
     volumes:
       - open-webui:/app/backend/data
+    networks:
+      - diagon-alley
     deploy:
       replicas: 1
       placement:
         constraints:
           - node.labels.ai == yes
+      restart_policy:
+        condition: on-failure
       labels:
+        # Image update monitoring
         - "diun.enable=true"
-        
+        # Traefik
         - "traefik.enable=true"
         - "traefik.docker.network=diagon-alley"
-      
+        # Router
         - "traefik.http.routers.openwebui.rule=Host(`ai.hogwartsnetwork.co.uk`)"
         - "traefik.http.routers.openwebui.entrypoints=websecure"
         - "traefik.http.routers.openwebui.tls=true"
         - "traefik.http.routers.openwebui.tls.certresolver=cloudflare"
-      
         - "traefik.http.routers.openwebui.service=openwebui"
+        # Service
         - "traefik.http.services.openwebui.loadbalancer.server.port=8080"
-      restart_policy:
-        condition: on-failure
 
 volumes:
-    open-webui:
-        external: false
-        name: open-webui
+  open-webui:
+    name: open-webui
 
 networks:
   diagon-alley:

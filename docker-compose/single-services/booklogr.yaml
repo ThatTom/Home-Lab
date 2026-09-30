@@ -1,112 +1,90 @@
 services:
-
   booklogr-api:
     image: mozzo/booklogr:v1.12.0
-
     environment:
       DATABASE_URL: sqlite:///books.db
       AUTH_SECRET_KEY: ${BOOKLOGR_AUTH_SECRET_KEY}
-
       # Authentication
       AUTH_ALLOW_REGISTRATION: "true"
       AUTH_REQUIRE_VERIFICATION: "false"
-
       # Single-user mode
       SINGLE_USER_MODE: "false"
-
       # Exports
       EXPORT_FOLDER: /app/instance/export_data
-
       # Email - leave blank unless you want email functionality
       MAIL_SERVER: ""
       MAIL_USERNAME: ""
       MAIL_PASSWORD: ""
       MAIL_SENDER: ""
-
       OIDC_CLIENT_ID: ${OIDC_CLIENT_ID}
       OIDC_CLIENT_SECRET: ${OIDC_CLIENT_SECRET}
       OIDC_REDIRECT_URI: ${OIDC_REDIRECT_URI}
       OIDC_DISCOVERY_URL: ${OIDC_DISCOVERY_URL}
-
     volumes:
       - booklogr_data:/app/instance
-
     networks:
       - diagon-alley
-
     deploy:
       replicas: 1
-
       placement:
         constraints:
           - node.hostname == srv-01
-
       labels:
+        # Image update monitoring
         - "diun.enable=true"
-        
+        # Traefik
         - "traefik.enable=true"
         - "traefik.docker.network=diagon-alley"
-      
+        # Router
         - "traefik.http.routers.booklogr-api.rule=Host(`books-api.hogwartsnetwork.co.uk`)"
         - "traefik.http.routers.booklogr-api.entrypoints=websecure"
         - "traefik.http.routers.booklogr-api.tls=true"
         - "traefik.http.routers.booklogr-api.tls.certresolver=cloudflare"
-      
         - "traefik.http.routers.booklogr-api.service=booklogr-api"
+        # Service
         - "traefik.http.services.booklogr-api.loadbalancer.server.port=5000"
 
   booklogr-web:
     image: mozzo/booklogr-web:v1.12.0
-
     environment:
       # Browser-accessible API endpoint
       BL_API_ENDPOINT: https://books-api.hogwartsnetwork.co.uk/
-      
       # Leave blank to disable Google login
       BL_GOOGLE_ID: ""
-
       BL_DEMO_MODE: "false"
-
       # Normal authentication
       BL_SINGLE_USER_MODE: "false"
-
       # Update checking
       BL_CHECK_UPDATES: "true"
-
       # Allow normal email/password login
       BL_ALLOW_MANUAL_LOGIN: "true"
-
       # Allow users to register
       VITE_ALLOW_REGISTRATION: "true"
-
       BL_OIDC_AUTHORITY: ${BL_OIDC_AUTHORITY}
       BL_OIDC_CLIENT_ID: ${BL_OIDC_CLIENT_ID}
-
     networks:
       - diagon-alley
-
     deploy:
       replicas: 1
-
       placement:
         constraints:
           - node.hostname == srv-01
-
       labels:
+        # Traefik
         - "traefik.enable=true"
         - "traefik.docker.network=diagon-alley"
-      
+        # Router
         - "traefik.http.routers.booklogr.rule=Host(`books.hogwartsnetwork.co.uk`)"
         - "traefik.http.routers.booklogr.entrypoints=websecure"
         - "traefik.http.routers.booklogr.tls=true"
         - "traefik.http.routers.booklogr.tls.certresolver=cloudflare"
-      
         - "traefik.http.routers.booklogr.service=booklogr"
+        # Service
         - "traefik.http.services.booklogr.loadbalancer.server.port=80"
+
+volumes:
+  booklogr_data:
 
 networks:
   diagon-alley:
     external: true
-
-volumes:
-  booklogr_data:

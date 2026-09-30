@@ -1,19 +1,20 @@
 services:
   wgdashboard:
-    image: ghcr.io/wgdashboard/wgdashboard:latest
-    restart: unless-stopped
+    image: ghcr.io/wgdashboard/wgdashboard:v4.3.3
     container_name: wgdashboard
+    cap_add:
+      - NET_ADMIN
     ports:
-      - 10086:10086/tcp
-      - 51820:51820/udp
+      - "10086:10086/tcp"
+      - "51820:51820/udp"
     volumes:
       - aconf:/etc/amnezia/amneziawg
       - conf:/etc/wireguard
       - data:/data
-    cap_add:
-      - NET_ADMIN
     labels:
+      # Image update monitoring
       - "diun.enable=true"
+    restart: unless-stopped
 
 volumes:
   aconf:

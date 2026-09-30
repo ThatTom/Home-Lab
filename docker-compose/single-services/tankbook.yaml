@@ -1,20 +1,20 @@
 services:
   db:
     image: postgres:16-alpine
-    restart: unless-stopped
-    networks:
-      - tankbook-internal
     environment:
       POSTGRES_DB: tankbook
       POSTGRES_USER: ${DB_USER:-tankbook}
       POSTGRES_PASSWORD: ${DB_PASSWORD:-changeme}
     volumes:
       - postgres_data:/var/lib/postgresql/data
+    networks:
+      - tankbook-internal
     healthcheck:
       test: ["CMD-SHELL", "pg_isready -U ${DB_USER:-tankbook}"]
       interval: 5s
       timeout: 5s
       retries: 5
+    restart: unless-stopped
     deploy:
       replicas: 1
       placement:
@@ -24,22 +24,22 @@ services:
         condition: on-failure
 
   app:
-    image: ghcr.io/tankbook/tankbook-app:latest
-    restart: unless-stopped
+    image: ghcr.io/tankbook/tankbook-app:1.0.1
     depends_on:
       - db
-    networks:
-      - diagon-alley
-      - tankbook-internal
     environment:
       DATABASE_URL: postgresql://${DB_USER:-tankbook}:${DB_PASSWORD:-changeme}@db/tankbook
       SPECIES_DATA_PATH: /app/species-data
       IMAGES_PATH: /app/images
+    ports:
+      - "3030:3000"
     volumes:
       - species_data:/app/species-data
       - tankbook-images:/app/images
-    ports:
-      - 3030:3000
+    networks:
+      - diagon-alley
+      - tankbook-internal
+    restart: unless-stopped
     deploy:
       replicas: 1
       placement:
@@ -48,21 +48,17 @@ services:
       restart_policy:
         condition: on-failure
       labels:
+        # Image update monitoring
         - "diun.enable=true"
-
-        #Enable Traefik
+        # Traefik
         - "traefik.enable=true"
-        
-        # Network Traefik should use
         - "traefik.swarm.network=diagon-alley"
-        
-        # HTTP router
+        # Router
         - "traefik.http.routers.tankbook.rule=Host(`tankbook.hogwartsnetwork.co.uk`)"
         - "traefik.http.routers.tankbook.entrypoints=websecure"
         - "traefik.http.routers.tankbook.tls=true"
         - "traefik.http.routers.tankbook.tls.certresolver=cloudflare"
-
-        # Rackpad listens on 3000 internally
+        # Service
         - "traefik.http.services.tankbook.loadbalancer.server.port=3000"
 
 volumes:
@@ -75,4 +71,3 @@ networks:
     external: true
 
   tankbook-internal:
-    external: false

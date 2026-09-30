@@ -1,41 +1,39 @@
 services:
-    leafwiki:
-        volumes:
-            - leafwiki:/data
-        networks:
-            - diagon-alley
-        environment:
-            LEAFWIKI_JWT_SECRET: ${LEAFWIKI_JWT_SECRET}
-            LEAFWIKI_ADMIN_PASSWORD: ${LEAFWIKI_ADMIN_PASSWORD}
-            LEAFWIKI_ALLOW_INSECURE: ${LEAFWIKI_ALLOW_INSECURE}
-        image: ghcr.io/perber/leafwiki:latest
-        deploy:
-            replicas: 1
-            placement:
-                constraints:
-                    - node.hostname == rpi-1
-            restart_policy:
-                condition: on-failure
-            labels:
-                - "diun.enable=true"
-
-                - "traefik.enable=true"
-                - "traefik.swarm.network=diagon-alley"
-                
-                # Authelia web interface
-                - "traefik.http.routers.leafwiki.rule=Host(`wiki.hogwartsnetwork.co.uk`)"
-                - "traefik.http.routers.leafwiki.entrypoints=websecure"
-                - "traefik.http.routers.leafwiki.tls=true"
-                - "traefik.http.routers.leafwiki.tls.certresolver=cloudflare"
-                
-                # Authelia listens on 9091
-                - "traefik.http.services.leafwiki.loadbalancer.server.port=8080"
+  leafwiki:
+    image: ghcr.io/perber/leafwiki:v0.13.0
+    environment:
+      LEAFWIKI_JWT_SECRET: ${LEAFWIKI_JWT_SECRET}
+      LEAFWIKI_ADMIN_PASSWORD: ${LEAFWIKI_ADMIN_PASSWORD}
+      LEAFWIKI_ALLOW_INSECURE: ${LEAFWIKI_ALLOW_INSECURE}
+    volumes:
+      - leafwiki:/data
+    networks:
+      - diagon-alley
+    deploy:
+      replicas: 1
+      placement:
+        constraints:
+          - node.hostname == rpi-1
+      restart_policy:
+        condition: on-failure
+      labels:
+        # Image update monitoring
+        - "diun.enable=true"
+        # Traefik
+        - "traefik.enable=true"
+        - "traefik.swarm.network=diagon-alley"
+        # Router
+        - "traefik.http.routers.leafwiki.rule=Host(`wiki.hogwartsnetwork.co.uk`)"
+        - "traefik.http.routers.leafwiki.entrypoints=websecure"
+        - "traefik.http.routers.leafwiki.tls=true"
+        - "traefik.http.routers.leafwiki.tls.certresolver=cloudflare"
+        # Service
+        - "traefik.http.services.leafwiki.loadbalancer.server.port=8080"
 
 volumes:
   leafwiki:
-    external: false
     name: leafwiki
-  
+
 networks:
   diagon-alley:
     external: true

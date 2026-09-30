@@ -1,24 +1,24 @@
 services:
   makemkv:
-    image: jlesage/makemkv
-    restart: unless-stopped
-    ports:
-      - "5800:5800"
-    environment:
-      - WEB_FILE_MANAGER=1
-    volumes:
-      - makemkv-config:/config:rw
-      - raw-ingest:/output:rw
+    image: jlesage/makemkv:v26.09.2
     devices:
       - "/dev/sr0:/dev/sr0"
       - "/dev/sg0:/dev/sg0"
+    environment:
+      WEB_FILE_MANAGER: 1
+    ports:
+      - "5800:5800"
+    volumes:
+      - makemkv-config:/config:rw
+      - raw-ingest:/output:rw
+    restart: unless-stopped
 
   filebot:
-    image: jlesage/filebot
+    image: jlesage/filebot:v26.09.2
+    environment:
+      WEB_FILE_MANAGER: 1
     ports:
       - "5801:5800"
-    environment:
-      - WEB_FILE_MANAGER=1
     volumes:
       - filebot-config:/config:rw
       - raw-ingest:/storage:rw
@@ -34,7 +34,7 @@ services:
   #    - shows-ingest:/storage/shows-ingest:rw
 
   mkvcleaver:
-    image: jlesage/mkvcleaver
+    image: jlesage/mkvcleaver:v26.09.1
     ports:
       - "5802:5800"
     volumes:
@@ -44,7 +44,7 @@ services:
       - shows-ingest:/storage/shows-ingest:rw
 
   handbrake:
-    image: jlesage/handbrake
+    image: jlesage/handbrake:v26.09.1
     ports:
       - "5803:5800"
     volumes:
@@ -56,35 +56,27 @@ services:
 
 volumes:
   makemkv-config:
-    external: false
     name: makemkv-config
 
   filebot-config:
-    external: false
     name: filebot-config
 
   mkvtoolnix-config:
-    external: false
     name: mkvtoolnix-config
 
   mkvcleaver-config:
-    external: false
     name: mkvcleaver-config
 
   handbrake-config:
-    external: false
     name: handbrake-config
 
   raw-ingest:
-    external: false
     name: raw-ingest
 
   movies-ingest:
-    external: false
     name: movies-ingest
 
   shows-ingest:
-    external: false
     name: shows-ingest
 
   movies:

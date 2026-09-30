@@ -1,12 +1,12 @@
 services:
   gitea-runner:
     image: gitea/runner:4.0.0
-    restart: unless-stopped
     environment:
       GITEA_INSTANCE_URL: https://git.hogwartsnetwork.co.uk
       GITEA_RUNNER_NAME: srv-01
       CONFIG_FILE: /config.yaml
     volumes:
-        - /opt/act_runner/config.yaml:/config.yaml
-        - /opt/act_runner/data:/data
-        - /var/run/docker.sock:/var/run/docker.sock
+      - /opt/act_runner/config.yaml:/config.yaml
+      - /opt/act_runner/data:/data
+      - /var/run/docker.sock:/var/run/docker.sock
+    restart: unless-stopped

@@ -12,26 +12,18 @@ services:
           - node.hostname == srv-01
       restart_policy:
         condition: on-failure
-        
+
   webserver:
     image: ghcr.io/paperless-ngx/paperless-ngx:3.2.1
     depends_on:
       - broker
       - gotenberg
       - tika
-    ports:
-      - 8800:8000
-    volumes:
-      - data:/usr/src/paperless/data
-      - media:/usr/src/paperless/media
-      - /home/tomt/export:/usr/src/paperless/export
-      - /mnt/consume:/usr/src/paperless/consume
     env_file: .env
     environment:
       PAPERLESS_CONSUMER_DELETE_DUPLICATES: "true"
       PAPERLESS_CONSUMER_RECURSIVE: "true"
       PAPERLESS_CONSUMER_POLLING_INTERVAL: 30
-      
       PAPERLESS_REDIS: redis://broker:6379
       PAPERLESS_DBENGINE: sqlite
       PAPERLESS_TIKA_ENABLED: 1
@@ -42,6 +34,13 @@ services:
       PAPERLESS_CSRF_TRUSTED_ORIGINS: https://documents.hogwartsnetwork.co.uk
       PAPERLESS_WORKER_TIMEOUT: 86400
       PAPERLESS_TIME_ZONE: Europe/London
+    ports:
+      - "8800:8000"
+    volumes:
+      - data:/usr/src/paperless/data
+      - media:/usr/src/paperless/media
+      - /home/tomt/export:/usr/src/paperless/export
+      - /mnt/consume:/usr/src/paperless/consume
     networks:
       - diagon-alley
       - paperless-internal
@@ -50,24 +49,22 @@ services:
       placement:
         constraints:
           - node.hostname == srv-01
-      labels:
-        - "diun.enable=true"
-
-        # Enable Traefik
-        - "traefik.enable=true"
-        # Tell Traefik which network to use
-        - "traefik.swarm.network=diagon-alley"
-        # HTTP router
-        - "traefik.http.routers.paperless.rule=Host(`documents.hogwartsnetwork.co.uk`)"
-        - "traefik.http.routers.paperless.entrypoints=websecure"
-        # HTTPS
-        - "traefik.http.routers.paperless.tls=true"
-        - "traefik.http.routers.paperless.tls.certresolver=cloudflare"
-        # Paperless internal port
-        - "traefik.http.services.paperless.loadbalancer.server.port=8000"
       restart_policy:
         condition: on-failure
-        
+      labels:
+        # Image update monitoring
+        - "diun.enable=true"
+        # Traefik
+        - "traefik.enable=true"
+        - "traefik.swarm.network=diagon-alley"
+        # Router
+        - "traefik.http.routers.paperless.rule=Host(`documents.hogwartsnetwork.co.uk`)"
+        - "traefik.http.routers.paperless.entrypoints=websecure"
+        - "traefik.http.routers.paperless.tls=true"
+        - "traefik.http.routers.paperless.tls.certresolver=cloudflare"
+        # Service
+        - "traefik.http.services.paperless.loadbalancer.server.port=8000"
+
   gotenberg:
     image: docker.io/gotenberg/gotenberg:8.37
     # The gotenberg chromium route is used to convert .eml files. We do not
@@ -85,7 +82,7 @@ services:
           - node.hostname == srv-01
       restart_policy:
         condition: on-failure
-        
+
   tika:
     image: docker.io/apache/tika:3.3.1.0
     networks:
@@ -97,7 +94,7 @@ services:
           - node.hostname == srv-01
       restart_policy:
         condition: on-failure
-    
+
 volumes:
   data:
   media:
@@ -108,5 +105,4 @@ networks:
     external: true
 
   paperless-internal:
-    external: false
     name: paperless-internal
