@@ -1,0 +1,31 @@
+# Production: runs the image built by the Gitea workflow instead of building locally.
+#
+#   cp .env.example .env            # set APP_PASSWORD
+#   docker compose -f docker-compose.prod.yml up -d
+#
+# Update to the latest build:
+#   docker compose -f docker-compose.prod.yml pull && docker compose -f docker-compose.prod.yml up -d
+#
+# If the package is private on Gitea, log in once first:
+#   docker login git.hogwartsnetwork.co.uk
+
+services:
+  meshhub:
+    image: git.hogwartsnetwork.co.uk/thatt0m/meshhub:${MESHHUB_TAG:-latest}
+    container_name: meshhub
+    restart: unless-stopped
+    ports:
+      - "${PORT:-8000}:8000"
+    environment:
+      APP_PASSWORD: ${APP_PASSWORD:?Set APP_PASSWORD in .env}
+      SECRET_KEY: ${SECRET_KEY:-}
+      GITHUB_TOKEN: ${GITHUB_TOKEN:-}
+    volumes:
+      - ./data:/data
+      # Host /dev is mounted (rather than a single `devices:` entry) so radios
+      # can be unplugged/replugged or added without restarting the container.
+      # The cgroup rules below limit access to USB serial devices only.
+      - /dev:/dev
+    device_cgroup_rules:
+      - "c 188:* rmw" # /dev/ttyUSB*  (CP210x / CH340 bridges, e.g. Heltec V3)
+      - "c 166:* rmw" # /dev/ttyACM*  (boards with native USB, e.g. RAK4631)
