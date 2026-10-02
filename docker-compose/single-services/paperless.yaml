@@ -34,6 +34,25 @@ services:
       PAPERLESS_CSRF_TRUSTED_ORIGINS: https://documents.hogwartsnetwork.co.uk
       PAPERLESS_WORKER_TIMEOUT: 86400
       PAPERLESS_TIME_ZONE: Europe/London
+      PAPERLESS_APPS: allauth.socialaccount.providers.openid_connect
+      PAPERLESS_SOCIALACCOUNT_PROVIDERS: |
+        {
+          "openid_connect": {
+            "SCOPE": ["openid", "profile", "email"],
+            "OAUTH_PKCE_ENABLED": true,
+            "APPS": [
+              {
+                "provider_id": "voidauth",
+                "name": "Hogwarts SSO",
+                "client_id": "${PAPERLESS_OIDC_CLIENT_ID}",
+                "secret": "${PAPERLESS_OIDC_CLIENT_SECRET}",
+                "settings": {
+                  "server_url": "${PAPERLESS_OIDC_ISSUER}"
+                }
+              }
+            ]
+          }
+        }
     ports:
       - "8800:8000"
     volumes:
