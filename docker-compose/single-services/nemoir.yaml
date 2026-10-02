@@ -2,7 +2,7 @@ services:
   nemoir:
     # Built and pushed by .gitea/workflows/docker-build.yml. Pin to a version
     # (e.g. :1.2.0) or commit (e.g. :sha-abc1234) rather than :latest.
-    image: git.hogwartsnetwork.co.uk/thatt0m/nemoir:sha-3ba0021
+    image: git.hogwartsnetwork.co.uk/hogwartsimages/nemoir:sha-5944619
     env_file: .env
     volumes:
       # SQLite database + cached cover images live here - back this up.

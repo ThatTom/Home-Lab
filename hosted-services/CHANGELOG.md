@@ -31,7 +31,7 @@ Services currently deployed, taken from the image versions in the [docker compos
 | Immich | Single Services | v3.2.4 | [immich.yaml](/docker-compose/single-services/immich.yaml) |
 | Paperless-ngx | Single Services | 3.2.1 | [paperless.yaml](/docker-compose/single-services/paperless.yaml) |
 | LeafWiki | Single Services | v0.13.0 | [leafwiki.yaml](/docker-compose/single-services/leafwiki.yaml) |
-| Nemoir | Single Services | sha-3ba0021 | [nemoir.yaml](/docker-compose/single-services/nemoir.yaml) |
+| Nemoir | Single Services | sha-5944619 | [nemoir.yaml](/docker-compose/single-services/nemoir.yaml) |
 | TREK | Single Services | 4.3.0 | [trek.yaml](/docker-compose/single-services/trek.yaml) |
 | TankBook | Single Services | 1.0.1 | [tankbook.yaml](/docker-compose/single-services/tankbook.yaml) |
 
