@@ -11,7 +11,7 @@
 
 services:
   meshhub:
-    image: git.hogwartsnetwork.co.uk/thatt0m/meshhub:${MESHHUB_TAG:-latest}
+    image: git.hogwartsnetwork.co.uk/hogwartsimages/meshhub:${MESHHUB_TAG:-latest}
     container_name: meshhub
     restart: unless-stopped
     ports:
