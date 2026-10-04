@@ -1,6 +1,7 @@
 services:
   rackpad:
     image: ghcr.io/kobii-git/rackpad:1.8.3
+    env_file: .env
     environment:
       NODE_ENV: production
       HOST: 0.0.0.0
@@ -12,13 +13,9 @@ services:
       TRUSTED_ORIGINS: https://rackpad.hogwartsnetwork.co.uk
       # Monitoring
       MONITOR_INTERVAL_MS: 300000
-      # OIDC (VoidAuth)
+      # OIDC (VoidAuth) - issuer, client ID/secret and redirect URI come from .env
       OIDC_ENABLED: "1"
       OIDC_LABEL: Hogwarts SSO
-      OIDC_ISSUER_URL: ${OIDC_ISSUER_URL}
-      OIDC_CLIENT_ID: ${OIDC_CLIENT_ID}
-      OIDC_CLIENT_SECRET: ${OIDC_CLIENT_SECRET}
-      OIDC_REDIRECT_URI: ${OIDC_REDIRECT_URI}
       OIDC_DEFAULT_ROLE: rackpad_viewer
       OIDC_ADMIN_GROUPS: rackpad_admin
     volumes:
