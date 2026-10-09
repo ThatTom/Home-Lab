@@ -6,7 +6,7 @@ Self hosted debian based home lab running a Docker Swarm cluster for high availa
 
 Hosted services within the Hogwarts Network/Homelab, changelog version tracking and required documentation hosting
 
-- [Changelog](/hosted-services/CHANGELOG.md) - currently live services and their versions, along with a log of service updates
+- [Changelog](/hosted-services/CHANGELOG.md) - currently live services and their versions
 
 ## Hardware
 
