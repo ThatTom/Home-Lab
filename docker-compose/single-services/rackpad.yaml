@@ -2,6 +2,7 @@ services:
   rackpad:
     image: ghcr.io/kobii-git/rackpad:1.8.3
     env_file: .env
+    user: "10001:985"
     environment:
       NODE_ENV: production
       HOST: 0.0.0.0
@@ -20,6 +21,7 @@ services:
       OIDC_ADMIN_GROUPS: rackpad_admin
     volumes:
       - rackpad_data:/data
+      - /var/run/docker.sock:/var/run/docker.sock:ro
     networks:
       - diagon-alley
     deploy:

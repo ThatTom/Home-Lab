@@ -1,6 +1,6 @@
 services:
   gitea-runner:
-    image: gitea/runner:4.0.0
+    image: gitea/runner:4.0.1
     environment:
       GITEA_INSTANCE_URL: https://git.hogwartsnetwork.co.uk
       GITEA_RUNNER_NAME: srv-01
