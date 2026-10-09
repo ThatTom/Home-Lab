@@ -17,7 +17,7 @@ services:
       labels:
         # Traefik
         - "traefik.enable=true"
-        - "traefik.docker.network=diagon-alley"
+        - "traefik.swarm.network=diagon-alley"
         # Router
         - "traefik.http.routers.openwebui.rule=Host(`ai.hogwartsnetwork.co.uk`)"
         - "traefik.http.routers.openwebui.entrypoints=websecure"

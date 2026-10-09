@@ -5,7 +5,6 @@ services:
       # Uses the docker volumes configured in the volumes section below to persist Jellyfin configuration and cache data
       - jellyfin-config:/config
       - jellyfin-cache:/cache
-
       # Uses the shared bind mounts configured in the volumes section below to access media on the host
       - movies:/movies
       - shows:/shows

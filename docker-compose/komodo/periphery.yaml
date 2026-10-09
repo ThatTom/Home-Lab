@@ -13,8 +13,6 @@ services:
     image: ghcr.io/moghtech/komodo-periphery:${COMPOSE_KOMODO_IMAGE_TAG:-2}
     init: true
     env_file: ./periphery.env        # onboarding key, root dir, core public key
-    networks:
-      - komodo-link
     environment:
       # Core's service name in the "komodo" stack, over the komodo-link overlay
       PERIPHERY_CORE_ADDRESS: ws://komodo_core:9120
@@ -25,6 +23,8 @@ services:
       - /var/run/docker.sock:/var/run/docker.sock
       - /proc:/proc
       - ${PERIPHERY_ROOT_DIRECTORY:-/etc/komodo}:${PERIPHERY_ROOT_DIRECTORY:-/etc/komodo}
+    networks:
+      - komodo-link
     deploy:
       mode: global
       restart_policy:
@@ -34,7 +34,8 @@ services:
         parallelism: 1
         failure_action: rollback
       labels:
-        komodo.skip: ""
+        # Komodo
+        - "komodo.skip="
 
 volumes:
   keys:

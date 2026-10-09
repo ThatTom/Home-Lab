@@ -20,10 +20,12 @@ services:
       placement:
         constraints:
           - node.hostname == srv-01
+      restart_policy:
+        condition: on-failure
       labels:
         # Traefik
         - "traefik.enable=true"
-        - "traefik.docker.network=diagon-alley"
+        - "traefik.swarm.network=diagon-alley"
         # Router
         - "traefik.http.routers.dashboard.rule=Host(`dashboard.hogwartsnetwork.co.uk`)"
         - "traefik.http.routers.dashboard.entrypoints=websecure"

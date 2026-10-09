@@ -8,16 +8,17 @@ services:
       - vaultwarden:/data/
     networks:
       - diagon-alley
-    restart: unless-stopped
     deploy:
       replicas: 1
       placement:
         constraints:
           - node.hostname == srv-01
+      restart_policy:
+        condition: on-failure
       labels:
         # Traefik
         - "traefik.enable=true"
-        - "traefik.docker.network=diagon-alley"
+        - "traefik.swarm.network=diagon-alley"
         # Router
         - "traefik.http.routers.vaultwarden.rule=Host(`password.hogwartsnetwork.co.uk`)"
         - "traefik.http.routers.vaultwarden.entrypoints=websecure"

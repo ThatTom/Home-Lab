@@ -16,33 +16,36 @@ services:
   postgres:
     # 🚨 Pin to a specific version. Updates can be breaking.
     image: ghcr.io/ferretdb/postgres-documentdb
-    networks:
-      - komodo-core-internal
-    volumes:
-      - postgres-data:/var/lib/postgresql/data
     environment:
       POSTGRES_USER: ${KOMODO_DATABASE_USERNAME}
       POSTGRES_PASSWORD: ${KOMODO_DATABASE_PASSWORD}
       POSTGRES_DB: postgres
+    volumes:
+      - postgres-data:/var/lib/postgresql/data
+    networks:
+      - komodo-core-internal
     deploy:
+      replicas: 1
       placement:
         constraints:
           - node.hostname == rpi-1
       restart_policy:
         condition: any
       labels:
-        komodo.skip: ""
+        # Komodo
+        - "komodo.skip="
 
   ferretdb:
     # 🚨 Pin to a specific version. Updates can be breaking.
     image: ghcr.io/ferretdb/ferretdb
-    networks:
-      - komodo-core-internal
-    volumes:
-      - ferretdb-state:/state
     environment:
       FERRETDB_POSTGRESQL_URL: postgres://${KOMODO_DATABASE_USERNAME}:${KOMODO_DATABASE_PASSWORD}@postgres:5432/postgres
+    volumes:
+      - ferretdb-state:/state
+    networks:
+      - komodo-core-internal
     deploy:
+      replicas: 1
       placement:
         constraints:
           - node.hostname == rpi-1
@@ -50,25 +53,27 @@ services:
         condition: any
         delay: 5s
       labels:
-        komodo.skip: ""
+        # Komodo
+        - "komodo.skip="
 
   core:
     image: ghcr.io/moghtech/komodo-core:${COMPOSE_KOMODO_IMAGE_TAG:-2}
     init: true
-    ports:
-      - 9120:9120   # fallback access if Traefik is down
     env_file: ./core.env
+    environment:
+      KOMODO_DATABASE_ADDRESS: ferretdb:27017
+      # Everything else (host, OIDC, secrets) comes from core.env
+    ports:
+      - "9120:9120"   # fallback access if Traefik is down
+    volumes:
+      - keys:/config/keys
+      - ${COMPOSE_KOMODO_BACKUPS_PATH}:/backups
     networks:
       - komodo-core-internal
       - diagon-alley
       - komodo-link
-    environment:
-      KOMODO_DATABASE_ADDRESS: ferretdb:27017
-      # Everything else (host, OIDC, secrets) comes from core.env
-    volumes:
-      - keys:/config/keys
-      - ${COMPOSE_KOMODO_BACKUPS_PATH}:/backups
     deploy:
+      replicas: 1
       placement:
         constraints:
           - node.hostname == rpi-1   # keys volume + backups path live here
@@ -76,14 +81,18 @@ services:
         condition: any
         delay: 10s                   # retries until ferretdb + diagon-alley are up
       labels:
-        komodo.skip: ""
-        traefik.enable: "true"
-        traefik.swarm.network: diagon-alley   # match whatever your other swarm stacks use
-        traefik.http.routers.komodo.rule: Host(`komodo.hogwartsnetwork.co.uk`)
-        traefik.http.routers.komodo.entrypoints: websecure
-        traefik.http.routers.komodo.tls: "true"
-        traefik.http.routers.komodo.tls.certresolver: cloudflare
-        traefik.http.services.komodo.loadbalancer.server.port: "9120"
+        # Traefik
+        - "traefik.enable=true"
+        - "traefik.swarm.network=diagon-alley"
+        # Router
+        - "traefik.http.routers.komodo.rule=Host(`komodo.hogwartsnetwork.co.uk`)"
+        - "traefik.http.routers.komodo.entrypoints=websecure"
+        - "traefik.http.routers.komodo.tls=true"
+        - "traefik.http.routers.komodo.tls.certresolver=cloudflare"
+        # Service
+        - "traefik.http.services.komodo.loadbalancer.server.port=9120"
+        # Komodo
+        - "komodo.skip="
 
 volumes:
   postgres-data:
@@ -93,7 +102,9 @@ volumes:
 networks:
   diagon-alley:
     external: true
+
   komodo-link:
     external: true
+
   komodo-core-internal:
     driver: overlay

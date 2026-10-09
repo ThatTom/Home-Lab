@@ -16,10 +16,12 @@ services:
       placement:
         constraints:
           - node.hostname == rpi-2
+      restart_policy:
+        condition: on-failure
       labels:
         # Traefik
         - "traefik.enable=true"
-        - "traefik.docker.network=diagon-alley"
+        - "traefik.swarm.network=diagon-alley"
         # Router
         - "traefik.http.routers.nemoir.rule=Host(`books.hogwartsnetwork.co.uk`)"
         - "traefik.http.routers.nemoir.entrypoints=websecure"
