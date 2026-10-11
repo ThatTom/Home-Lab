@@ -1,0 +1,41 @@
+services:
+  spoolman:
+    image: ghcr.io/donkie/spoolman:0.27.0
+    environment:
+      TZ: Europe/London
+    volumes:
+      - spoolman-data:/home/app/.local/share/spoolman
+    networks:
+      - diagon-alley
+    healthcheck:
+      test: ["CMD", "python", "-c", "import urllib.request; urllib.request.urlopen('http://localhost:8000/api/v1/health')"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+      start_period: 20s
+    deploy:
+      replicas: 1
+      placement:
+        constraints:
+          - node.hostname == srv-02
+      restart_policy:
+        condition: on-failure
+      labels:
+        # Traefik
+        - "traefik.enable=true"
+        - "traefik.swarm.network=diagon-alley"
+        # Router
+        - "traefik.http.routers.spoolman.rule=Host(`spoolman.hogwartsnetwork.co.uk`)"
+        - "traefik.http.routers.spoolman.entrypoints=websecure"
+        - "traefik.http.routers.spoolman.tls=true"
+        - "traefik.http.routers.spoolman.tls.certresolver=cloudflare"
+        # Service
+        - "traefik.http.services.spoolman.loadbalancer.server.port=8000"
+
+volumes:
+  spoolman-data:
+    name: spoolman-data
+
+networks:
+  diagon-alley:
+    external: true

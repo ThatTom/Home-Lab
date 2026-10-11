@@ -2,7 +2,7 @@
 
 ## Live Services
 
-Services currently deployed, taken from the image versions in the [docker compose files](/docker-compose/) as of 09/10/2026
+Services currently deployed, taken from the image versions in the [docker compose files](/docker-compose/) as of 11/10/2026
 
 | Service Name | Category | Current Version | Compose File |
 | :---: | :---: | :---: | :---: |
@@ -36,3 +36,4 @@ Services currently deployed, taken from the image versions in the [docker compos
 | Nemoir | Single Services | sha-5944619 | [nemoir.yaml](/docker-compose/single-services/nemoir.yaml) |
 | TREK | Single Services | 4.3.3 | [trek.yaml](/docker-compose/single-services/trek.yaml) |
 | TankBook | Single Services | 1.0.1 | [tankbook.yaml](/docker-compose/single-services/tankbook.yaml) |
+| Spoolman | Single Services | 0.27.0 | [spoolman.yaml](/docker-compose/single-services/spoolman.yaml) |
