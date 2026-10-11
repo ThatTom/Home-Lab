@@ -1,12 +1,38 @@
 services:
-  gitea-runner:
+  gitea-runner-pi:
     image: gitea/runner:4.1.0
     environment:
       GITEA_INSTANCE_URL: https://git.hogwartsnetwork.co.uk
-      GITEA_RUNNER_NAME: srv-01
+      GITEA_RUNNER_NAME: "{{.Node.Hostname}}"
+      GITEA_RUNNER_REGISTRATION_TOKEN: ${GITEA_RUNNER_REGISTRATION_TOKEN}
       CONFIG_FILE: /config.yaml
     volumes:
       - /opt/act_runner/config.yaml:/config.yaml
       - /opt/act_runner/data:/data
       - /var/run/docker.sock:/var/run/docker.sock
-    restart: unless-stopped
+    deploy:
+      replicas: 1
+      placement:
+        constraints:
+          - node.platform.arch == aarch64
+      restart_policy:
+        condition: on-failure
+
+  gitea-runner-lenovo:
+    image: gitea/runner:4.1.0
+    environment:
+      GITEA_INSTANCE_URL: https://git.hogwartsnetwork.co.uk
+      GITEA_RUNNER_NAME: "{{.Node.Hostname}}"
+      GITEA_RUNNER_REGISTRATION_TOKEN: ${GITEA_RUNNER_REGISTRATION_TOKEN}
+      CONFIG_FILE: /config.yaml
+    volumes:
+      - /opt/act_runner/config.yaml:/config.yaml
+      - /opt/act_runner/data:/data
+      - /var/run/docker.sock:/var/run/docker.sock
+    deploy:
+      replicas: 1
+      placement:
+        constraints:
+          - node.platform.arch == x86_64
+      restart_policy:
+        condition: on-failure
