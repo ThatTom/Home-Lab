@@ -5,7 +5,7 @@ services:
       # Uses the docker volumes configured in the volumes section below to persist Jellyfin configuration and cache data
       - jellyfin-config:/config
       - jellyfin-cache:/cache
-      # Uses the shared bind mounts configured in the volumes section below to access media on the host
+      # Uses the NFS volumes configured in the volumes section below to access media on the NAS
       - movies:/movies
       - shows:/shows
       - books:/books
@@ -40,32 +40,36 @@ volumes:
     name: jellyfin-cache
 
   movies:
+    name: media-movies
     driver: local
     driver_opts:
-      type: none
-      device: /mnt/movies
-      o: bind
+      type: nfs
+      o: "addr=192.168.100.30,rw,nfsvers=4,hard"
+      device: ":/mnt/Hogwarts-Vault/Movies"
 
   shows:
+    name: media-shows
     driver: local
     driver_opts:
-      type: none
-      device: /mnt/shows
-      o: bind
+      type: nfs
+      o: "addr=192.168.100.30,rw,nfsvers=4,hard"
+      device: ":/mnt/Hogwarts-Vault/Shows"
 
   books:
+    name: media-books
     driver: local
     driver_opts:
-      type: none
-      device: /mnt/books
-      o: bind
+      type: nfs
+      o: "addr=192.168.100.30,rw,nfsvers=4,hard"
+      device: ":/mnt/Hogwarts-Vault/Books"
 
   music:
+    name: media-music
     driver: local
     driver_opts:
-      type: none
-      device: /mnt/music
-      o: bind
+      type: nfs
+      o: "addr=192.168.100.30,rw,nfsvers=4,hard"
+      device: ":/mnt/Hogwarts-Vault/Music"
 
 networks:
   media:

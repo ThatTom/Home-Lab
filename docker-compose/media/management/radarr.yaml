@@ -37,11 +37,12 @@ volumes:
     name: radarr-config
 
   movies:
+    name: media-movies
     driver: local
     driver_opts:
-      type: none
-      device: /mnt/movies
-      o: bind
+      type: nfs
+      o: "addr=192.168.100.30,rw,nfsvers=4,hard"
+      device: ":/mnt/Hogwarts-Vault/Movies"
 
 networks:
   media:
