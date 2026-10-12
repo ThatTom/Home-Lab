@@ -29,7 +29,7 @@ volumes:
     driver: local
     driver_opts:
       type: nfs
-      o: "addr=192.168.100.30,rw,nfsvers=4,hard,no_root_squash"
+      o: "addr=192.168.100.30,rw,nfsvers=4,hard"
       device: ":/mnt/Hogwarts-Vault/Termix"
 
 networks:
