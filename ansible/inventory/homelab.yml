@@ -1,14 +1,17 @@
 all:
-children:
-  failover_pair:
-    hosts:
-      srv-01:
-        ansible_host: 192.168.100.20   # or a hostname that resolves from Semaphore
-      srv-02:
-        ansible_host: 192.168.100.21
-  swarm_managers:
-    hosts:
-      rpi-1:
-        ansible_host: 192.168.100.18
-      rpi-2:
-        ansible_host: 192.168.100.19
+  vars:
+    ansible_user: tomt                  # the account Semaphore's SSH key logs in as
+    ansible_python_interpreter: auto_silent
+  children:
+    failover_pair:
+      hosts:
+        srv-01:
+          ansible_host: 192.168.100.20   # or a hostname that resolves from Semaphore
+        srv-02:
+          ansible_host: 192.168.100.21
+    swarm_managers:
+      hosts:
+        rpi-1:
+          ansible_host: 192.168.100.18
+        rpi-2:
+          ansible_host: 192.168.100.19
