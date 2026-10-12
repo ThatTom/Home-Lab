@@ -65,18 +65,24 @@ services:
       - /opt/traefik/dynamic:/opt/traefik/dynamic:ro
     networks:
       - diagon-alley
-    labels:
-      # Traefik
-      - "traefik.enable=true"
-      - "traefik.docker.network=diagon-alley"
-      # Router
-      - "traefik.http.routers.traefik.rule=Host(`traefik.hogwartsnetwork.co.uk`)"
-      - "traefik.http.routers.traefik.entrypoints=websecure"
-      - "traefik.http.routers.traefik.tls=true"
-      - "traefik.http.routers.traefik.tls.certresolver=cloudflare"
-      # Service
-      - "traefik.http.services.traefik.loadbalancer.server.port=8080"
-    restart: unless-stopped
+    deploy:
+      replicas: 1
+      placement:
+        constraints:
+          - node.hostname == rpi-1
+      restart_policy:
+        condition: on-failure
+      labels:
+        # Traefik
+        - "traefik.enable=true"
+        - "traefik.swarm.network=diagon-alley"
+        # Router
+        - "traefik.http.routers.traefik.rule=Host(`traefik.hogwartsnetwork.co.uk`)"
+        - "traefik.http.routers.traefik.entrypoints=websecure"
+        - "traefik.http.routers.traefik.tls=true"
+        - "traefik.http.routers.traefik.tls.certresolver=cloudflare"
+        # Service
+        - "traefik.http.services.traefik.loadbalancer.server.port=8080"
 
 volumes:
   traefik-letsencrypt:
