@@ -1,0 +1,6 @@
+all:
+  children:
+    failover_pair:
+      hosts:
+        srv-01:
+        srv-02:
