@@ -2,7 +2,7 @@
 
 ## Live Services
 
-Services currently deployed, taken from the image versions in the [docker compose files](/docker-compose/) as of 11/10/2026
+Services currently deployed, taken from the image versions in the [docker compose files](/docker-compose/) as of 12/10/2026
 
 | Service Name | Category | Current Version | Compose File |
 | :---: | :---: | :---: | :---: |
@@ -21,6 +21,7 @@ Services currently deployed, taken from the image versions in the [docker compos
 | Prometheus | Monitoring | v3.15.0 | [prometheus.yaml](/docker-compose/monitoring/prometheus.yaml) |
 | Gitea | Git | 1.27 | [gitea.yaml](/docker-compose/git/gitea.yaml) |
 | Gitea Runner | Git | 4.1.0 | [gitea-runner.yaml](/docker-compose/git/gitea-runner.yaml) |
+| Gitea Mirror | Git | v3.40.3 | [gitea-mirror.yaml](/docker-compose/git/gitea-mirror.yaml) |
 | Jellyfin | Media | 10.11.11 | [jellyfin.yaml](/docker-compose/media/consume/jellyfin.yaml) |
 | Seerr | Media | v3.5.0 | [seerr.yaml](/docker-compose/media/management/seerr.yaml) |
 | Radarr | Media | release-6.3.0.10514 | [radarr.yaml](/docker-compose/media/management/radarr.yaml) |
