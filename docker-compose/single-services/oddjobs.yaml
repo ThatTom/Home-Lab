@@ -1,0 +1,35 @@
+services:
+  odd-jobs:
+    image: git.hogwartsnetwork.co.uk/hogwartsimages/odd-jobs:14.10.26
+    environment:
+      # Must match the URL you open the app on, otherwise form submissions are rejected.
+      # e.g. https://odd-jobs.your-tailnet.ts.net or http://192.168.1.50:3000
+      ORIGIN: https://jobs.hogwartsnetwork.co.uk
+      TZ: Europe/London
+      PUBLIC_CURRENCY: GBP
+      PUBLIC_LOCALE: en-GB
+    volumes:
+      # SQLite database + uploaded photos live here
+      - odd-jobs-data:/data
+    deploy:
+      replicas: 1
+      placement:
+        constraints:
+          - node.hostname == srv-02
+      restart_policy:
+        condition: on-failure
+      labels:
+        # Traefik
+        - "traefik.enable=true"
+        - "traefik.swarm.network=diagon-alley"
+        # Router
+        - "traefik.http.routers.oddjobs.rule=Host(`jobs.hogwartsnetwork.co.uk`)"
+        - "traefik.http.routers.oddjobs.entrypoints=websecure"
+        - "traefik.http.routers.oddjobs.tls=true"
+        - "traefik.http.routers.oddjobs.tls.certresolver=cloudflare"
+        - "traefik.http.routers.oddjobs.service=jobs"
+        # Service
+        - "traefik.http.services.oddjobs.loadbalancer.server.port=3000"
+
+volumes:
+  odd-jobs-data:
