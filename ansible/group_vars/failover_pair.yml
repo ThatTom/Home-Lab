@@ -1,7 +1,0 @@
-replicated_services:
-  - name: jellyfin_jellyfin            # swarm stack_service name
-    path: /srv/appdata/jellyfin/
-    excludes:
-      - cache/
-      - config/log/
-      - "*/transcodes/"

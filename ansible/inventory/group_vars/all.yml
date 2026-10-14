@@ -1,0 +1,14 @@
+# Accounts kept identical on every host by the base role (bootstrap.yml)
+# Public keys for each user are read from roles/base/files/ssh-keys/<user>/*.pub
+managed_users:
+  - name: tomt
+    groups:
+      - sudo
+      - docker
+    nopasswd_sudo: false
+  - name: ansible
+    groups: []
+    nopasswd_sudo: true
+
+# Only key based SSH logins are accepted once bootstrapped
+ssh_password_authentication: false

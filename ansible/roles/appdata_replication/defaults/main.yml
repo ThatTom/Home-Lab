@@ -1,0 +1,2 @@
+# Defaults only, the real list lives in inventory/group_vars/failover_pair.yml
+replicated_services: []

@@ -1,7 +1,8 @@
 all:
   vars:
-    ansible_user: tomt                  # the account Semaphore's SSH key logs in as
+    ansible_user: ansible               # created by bootstrap.yml, key held by Semaphore
     ansible_python_interpreter: auto_silent
+    ansible_ssh_common_args: "-o StrictHostKeyChecking=accept-new"   # Semaphore has no stored known_hosts
   children:
     failover_pair:
       hosts:

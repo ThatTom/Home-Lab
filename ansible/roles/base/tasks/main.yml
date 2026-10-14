@@ -1,0 +1,58 @@
+- name: Make sure every managed user has at least one public key
+  ansible.builtin.assert:
+    that: query('ansible.builtin.fileglob', base_ssh_key_dir ~ '/' ~ item.name ~ '/*.pub') | length > 0
+    fail_msg: "No public keys in roles/base/files/ssh-keys/{{ item.name }}/, refusing to continue to avoid a lockout"
+  loop: "{{ managed_users }}"
+  loop_control:
+    label: "{{ item.name }}"
+  run_once: true
+
+- name: Create user
+  ansible.builtin.user:
+    name: "{{ item.name }}"
+    shell: /bin/bash
+    groups: "{{ item.groups }}"
+    append: true
+    create_home: true
+  loop: "{{ managed_users }}"
+  loop_control:
+    label: "{{ item.name }}"
+
+- name: Set authorised SSH keys (replaces any keys not in the repo)
+  ansible.posix.authorized_key:
+    user: "{{ item.name }}"
+    key: |
+      {% for f in query('ansible.builtin.fileglob', base_ssh_key_dir ~ '/' ~ item.name ~ '/*.pub') %}
+      {{ lookup('ansible.builtin.file', f) }}
+      {% endfor %}
+    exclusive: true
+  loop: "{{ managed_users }}"
+  loop_control:
+    label: "{{ item.name }}"
+
+- name: Allow passwordless sudo
+  ansible.builtin.copy:
+    content: "{{ item.name }} ALL=(ALL) NOPASSWD:ALL\n"
+    dest: "/etc/sudoers.d/{{ item.name }}"
+    owner: root
+    group: root
+    mode: "0440"
+    validate: visudo -cf %s
+  loop: "{{ managed_users | selectattr('nopasswd_sudo') }}"
+  loop_control:
+    label: "{{ item.name }}"
+
+- name: Apply shared SSH daemon settings
+  ansible.builtin.copy:
+    content: |
+      # Managed by Ansible (roles/base)
+      PubkeyAuthentication yes
+      PasswordAuthentication {{ 'yes' if ssh_password_authentication else 'no' }}
+      KbdInteractiveAuthentication no
+      PermitRootLogin prohibit-password
+    dest: /etc/ssh/sshd_config.d/10-homelab.conf
+    owner: root
+    group: root
+    mode: "0644"
+    validate: sshd -t -f %s
+  notify: Reload sshd

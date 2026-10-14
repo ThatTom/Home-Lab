@@ -1,0 +1,8 @@
+# Brings every host to its full configured state in one run.
+# Same first-run rule as bootstrap.yml: pass bootstrap_user: tomt until the ansible user exists.
+# Appdata replication is left out, it runs on its own schedule via replicate-appdata.yml.
+- name: Base setup
+  ansible.builtin.import_playbook: bootstrap.yml
+
+- name: Failover pair replication keys
+  ansible.builtin.import_playbook: setup-replication-keys.yml

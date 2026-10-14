@@ -1,0 +1,14 @@
+# Run from Semaphore with the inventory file ansible/inventory/homelab.yml
+# First run (before the ansible user exists): add the extra variable
+#   bootstrap_user: tomt
+# and give the inventory tomt's SSH login plus a sudo (become) password.
+# Later runs need no extra variable and connect as the ansible user.
+- name: Bootstrap consistent logins and the Ansible user
+  hosts: all
+  become: true
+  gather_facts: false
+  vars:
+    # Play vars take precedence over the inventory ansible_user
+    ansible_user: "{{ bootstrap_user | default('ansible') }}"
+  roles:
+    - base

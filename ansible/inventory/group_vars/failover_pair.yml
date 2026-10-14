@@ -1,0 +1,11 @@
+# The other host in the pair, used by the replication_keys and appdata_replication roles
+peer: "{{ groups['failover_pair'] | difference([inventory_hostname]) | first }}"
+peer_addr: "{{ hostvars[peer].ansible_host | default(peer) }}"
+
+replicated_services:
+  - name: jellyfin_jellyfin            # swarm stack_service name
+    path: /srv/appdata/jellyfin/
+    excludes:
+      - cache/
+      - config/log/
+      - "*/transcodes/"
