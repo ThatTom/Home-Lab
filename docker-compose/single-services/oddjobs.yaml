@@ -27,7 +27,6 @@ services:
         - "traefik.http.routers.oddjobs.entrypoints=websecure"
         - "traefik.http.routers.oddjobs.tls=true"
         - "traefik.http.routers.oddjobs.tls.certresolver=cloudflare"
-        - "traefik.http.routers.oddjobs.service=jobs"
         # Service
         - "traefik.http.services.oddjobs.loadbalancer.server.port=3000"
 
