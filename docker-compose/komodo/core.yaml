@@ -1,13 +1,13 @@
 ###########################################
 # 🦎 KOMODO CORE - SWARM STACK (FERRETDB) #
 ###########################################
-## Deploys Postgres + FerretDB + Komodo Core, pinned to rpi-1.
+## Deploys Postgres + FerretDB + Komodo Core, pinned to dumbledore.
 ## Periphery is a separate stack - see periphery-stack.yml.
 ##
 ## One-time, before first deploy (shared network for Core <-> Periphery):
 ##   docker network create -d overlay --attachable komodo-link
 ##
-## Deploy from rpi-1 (stack name MUST be "komodo" to reuse existing volumes):
+## Deploy from dumbledore (stack name MUST be "komodo" to reuse existing volumes):
 ##   cd ~/komodo
 ##   set -a; . ./core.env; set +a
 ##   docker stack deploy -c komodo-stack.yml komodo --detach=false
@@ -28,7 +28,7 @@ services:
       replicas: 1
       placement:
         constraints:
-          - node.hostname == rpi-1
+          - node.hostname == dumbledore
       restart_policy:
         condition: any
       labels:
@@ -48,7 +48,7 @@ services:
       replicas: 1
       placement:
         constraints:
-          - node.hostname == rpi-1
+          - node.hostname == dumbledore
       restart_policy:
         condition: any
         delay: 5s
@@ -76,7 +76,7 @@ services:
       replicas: 1
       placement:
         constraints:
-          - node.hostname == rpi-1   # keys volume + backups path live here
+          - node.hostname == dumbledore   # keys volume + backups path live here
       restart_policy:
         condition: any
         delay: 10s                   # retries until ferretdb + diagon-alley are up

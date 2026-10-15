@@ -18,7 +18,7 @@ services:
       replicas: 1
       placement:
         constraints:
-          - node.hostname == rpi-1
+          - node.hostname == dumbledore
       restart_policy:
         condition: on-failure
 
@@ -42,7 +42,7 @@ services:
       replicas: 1
       placement:
         constraints:
-          - node.hostname == rpi-1
+          - node.hostname == dumbledore
       restart_policy:
         condition: on-failure
       labels:

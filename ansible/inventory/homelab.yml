@@ -6,13 +6,13 @@ all:
   children:
     failover_pair:
       hosts:
-        srv-01:
+        dobby:
           ansible_host: 192.168.100.20   # or a hostname that resolves from Semaphore
-        srv-02:
+        winky:
           ansible_host: 192.168.100.21
     swarm_managers:
       hosts:
-        rpi-1:
+        dumbledore:
           ansible_host: 192.168.100.18
-        rpi-2:
+        flitwick:
           ansible_host: 192.168.100.19

@@ -20,7 +20,7 @@ services:
       replicas: 1
       placement:
         constraints:
-          - node.hostname == srv-01
+          - node.hostname == dobby
       restart_policy:
         condition: on-failure
       labels:
@@ -47,7 +47,7 @@ services:
       replicas: 1
       placement:
         constraints:
-          - node.hostname == srv-01
+          - node.hostname == dobby
       restart_policy:
         condition: on-failure
 
@@ -61,7 +61,7 @@ services:
       replicas: 1
       placement:
         constraints:
-          - node.hostname == srv-01
+          - node.hostname == dobby
       restart_policy:
         condition: on-failure
 
@@ -84,7 +84,7 @@ services:
       replicas: 1
       placement:
         constraints:
-          - node.hostname == srv-01
+          - node.hostname == dobby
       restart_policy:
         condition: on-failure
 

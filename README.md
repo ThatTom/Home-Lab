@@ -12,10 +12,10 @@ Hosted services within the Hogwarts Network/Homelab, changelog version tracking 
 
 | Node | Hardware | Notes |
 | --- | --- | --- |
-| rpi-1 | Raspberry Pi 4B+ | PoE Hat for power and basic cooling |
-| rpi-2 | Raspberry Pi 4B+ | PoE Hat for power and basic cooling |
-| srv-01 | Lenovo Micro PC | |
-| srv-02 | Lenovo Micro PC | |
+| dumbledore | Raspberry Pi 4B+ | PoE Hat for power and basic cooling |
+| flitwick | Raspberry Pi 4B+ | PoE Hat for power and basic cooling |
+| dobby | Lenovo Micro PC | |
+| winky | Lenovo Micro PC | |
 
 ## [Network](/network/)
 

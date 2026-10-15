@@ -13,4 +13,4 @@ services:
       mode: global
       placement:
         constraints:
-          - node.hostname != rpi-1
+          - node.hostname != dumbledore
