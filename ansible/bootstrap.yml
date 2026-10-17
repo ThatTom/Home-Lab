@@ -1,14 +1,38 @@
-# Run from Semaphore with the inventory file ansible/inventory/homelab.yml
-# First run (before the ansible user exists): add the extra variable
-#   bootstrap_user: tomt
-# and give the inventory tomt's SSH login plus a sudo (become) password.
-# Later runs need no extra variable and connect as the ansible user.
-- name: Bootstrap consistent logins and the Ansible user
+# Run from Semaphore with the inventory file ansible/inventory/homelab.yml, using the ansible SSH key.
+# Hosts the ansible user cannot log in to yet are set up by logging in as bootstrap_user (harry)
+# with the password in the Semaphore secret variable harry_password.
+# Once a host is set up, harry is disabled there and every later run uses the ansible user.
+- name: Pick the login for each host
+  hosts: all
+  gather_facts: false
+  tasks:
+    - name: Try logging in as the ansible user
+      ansible.builtin.ping:
+      ignore_unreachable: true
+      register: ansible_login
+
+    - name: Fall back to the bootstrap user where the ansible user cannot log in yet
+      ansible.builtin.set_fact:
+        login_user: "{{ bootstrap_user if ansible_login.unreachable | default(false) else 'ansible' }}"
+
+- name: Create consistent logins and the Ansible user
   hosts: all
   become: true
   gather_facts: false
   vars:
     # Play vars take precedence over the inventory ansible_user
-    ansible_user: "{{ bootstrap_user | default('ansible') }}"
+    ansible_user: "{{ login_user }}"
+    ansible_password: "{{ harry_password | default('') if login_user == bootstrap_user else '' }}"
+    ansible_become_password: "{{ ansible_password }}"
   roles:
     - base
+
+- name: Disable the bootstrap user
+  hosts: all
+  become: true
+  gather_facts: false
+  vars:
+    # Always the ansible user, so harry is only disabled once that login is proven to work
+    ansible_user: ansible
+  roles:
+    - retire_users

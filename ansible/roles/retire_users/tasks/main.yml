@@ -1,0 +1,20 @@
+- name: Look up existing accounts
+  ansible.builtin.getent:
+    database: passwd
+  when: retired_users | length > 0
+
+- name: Disable retired users (never the one this run is connected as)
+  ansible.builtin.user:
+    name: "{{ item }}"
+    password_lock: true
+    shell: /usr/sbin/nologin
+    expires: 1                          # expired account, blocks key logins too
+    groups: ""
+    append: false
+  loop: "{{ retired_users | difference([ansible_user]) | intersect(ansible_facts.getent_passwd | default({}) | list) }}"
+
+- name: Remove retired users' SSH keys
+  ansible.builtin.file:
+    path: "{{ ansible_facts.getent_passwd[item][4] }}/.ssh/authorized_keys"
+    state: absent
+  loop: "{{ retired_users | difference([ansible_user]) | intersect(ansible_facts.getent_passwd | default({}) | list) }}"

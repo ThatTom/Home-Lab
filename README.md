@@ -19,9 +19,10 @@ Hosted services within the Hogwarts Network/Homelab, changelog version tracking 
 
 ## [Network](/network/)
 
-- 192.168.100.0/24 - Local trusted devices
-- /26 - Local non-trusted devices/guests
-- /26 - IoT Devices
+Split into VLANs on `10.10.0.0/16`, where the third octet matches the VLAN ID
+
+- 10 Management, 20 Servers, 30 Trusted, 40 IoT, 50 Media, 60 Guest, 70 Ceph (not routed), 80 Work
+- 99 WireGuard for remote access
 
 ## [Docker Compose](/docker-compose/)
 

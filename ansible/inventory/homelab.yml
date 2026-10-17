@@ -1,18 +1,26 @@
+# Addresses match the Servers VLAN (20) in network/README.md
 all:
   vars:
     ansible_user: ansible               # created by bootstrap.yml, key held by Semaphore
     ansible_python_interpreter: auto_silent
     ansible_ssh_common_args: "-o StrictHostKeyChecking=accept-new"   # Semaphore has no stored known_hosts
   children:
+    swarm:
+      children:
+        swarm_managers:
+          hosts:
+            dumbledore:
+              ansible_host: 10.10.20.10
+            flitwick:
+              ansible_host: 10.10.20.11
+        swarm_workers:
+          hosts:
+            dobby:
+              ansible_host: 10.10.20.20
+            winky:
+              ansible_host: 10.10.20.21
+    # The workers also form the appdata failover pair
     failover_pair:
       hosts:
         dobby:
-          ansible_host: 192.168.100.20   # or a hostname that resolves from Semaphore
         winky:
-          ansible_host: 192.168.100.21
-    swarm_managers:
-      hosts:
-        dumbledore:
-          ansible_host: 192.168.100.18
-        flitwick:
-          ansible_host: 192.168.100.19

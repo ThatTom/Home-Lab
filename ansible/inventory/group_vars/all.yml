@@ -5,10 +5,20 @@ managed_users:
     groups:
       - sudo
       - docker
-    nopasswd_sudo: false
+    nopasswd_sudo: true
   - name: ansible
     groups: []
     nopasswd_sudo: true
 
 # Only key based SSH logins are accepted once bootstrapped
 ssh_password_authentication: false
+
+# Bootstrap logins that get disabled once the managed users above exist.
+# bootstrap.yml only does this while logged in as the ansible user, so harry
+# stays usable on any host where the ansible login does not work yet.
+retired_users:
+  - harry
+
+# First login on fresh hosts, see bootstrap.yml. Its password comes from the
+# Semaphore secret variable harry_password.
+bootstrap_user: harry
