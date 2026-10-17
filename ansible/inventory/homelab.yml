@@ -14,6 +14,10 @@ all:
             flitwick:
               ansible_host: 10.10.20.11
         swarm_workers:
+          vars:
+            # Ubuntu's default sudo is sudo-rs, whose password prompt Ansible doesn't recognise.
+            # sudo.ws is the classic sudo, still installed alongside it.
+            ansible_become_exe: sudo.ws
           hosts:
             dobby:
               ansible_host: 10.10.20.20
