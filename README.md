@@ -24,6 +24,10 @@ Split into VLANs on `10.10.0.0/16`, where the third octet matches the VLAN ID
 - 10 Management, 20 Servers, 30 Trusted, 40 IoT, 50 Media, 60 Guest, 70 Ceph (not routed), 80 Work
 - 99 WireGuard for remote access
 
+## [Disaster Recovery](/disaster-recovery/)
+
+Backup model (daily Rustic snapshots to Backblaze B2), the break-glass kit and the steps to rebuild a failed node
+
 ## [Docker Compose](/docker-compose/)
 
 Files used for the deployment of services within the docker swarm cluster, grouped by purpose
