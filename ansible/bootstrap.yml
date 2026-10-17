@@ -24,6 +24,14 @@
     ansible_user: "{{ login_user }}"
     ansible_password: "{{ harry_password | default('') if login_user == bootstrap_user else '' }}"
     ansible_become_password: "{{ ansible_password }}"
+  pre_tasks:
+    - name: Make sure harry's password was passed in
+      ansible.builtin.assert:
+        that: harry_password | default('') | length > 0
+        fail_msg: >-
+          {{ inventory_hostname }} needs the {{ bootstrap_user }} login but harry_password is empty.
+          Add it as an extra variable secret in the template's Semaphore Variable Group.
+      when: login_user == bootstrap_user
   roles:
     - base
 
