@@ -10,16 +10,20 @@ services:
       HOMEPAGE_OIDC_CLIENT_ID: ${HOMEPAGE_OIDC_CLIENT_ID}
       HOMEPAGE_OIDC_CLIENT_SECRET: ${HOMEPAGE_OIDC_CLIENT_SECRET}
       HOMEPAGE_OIDC_NAME: ${HOMEPAGE_OIDC_NAME}
-    volumes:
-      - homepage-config:/app/config # Make sure your local config directory exists
-      - /var/run/docker.sock:/var/run/docker.sock:ro # optional, for docker integrations
+    # Config comes from the repo (configs/homepage), so it can run on any node
+    configs:
+      - source: homepage-settings
+        target: /app/config/settings.yaml
+      - source: homepage-services
+        target: /app/config/services.yaml
+      - source: homepage-widgets
+        target: /app/config/widgets.yaml
+      - source: homepage-bookmarks
+        target: /app/config/bookmarks.yaml
     networks:
       - diagon-alley
     deploy:
       replicas: 1
-      placement:
-        constraints:
-          - node.hostname == dobby
       restart_policy:
         condition: on-failure
       labels:
@@ -35,9 +39,24 @@ services:
         # Service
         - "traefik.http.services.dashboard.loadbalancer.server.port=3000"
 
-volumes:
-  homepage-config:
-
 networks:
   diagon-alley:
     external: true
+
+# Configs can't change in place, bump a suffix when its file changes
+configs:
+  homepage-settings:
+    name: homepage-settings-v1
+    file: ./configs/homepage/settings.yaml
+
+  homepage-services:
+    name: homepage-services-v1
+    file: ./configs/homepage/services.yaml
+
+  homepage-widgets:
+    name: homepage-widgets-v1
+    file: ./configs/homepage/widgets.yaml
+
+  homepage-bookmarks:
+    name: homepage-bookmarks-v1
+    file: ./configs/homepage/bookmarks.yaml

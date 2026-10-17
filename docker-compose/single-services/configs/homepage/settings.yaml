@@ -1,0 +1,31 @@
+# Homepage settings, mounted as a Swarm config (docker-compose/single-services/homepage.yaml).
+# Swarm configs can't change in place, so bump the config name's suffix there after editing this file.
+title: Hogwarts Network
+theme: dark
+color: slate
+headerStyle: clean
+statusStyle: dot
+hideVersion: true
+
+layout:
+  Media:
+    style: row
+    columns: 4
+  Life & Documents:
+    style: row
+    columns: 4
+  Home:
+    style: row
+    columns: 4
+  Development:
+    style: row
+    columns: 4
+  Infrastructure:
+    style: row
+    columns: 4
+  Network:
+    style: row
+    columns: 4
+  Servers:
+    style: row
+    columns: 4

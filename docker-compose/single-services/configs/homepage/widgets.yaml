@@ -1,0 +1,16 @@
+# Homepage header widgets, mounted as a Swarm config (docker-compose/single-services/homepage.yaml).
+# Swarm configs can't change in place, so bump the config name's suffix there after editing this file.
+- greeting:
+    text_size: xl
+    text: Hogwarts Network
+
+- datetime:
+    text_size: l
+    locale: en-GB
+    format:
+      dateStyle: long
+      timeStyle: short
+
+- search:
+    provider: duckduckgo
+    target: _blank
