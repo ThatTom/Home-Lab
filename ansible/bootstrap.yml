@@ -6,6 +6,14 @@
   hosts: all
   gather_facts: false
   tasks:
+    # TEMP: remove once harry_password is reaching Ansible. Prints names only, never values.
+    - name: TEMP show which harry and Semaphore variable names reached Ansible
+      ansible.builtin.debug:
+        msg:
+          ansible_vars: "{{ vars.keys() | select('search', 'harry|semaphore', ignorecase=true) | map('to_json') | list }}"
+          environment_vars: "{{ lookup('ansible.builtin.pipe', 'env | cut -d= -f1') | split('\n') | select('search', 'harry|semaphore', ignorecase=true) | map('to_json') | list }}"
+      run_once: true
+
     - name: Try logging in as the ansible user
       ansible.builtin.ping:
       ignore_unreachable: true
