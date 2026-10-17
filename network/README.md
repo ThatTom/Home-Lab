@@ -49,6 +49,7 @@ Within each /24:
 |leaky-cauldron|Router|All|10.10.x.1|
 |floo|Access switch|10 Management|10.10.10.2|
 |portkey|Access switch|10 Management|10.10.10.3|
+|traefik|Floating IP (keepalived, dumbledore / flitwick)|20 Servers|10.10.20.2|
 |dumbledore|Swarm manager|20 Servers|10.10.20.10|
 |flitwick|Swarm manager|20 Servers|10.10.20.11|
 |dobby|Swarm worker|20 Servers|10.10.20.20|
@@ -71,6 +72,7 @@ Management IP for leaky-cauldron is `10.10.10.1`.
 
 |Range|Use|
 |:--:|:--:|
+|.2 - .9|Floating IPs|
 |.10 - .19|Swarm managers|
 |.20 - .29|Swarm workers|
 |.30 - .39|Storage|

@@ -1,6 +1,0 @@
-- name: Set up replication SSH keys between failover pair
-  hosts: failover_pair
-  become: true
-  gather_facts: false
-  roles:
-    - replication_keys

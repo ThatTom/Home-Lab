@@ -1,6 +1,0 @@
-- name: Replicate appdata within failover pair
-  hosts: failover_pair
-  become: true
-  gather_facts: false
-  roles:
-    - appdata_replication
