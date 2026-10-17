@@ -33,3 +33,27 @@ rustic_b2_key_id: "{{ lookup('ansible.builtin.env', 'b2_key_id') }}"
 rustic_b2_key: "{{ lookup('ansible.builtin.env', 'b2_key') }}"
 rustic_b2_bucket: "{{ lookup('ansible.builtin.env', 'b2_bucket') }}"
 rustic_b2_bucket_id: "{{ lookup('ansible.builtin.env', 'b2_bucket_id') }}"
+
+# Overlay networks shared between stacks (swarm.yml). Existing networks keep their
+# current settings, so adding a subnet here later would need the network recreating.
+swarm_overlay_networks:
+  - name: diagon-alley
+  - name: media
+  - name: komodo-link
+    attachable: true
+  - name: monitoring-internal
+
+# NFS shares on gringotts, created as Docker volumes on every node (swarm.yml).
+# Still on the legacy network until gringotts moves to 10.10.20.30.
+nas_address: 192.168.100.30
+nfs_volumes:
+  - name: media-movies
+    path: /mnt/Hogwarts-Vault/Movies
+  - name: media-shows
+    path: /mnt/Hogwarts-Vault/Shows
+  - name: media-books
+    path: /mnt/Hogwarts-Vault/Books
+  - name: media-music
+    path: /mnt/Hogwarts-Vault/Music
+  - name: termix-data
+    path: /mnt/Hogwarts-Vault/Termix

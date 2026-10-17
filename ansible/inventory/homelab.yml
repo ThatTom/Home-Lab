@@ -15,6 +15,8 @@ all:
             flitwick:
               ansible_host: 10.10.20.11
               keepalived_priority: 100
+              swarm_node_labels:
+                ai: "yes"                 # Open WebUI
         swarm_workers:
           vars:
             # Ubuntu's default sudo is sudo-rs, whose password prompt Ansible doesn't recognise.
@@ -23,5 +25,9 @@ all:
           hosts:
             dobby:
               ansible_host: 10.10.20.20
+              swarm_node_labels:
+                media: "yes"              # Jellyfin and the media management stack
             winky:
               ansible_host: 10.10.20.21
+              swarm_node_labels:
+                media: "yes"

@@ -1,0 +1,15 @@
+# Shared Docker Swarm resources the compose files expect to already exist:
+# overlay networks and node labels (from a manager), and NFS volumes (on every node).
+- name: Swarm networks and node labels
+  hosts: swarm_managers
+  become: true
+  gather_facts: false
+  roles:
+    - swarm_cluster
+
+- name: NFS-backed Docker volumes
+  hosts: all
+  become: true
+  gather_facts: false
+  roles:
+    - docker_nfs_volumes

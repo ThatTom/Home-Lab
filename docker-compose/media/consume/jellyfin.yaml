@@ -41,35 +41,19 @@ volumes:
 
   movies:
     name: media-movies
-    driver: local
-    driver_opts:
-      type: nfs
-      o: "addr=192.168.100.30,rw,nfsvers=4,hard"
-      device: ":/mnt/Hogwarts-Vault/Movies"
+    external: true    # NFS share, created on every node by ansible/swarm.yml
 
   shows:
     name: media-shows
-    driver: local
-    driver_opts:
-      type: nfs
-      o: "addr=192.168.100.30,rw,nfsvers=4,hard"
-      device: ":/mnt/Hogwarts-Vault/Shows"
+    external: true    # NFS share, created on every node by ansible/swarm.yml
 
   books:
     name: media-books
-    driver: local
-    driver_opts:
-      type: nfs
-      o: "addr=192.168.100.30,rw,nfsvers=4,hard"
-      device: ":/mnt/Hogwarts-Vault/Books"
+    external: true    # NFS share, created on every node by ansible/swarm.yml
 
   music:
     name: media-music
-    driver: local
-    driver_opts:
-      type: nfs
-      o: "addr=192.168.100.30,rw,nfsvers=4,hard"
-      device: ":/mnt/Hogwarts-Vault/Music"
+    external: true    # NFS share, created on every node by ansible/swarm.yml
 
 networks:
   media:

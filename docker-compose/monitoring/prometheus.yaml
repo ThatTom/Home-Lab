@@ -3,8 +3,14 @@ services:
     image: prom/prometheus:v3.15.0
     #ports:
     #  - "9090:9090"
+    volumes:
+      - prometheus-data:/prometheus
+    configs:
+      - source: prometheus
+        target: /etc/prometheus/prometheus.yml
     networks:
       - monitoring-internal
+      - diagon-alley
     deploy:
       replicas: 1
       placement:
@@ -13,10 +19,18 @@ services:
       restart_policy:
         condition: on-failure
 
+volumes:
+  prometheus-data:
+    name: prometheus-data
+
 networks:
   diagon-alley:
     external: true
 
   monitoring-internal:
     external: true
-    name: monitoring-internal
+
+configs:
+  prometheus:
+    name: prometheus-config-v1
+    file: ./configs/prometheus.yml

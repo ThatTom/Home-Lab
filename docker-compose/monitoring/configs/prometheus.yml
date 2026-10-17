@@ -1,0 +1,17 @@
+# Mounted into Prometheus as a Swarm config (docker-compose/monitoring/prometheus.yaml).
+# Swarm configs can't change in place, so bump the config name's suffix there after editing this file.
+global:
+  scrape_interval: 30s
+  evaluation_interval: 30s
+
+scrape_configs:
+  - job_name: prometheus
+    static_configs:
+      - targets: ["localhost:9090"]
+
+  # Every Traefik copy, found through Swarm's DNS on the diagon-alley network
+  - job_name: traefik
+    dns_sd_configs:
+      - names: ["tasks.traefik_traefik"]
+        type: A
+        port: 8080

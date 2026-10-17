@@ -1,0 +1,28 @@
+# Swarm-wide resources, created once from a manager
+- name: Install the Docker SDK for the community.docker modules
+  ansible.builtin.apt:
+    name: python3-docker
+    state: present
+    update_cache: true
+    cache_valid_time: 3600
+
+- name: Create the shared overlay networks
+  community.docker.docker_network:
+    name: "{{ item.name }}"
+    driver: overlay
+    attachable: "{{ item.attachable | default(omit) }}"
+    state: present
+  loop: "{{ swarm_overlay_networks }}"
+  loop_control:
+    label: "{{ item.name }}"
+  run_once: true
+
+# merge only adds or updates the labels listed here, labels set by hand stay put
+- name: Set node labels
+  community.docker.docker_node:
+    hostname: "{{ item }}"
+    labels: "{{ hostvars[item].swarm_node_labels }}"
+    labels_state: merge
+  loop: "{{ groups['all'] }}"
+  when: hostvars[item].swarm_node_labels | default({}) | length > 0
+  run_once: true

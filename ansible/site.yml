@@ -3,6 +3,9 @@
 - name: Base setup
   ansible.builtin.import_playbook: bootstrap.yml
 
+- name: Swarm networks, node labels and NFS volumes
+  ansible.builtin.import_playbook: swarm.yml
+
 - name: Traefik dynamic config
   ansible.builtin.import_playbook: traefik-config.yml
 

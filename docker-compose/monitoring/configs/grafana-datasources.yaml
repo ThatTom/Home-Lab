@@ -1,0 +1,10 @@
+# Mounted into Grafana as a Swarm config (docker-compose/monitoring/grafana.yaml).
+# Swarm configs can't change in place, so bump the config name's suffix there after editing this file.
+apiVersion: 1
+
+datasources:
+  - name: Prometheus
+    uid: prometheus
+    type: prometheus
+    access: proxy
+    url: http://prometheus:9090

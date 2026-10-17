@@ -1,0 +1,4 @@
+# Defaults only, the real values live in inventory/group_vars/all.yml
+nas_address: ""
+nfs_mount_options: rw,nfsvers=4,hard
+nfs_volumes: []

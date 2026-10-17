@@ -38,11 +38,7 @@ volumes:
 
   shows:
     name: media-shows
-    driver: local
-    driver_opts:
-      type: nfs
-      o: "addr=192.168.100.30,rw,nfsvers=4,hard"
-      device: ":/mnt/Hogwarts-Vault/Shows"
+    external: true    # NFS share, created on every node by ansible/swarm.yml
 
 networks:
   media:

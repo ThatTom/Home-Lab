@@ -56,7 +56,7 @@ networks:
 ### File layout
 
 - 2 space indentation, with list items indented beneath their key
-- Top level sections in the order `services`, `volumes`, `networks`, `secrets`, separated by a single blank line
+- Top level sections in the order `services`, `volumes`, `networks`, `configs`, `secrets`, separated by a single blank line
 - A single blank line between each service, and no blank lines within a service
 - Named volumes/networks with a body are separated by a blank line, those without are listed together
 - `external: false` is the default and is left out
@@ -73,7 +73,7 @@ Only the keys a service needs are included, always in the below order
 | 4 | `depends_on` | |
 | 5 | `env_file`, `environment` | |
 | 6 | `ports` | |
-| 7 | `volumes`, `secrets` | |
+| 7 | `volumes`, `configs`, `secrets` | |
 | 8 | `networks` | |
 | 9 | `healthcheck` | `test`, `interval`, `timeout`, `retries`, `start_period` |
 | 10 | `labels`, `restart` | Only for services run outside of the swarm |

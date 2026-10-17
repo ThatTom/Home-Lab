@@ -1,0 +1,23 @@
+# The same NFS-backed Docker volumes on every node, so stacks can declare them external
+- name: Install the Docker SDK for the community.docker modules
+  ansible.builtin.apt:
+    name: python3-docker
+    state: present
+    update_cache: true
+    cache_valid_time: 3600
+
+# A changed address or path recreates the volume, which fails while a container uses it:
+# stop the services using it, run this, then start them again.
+- name: Create the NFS volumes
+  community.docker.docker_volume:
+    volume_name: "{{ item.name }}"
+    driver: local
+    driver_options:
+      type: nfs
+      o: addr={{ nas_address }},{{ nfs_mount_options }}
+      device: ":{{ item.path }}"
+    recreate: options-changed
+    state: present
+  loop: "{{ nfs_volumes }}"
+  loop_control:
+    label: "{{ item.name }}"
