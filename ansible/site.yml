@@ -1,11 +1,7 @@
 # Brings every host to its full configured state in one run.
 # bootstrap.yml picks the login per host, so no extra variables are needed.
-# Appdata replication is left out, it runs on its own schedule via replicate-appdata.yml.
 - name: Base setup
   ansible.builtin.import_playbook: bootstrap.yml
-
-- name: Failover pair replication keys
-  ansible.builtin.import_playbook: setup-replication-keys.yml
 
 - name: Traefik dynamic config
   ansible.builtin.import_playbook: traefik-config.yml
