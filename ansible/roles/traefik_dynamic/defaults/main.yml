@@ -1,0 +1,4 @@
+# Every *.yaml in this repo folder is copied to traefik_dynamic_dir on each node.
+# Traefik watches that directory, so changes apply without a restart.
+traefik_dynamic_src: "{{ playbook_dir }}/../network/traefik-configs"
+traefik_dynamic_dir: /opt/traefik/dynamic

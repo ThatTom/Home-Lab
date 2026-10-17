@@ -6,3 +6,9 @@
 
 - name: Failover pair replication keys
   ansible.builtin.import_playbook: setup-replication-keys.yml
+
+- name: Traefik dynamic config
+  ansible.builtin.import_playbook: traefik-config.yml
+
+- name: Traefik floating IP
+  ansible.builtin.import_playbook: keepalived.yml

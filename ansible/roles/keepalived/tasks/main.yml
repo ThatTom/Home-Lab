@@ -1,0 +1,70 @@
+- name: Check the VIP and priority are set
+  ansible.builtin.assert:
+    that:
+      - keepalived_vip | length > 0
+      - keepalived_priority is defined
+      - keepalived_peers | length > 0
+    fail_msg: >-
+      Set keepalived_vip in group_vars/swarm_managers.yml and keepalived_priority
+      for every swarm manager in homelab.yml.
+
+- name: Install keepalived and curl
+  ansible.builtin.apt:
+    name:
+      - keepalived
+      - curl
+    state: present
+    update_cache: true
+    cache_valid_time: 3600
+
+- name: Create unprivileged user for the health check
+  ansible.builtin.user:
+    name: keepalived_script
+    system: true
+    shell: /usr/sbin/nologin
+    create_home: false
+
+- name: Deploy keepalived config
+  ansible.builtin.template:
+    src: keepalived.conf.j2
+    dest: /etc/keepalived/keepalived.conf
+    owner: root
+    group: root
+    mode: "0640"
+    validate: keepalived -t -f %s
+  notify: Reload keepalived
+
+- name: Enable and start keepalived
+  ansible.builtin.systemd:
+    name: keepalived
+    enabled: true
+    state: started
+
+- name: Apply config changes now
+  ansible.builtin.meta: flush_handlers
+
+# Verification: exactly one node should hold the VIP
+- name: Give VRRP a moment to settle
+  ansible.builtin.pause:
+    seconds: 5
+  run_once: true
+
+- name: Read addresses on the VRRP interface
+  ansible.builtin.command: ip -4 -o addr show dev {{ keepalived_interface }}
+  register: vip_check
+  changed_when: false
+
+- name: Record whether this node holds the VIP
+  ansible.builtin.set_fact:
+    holds_vip: "{{ (keepalived_vip ~ '/') in vip_check.stdout }}"
+
+- name: Check exactly one node holds the VIP
+  ansible.builtin.assert:
+    that: vip_holders | length == 1
+    fail_msg: "Expected one VIP holder, found: {{ vip_holders | join(', ') or 'none' }}"
+    success_msg: "{{ keepalived_vip }} is held by {{ vip_holders | first }}"
+  vars:
+    vip_holders: >-
+      {{ ansible_play_hosts | map('extract', hostvars)
+         | selectattr('holds_vip') | map(attribute='inventory_hostname') | list }}
+  run_once: true

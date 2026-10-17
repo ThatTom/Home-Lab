@@ -1,0 +1,3 @@
+# Floating IP that follows a healthy Traefik between the managers (roles/keepalived).
+# Point DNS and the router's 80/443 port forwards at this address.
+keepalived_vip: 10.10.20.2

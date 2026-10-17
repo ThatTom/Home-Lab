@@ -1,0 +1,7 @@
+# Floating IP for Traefik on the swarm managers, see roles/keepalived.
+# The VIP and per-host priorities live in inventory/group_vars/swarm_managers.yml and homelab.yml.
+- name: Deploy keepalived floating IP for Traefik
+  hosts: swarm_managers
+  become: true
+  roles:
+    - keepalived

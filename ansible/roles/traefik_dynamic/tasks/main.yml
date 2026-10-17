@@ -1,0 +1,18 @@
+- name: Create the Traefik dynamic config directory
+  ansible.builtin.file:
+    path: "{{ traefik_dynamic_dir }}"
+    state: directory
+    owner: root
+    group: root
+    mode: "0755"
+
+- name: Copy dynamic config files from the repo
+  ansible.builtin.copy:
+    src: "{{ item }}"
+    dest: "{{ traefik_dynamic_dir }}/{{ item | basename }}"
+    owner: root
+    group: root
+    mode: "0644"
+  loop: "{{ query('ansible.builtin.fileglob', traefik_dynamic_src ~ '/*.yaml') }}"
+  loop_control:
+    label: "{{ item | basename }}"

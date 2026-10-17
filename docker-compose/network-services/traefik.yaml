@@ -9,7 +9,7 @@ services:
       - "--providers.docker.exposedbydefault=false"
       - "--providers.docker.network=diagon-alley"
       # File provider
-      - "--providers.file.filename=/opt/traefik/dynamic/homeassistant.yaml"
+      - "--providers.file.directory=/opt/traefik/dynamic"   # filled by ansible/traefik-config.yml
       - "--providers.file.watch=true"
       # Docker Swarm provider
       - "--providers.swarm=true"
@@ -21,6 +21,10 @@ services:
       - "--entrypoints.web.address=:80"
       - "--entrypoints.websecure.address=:443"
       - "--entrypoints.gitea_ssh.address=:2222"
+      # Health check for keepalived (ansible/roles/keepalived)
+      - "--entrypoints.ping.address=:8082"
+      - "--ping=true"
+      - "--ping.entrypoint=ping"
       # HTTP -> HTTPS
       - "--entrypoints.web.http.redirections.entrypoint.to=websecure"
       - "--entrypoints.web.http.redirections.entrypoint.scheme=https"
@@ -60,6 +64,10 @@ services:
         published: 2222
         protocol: tcp
         mode: host
+      - target: 8082
+        published: 8082
+        protocol: tcp
+        mode: host
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock:ro
       - traefik-letsencrypt:/letsencrypt
@@ -67,10 +75,11 @@ services:
     networks:
       - diagon-alley
     deploy:
-      replicas: 1
+      # One copy on each manager, the keepalived VIP points at a healthy one
+      mode: global
       placement:
         constraints:
-          - node.hostname == dumbledore
+          - node.role == manager
       restart_policy:
         condition: on-failure
       labels:

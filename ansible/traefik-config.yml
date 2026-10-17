@@ -1,0 +1,8 @@
+# Copies the static Traefik routes in network/traefik-configs
+# to every node that runs Traefik, see roles/traefik_dynamic.
+- name: Deploy Traefik dynamic config
+  hosts: swarm_managers
+  become: true
+  gather_facts: false
+  roles:
+    - traefik_dynamic
