@@ -44,6 +44,13 @@
   ansible.builtin.meta: flush_handlers
 
 # Verification: exactly one node should hold the VIP
+- name: Check Traefik answers its ping on this node (keepalived's health check)
+  ansible.builtin.uri:
+    url: "{{ keepalived_check_url }}"
+    timeout: 2
+  register: traefik_ping
+  failed_when: false
+
 - name: Give VRRP a moment to settle
   ansible.builtin.pause:
     seconds: 10                         # health check needs 2 passes, then VRRP elects a master
@@ -61,7 +68,12 @@
 - name: Check exactly one node holds the VIP
   ansible.builtin.assert:
     that: vip_holders | length == 1
-    fail_msg: "Expected one VIP holder, found: {{ vip_holders | join(', ') or 'none' }}"
+    fail_msg: >-
+      Expected one VIP holder, found: {{ vip_holders | join(', ') or 'none' }}.
+      Traefik ping per node: {% for h in ansible_play_hosts %}{{ h }}={{ hostvars[h].traefik_ping.status | default('?') }}
+      {%- if hostvars[h].traefik_ping.status | default(0) != 200 %} ({{ hostvars[h].traefik_ping.msg | default('') }}){% endif %}
+      {%- if not loop.last %}, {% endif %}{% endfor %}.
+      A node only takes the VIP while its ping returns 200.
     success_msg: "{{ keepalived_vip }} is held by {{ vip_holders | first | default('none') }}"
   vars:
     vip_holders: >-

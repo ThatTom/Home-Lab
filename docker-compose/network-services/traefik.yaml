@@ -75,9 +75,11 @@ services:
     networks:
       - diagon-alley
     deploy:
-      # One copy on each manager, the keepalived VIP points at a healthy one
-      mode: global
+      # One copy on each manager, the keepalived VIP points at a healthy one.
+      # Raise replicas if another manager is added.
+      replicas: 2
       placement:
+        max_replicas_per_node: 1
         constraints:
           - node.role == manager
       restart_policy:
