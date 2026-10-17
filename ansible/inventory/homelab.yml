@@ -25,8 +25,3 @@ all:
               ansible_host: 10.10.20.20
             winky:
               ansible_host: 10.10.20.21
-    # The workers also form the appdata failover pair
-    failover_pair:
-      hosts:
-        dobby:
-        winky:

@@ -1,7 +1,0 @@
-# Expects `peer` and `peer_addr` from inventory/group_vars/failover_pair.yml
-- name: Replicate each service
-  ansible.builtin.include_tasks: replicate-one.yml
-  loop: "{{ replicated_services }}"
-  loop_control:
-    loop_var: svc
-    label: "{{ svc.name }}"
