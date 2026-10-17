@@ -46,7 +46,7 @@
 # Verification: exactly one node should hold the VIP
 - name: Give VRRP a moment to settle
   ansible.builtin.pause:
-    seconds: 5
+    seconds: 10                         # health check needs 2 passes, then VRRP elects a master
   run_once: true
 
 - name: Read addresses on the VRRP interface
@@ -62,7 +62,7 @@
   ansible.builtin.assert:
     that: vip_holders | length == 1
     fail_msg: "Expected one VIP holder, found: {{ vip_holders | join(', ') or 'none' }}"
-    success_msg: "{{ keepalived_vip }} is held by {{ vip_holders | first }}"
+    success_msg: "{{ keepalived_vip }} is held by {{ vip_holders | first | default('none') }}"
   vars:
     vip_holders: >-
       {{ ansible_play_hosts | map('extract', hostvars)
