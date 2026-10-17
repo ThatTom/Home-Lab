@@ -8,3 +8,6 @@
 
 - name: Traefik floating IP
   ansible.builtin.import_playbook: keepalived.yml
+
+- name: Backups
+  ansible.builtin.import_playbook: backups.yml

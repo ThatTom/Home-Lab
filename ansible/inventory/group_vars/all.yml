@@ -26,3 +26,10 @@ bootstrap_user: harry
 # harry's password from the Semaphore environment variable secret harry_password.
 # An extra variable secret with the same name overrides this.
 harry_password: "{{ lookup('ansible.builtin.env', 'harry_password') }}"
+
+# Rustic backups to Backblaze B2 (backups.yml). All come from Semaphore environment variable secrets.
+rustic_password: "{{ lookup('ansible.builtin.env', 'rustic_password') }}"
+rustic_b2_key_id: "{{ lookup('ansible.builtin.env', 'b2_key_id') }}"
+rustic_b2_key: "{{ lookup('ansible.builtin.env', 'b2_key') }}"
+rustic_b2_bucket: "{{ lookup('ansible.builtin.env', 'b2_bucket') }}"
+rustic_b2_bucket_id: "{{ lookup('ansible.builtin.env', 'b2_bucket_id') }}"

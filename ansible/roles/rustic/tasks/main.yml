@@ -1,0 +1,123 @@
+- name: Check the B2 and repository secrets are set
+  ansible.builtin.assert:
+    that:
+      - rustic_password | length > 0
+      - rustic_b2_key_id | length > 0
+      - rustic_b2_key | length > 0
+      - rustic_b2_bucket | length > 0
+      - rustic_b2_bucket_id | length > 0
+    fail_msg: >-
+      Add rustic_password, b2_key_id, b2_key, b2_bucket and b2_bucket_id as environment
+      variable secrets in the template's Semaphore Variable Group.
+  run_once: true
+
+- name: Install sqlite3 for consistent SQLite copies
+  ansible.builtin.apt:
+    name: sqlite3
+    state: present
+    update_cache: true
+    cache_valid_time: 3600
+
+- name: Create the Rustic install directory
+  ansible.builtin.file:
+    path: /opt/rustic/{{ rustic_version }}
+    state: directory
+    owner: root
+    group: root
+    mode: "0755"
+
+- name: Download Rustic {{ rustic_version }}
+  ansible.builtin.get_url:
+    url: "{{ rustic_release_url }}/{{ rustic_version }}/{{ rustic_archive }}"
+    checksum: "sha256:{{ rustic_release_url }}/{{ rustic_version }}/{{ rustic_archive }}.sha256"
+    dest: /opt/rustic/{{ rustic_version }}/{{ rustic_archive }}
+    mode: "0644"
+  vars:
+    rustic_archive: rustic-{{ rustic_version }}-{{ rustic_arch_map[ansible_facts.architecture] }}.tar.gz
+  register: rustic_download
+
+- name: Unpack Rustic
+  ansible.builtin.unarchive:
+    src: "{{ rustic_download.dest }}"
+    dest: /opt/rustic/{{ rustic_version }}
+    remote_src: true
+    include:
+      - rustic
+    creates: /opt/rustic/{{ rustic_version }}/rustic
+
+- name: Put this Rustic version on the PATH
+  ansible.builtin.file:
+    src: /opt/rustic/{{ rustic_version }}/rustic
+    dest: /usr/local/bin/rustic
+    state: link
+    force: true
+
+- name: Create the Rustic config and dump directories
+  ansible.builtin.file:
+    path: "{{ item }}"
+    state: directory
+    owner: root
+    group: root
+    mode: "0700"
+  loop:
+    - /etc/rustic
+    - "{{ rustic_dump_dir }}"
+
+- name: Deploy the Rustic config (holds the B2 key and repository password)
+  ansible.builtin.template:
+    src: rustic.toml.j2
+    dest: /etc/rustic/rustic.toml
+    owner: root
+    group: root
+    mode: "0600"
+  no_log: true
+
+- name: Deploy the database dump script
+  ansible.builtin.template:
+    src: rustic-db-dump.sh.j2
+    dest: /usr/local/sbin/rustic-db-dump
+    owner: root
+    group: root
+    mode: "0700"
+
+- name: Check whether the repository exists
+  ansible.builtin.command: rustic repoinfo
+  register: rustic_repoinfo
+  changed_when: false
+  failed_when: false
+  run_once: true
+
+- name: Initialise the shared repository
+  ansible.builtin.command: rustic init
+  when: rustic_repoinfo.rc != 0
+  run_once: true
+
+- name: Deploy the systemd units
+  ansible.builtin.template:
+    src: "{{ item }}.j2"
+    dest: /etc/systemd/system/{{ item }}
+    owner: root
+    group: root
+    mode: "0644"
+  loop: "{{ rustic_units }}"
+  notify: Reload systemd
+
+- name: Remove the prune units from the other nodes
+  ansible.builtin.file:
+    path: /etc/systemd/system/{{ item }}
+    state: absent
+  loop:
+    - rustic-prune.service
+    - rustic-prune.timer
+  when: inventory_hostname != rustic_prune_host
+  notify: Reload systemd
+
+- name: Apply systemd changes now
+  ansible.builtin.meta: flush_handlers
+
+- name: Enable the timers
+  ansible.builtin.systemd:
+    name: "{{ item }}"
+    enabled: true
+    state: started
+  loop: "{{ rustic_units | select('match', '.*\.timer$') }}"

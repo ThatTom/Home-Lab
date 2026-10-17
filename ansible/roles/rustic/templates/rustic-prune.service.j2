@@ -1,0 +1,10 @@
+# Managed by Ansible (roles/rustic)
+[Unit]
+Description=Rustic prune of the shared B2 repository
+Wants=network-online.target
+After=network-online.target
+
+[Service]
+Type=oneshot
+Nice=10
+ExecStart=/usr/local/bin/rustic prune

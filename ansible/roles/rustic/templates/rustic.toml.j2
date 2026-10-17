@@ -1,0 +1,28 @@
+# Managed by Ansible (roles/rustic). Contains secrets, keep it 0600.
+[repository]
+repository = "opendal:b2"
+password = {{ rustic_password | to_json }}
+
+[repository.options]
+application_key_id = {{ rustic_b2_key_id | to_json }}
+application_key = {{ rustic_b2_key | to_json }}
+bucket = {{ rustic_b2_bucket | to_json }}
+bucket_id = {{ rustic_b2_bucket_id | to_json }}
+root = {{ rustic_b2_root | to_json }}
+
+[backup]
+one-file-system = true
+exclude-if-present = {{ rustic_exclude_if_present | to_json }}
+globs = {{ rustic_exclude_globs | map('regex_replace', '^', '!') | list | to_json }}
+
+[backup.hooks]
+# Dump the databases first so the snapshot holds consistent copies
+run-before = ["/usr/local/sbin/rustic-db-dump"]
+
+[[backup.snapshots]]
+sources = {{ rustic_sources | to_json }}
+
+[forget]
+keep-daily = {{ rustic_keep_daily }}
+keep-weekly = {{ rustic_keep_weekly }}
+keep-monthly = {{ rustic_keep_monthly }}

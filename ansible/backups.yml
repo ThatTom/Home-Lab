@@ -1,0 +1,7 @@
+# Daily Rustic backups of every node's Docker volumes and database dumps to Backblaze B2, see roles/rustic.
+# Needs the Semaphore environment variable secrets listed in inventory/group_vars/all.yml.
+- name: Deploy Rustic backups
+  hosts: all
+  become: true
+  roles:
+    - rustic

@@ -1,0 +1,11 @@
+# Managed by Ansible (roles/rustic)
+[Unit]
+Description=Daily Rustic backup
+
+[Timer]
+OnCalendar={{ rustic_backup_time }}
+RandomizedDelaySec={{ rustic_backup_random_delay }}
+Persistent=true
+
+[Install]
+WantedBy=timers.target

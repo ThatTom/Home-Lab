@@ -1,0 +1,45 @@
+rustic_version: v0.11.4
+rustic_release_url: https://github.com/rustic-rs/rustic/releases/download
+rustic_arch_map:
+  x86_64: x86_64-unknown-linux-musl
+  aarch64: aarch64-unknown-linux-musl
+  armv7l: armv7-unknown-linux-gnueabihf
+
+# Secrets, the real values come from inventory/group_vars/all.yml
+rustic_password: ""
+rustic_b2_key_id: ""
+rustic_b2_key: ""
+rustic_b2_bucket: ""
+rustic_b2_bucket_id: ""
+rustic_b2_root: /                       # folder in the bucket holding the shared repository
+
+# What gets backed up. NFS mounts inside the volumes (media) are skipped by one-file-system.
+rustic_dump_dir: /var/backups/rustic
+rustic_sources:
+  - /var/lib/docker/volumes
+  - "{{ rustic_dump_dir }}"
+rustic_exclude_globs:
+  - /var/lib/docker/volumes/metadata.db
+  - /var/lib/docker/volumes/*cache*
+  - /var/lib/docker/volumes/*_semaphore_tmp
+# A directory holding one of these files is skipped. PG_VERSION marks raw Postgres
+# data, which is covered by the pg_dumpall dumps instead.
+rustic_exclude_if_present:
+  - PG_VERSION
+  - CACHEDIR.TAG
+
+# Schedule and retention
+rustic_backup_time: "*-*-* 02:00:00"
+rustic_backup_random_delay: 15min
+rustic_keep_daily: 7
+rustic_keep_weekly: 4
+rustic_keep_monthly: 6
+
+# One node prunes the shared repository weekly, after the nightly backups have finished
+rustic_prune_host: dumbledore
+rustic_prune_time: "Sun *-*-* 05:00:00"
+
+# Only the prune host gets the prune units
+rustic_units: >-
+  {{ ['rustic-backup.service', 'rustic-backup.timer']
+     + (['rustic-prune.service', 'rustic-prune.timer'] if inventory_hostname == rustic_prune_host else []) }}

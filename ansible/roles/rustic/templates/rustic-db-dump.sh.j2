@@ -1,0 +1,33 @@
+#!/bin/bash
+# Managed by Ansible (roles/rustic). Runs before every Rustic backup.
+# Writes consistent copies of this node's databases to {{ rustic_dump_dir }}:
+#   postgres/<stack_service>.sql.gz  pg_dumpall of every running Postgres container
+#   sqlite/<volume path>             SQLite .backup of every SQLite file in the Docker volumes
+set -euo pipefail
+
+dump_dir={{ rustic_dump_dir }}
+volumes=/var/lib/docker/volumes
+
+rm -rf "${dump_dir:?}/postgres" "${dump_dir:?}/sqlite"
+mkdir -p "$dump_dir/postgres" "$dump_dir/sqlite"
+
+{% raw %}
+# Postgres: any running container whose image name contains "postgres"
+docker ps --format '{{.Names}} {{.Image}}' | while read -r container image; do
+    [[ "$image" == *postgres* ]] || continue
+    name=${container%%.*}               # swarm task name stack_service.1.id -> stack_service
+    user=$(docker exec "$container" printenv POSTGRES_USER < /dev/null || echo postgres)
+    echo "Dumping Postgres in $name"
+    docker exec "$container" pg_dumpall --clean --if-exists -U "$user" < /dev/null | gzip > "$dump_dir/postgres/$name.sql.gz"
+done
+{% endraw %}
+
+# SQLite: files on the local disk only (-xdev skips NFS media mounts)
+find "$volumes" -xdev -type f \( -name '*.db' -o -name '*.sqlite' -o -name '*.sqlite3' \) -print0 |
+while IFS= read -r -d '' db; do
+    [[ "$(head -c 15 "$db" 2>/dev/null)" == "SQLite format 3" ]] || continue
+    dest="$dump_dir/sqlite/${db#"$volumes"/}"
+    mkdir -p "$(dirname "$dest")"
+    echo "Copying SQLite $db"
+    sqlite3 "$db" ".timeout 10000" ".backup '$dest'" < /dev/null
+done

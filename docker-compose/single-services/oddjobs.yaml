@@ -15,7 +15,7 @@ services:
       replicas: 1
       placement:
         constraints:
-          - node.hostname == srv-02
+          - node.hostname == winky
       restart_policy:
         condition: on-failure
       labels:

@@ -1,0 +1,13 @@
+# Managed by Ansible (roles/rustic)
+[Unit]
+Description=Rustic backup to Backblaze B2
+Wants=network-online.target
+After=network-online.target docker.service
+
+[Service]
+Type=oneshot
+Nice=10
+IOSchedulingClass=idle
+ExecStart=/usr/local/bin/rustic backup
+# Remove this node's snapshots outside the retention policy, space is freed by the weekly prune
+ExecStart=/usr/local/bin/rustic forget --filter-host %H
