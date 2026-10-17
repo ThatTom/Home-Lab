@@ -120,4 +120,4 @@
     name: "{{ item }}"
     enabled: true
     state: started
-  loop: "{{ rustic_units | select('match', '.*\.timer$') }}"
+  loop: "{{ rustic_units | select('match', '.*[.]timer$') }}"
