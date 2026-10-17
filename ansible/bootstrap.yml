@@ -30,7 +30,7 @@
         that: harry_password | default('') | length > 0
         fail_msg: >-
           {{ inventory_hostname }} needs the {{ bootstrap_user }} login but harry_password is empty.
-          Add it as an extra variable secret in the template's Semaphore Variable Group.
+          Add it as a secret (environment or extra variable) in the template's Semaphore Variable Group.
       when: login_user == bootstrap_user
   roles:
     - base

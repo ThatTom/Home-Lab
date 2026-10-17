@@ -22,3 +22,7 @@ retired_users:
 # First login on fresh hosts, see bootstrap.yml. Its password comes from the
 # Semaphore secret variable harry_password.
 bootstrap_user: harry
+
+# harry's password from the Semaphore environment variable secret harry_password.
+# An extra variable secret with the same name overrides this.
+harry_password: "{{ lookup('ansible.builtin.env', 'harry_password') }}"
