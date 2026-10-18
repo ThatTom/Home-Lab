@@ -19,6 +19,7 @@ Services currently deployed, taken from the image versions in the [docker compos
 | Rackpad | Management | 1.8.3 | [rackpad.yaml](/docker-compose/single-services/rackpad.yaml) |
 | Grafana | Monitoring | 13.2.3 | [grafana.yaml](/docker-compose/monitoring/grafana.yaml) |
 | Prometheus | Monitoring | v3.15.0 | [prometheus.yaml](/docker-compose/monitoring/prometheus.yaml) |
+| cAdvisor | Monitoring | v0.60.6 | [prometheus.yaml](/docker-compose/monitoring/prometheus.yaml) |
 | Loki | Monitoring | 3.7.8 | [loki.yaml](/docker-compose/monitoring/loki.yaml) |
 | Alloy | Monitoring | v1.20.1 | [loki.yaml](/docker-compose/monitoring/loki.yaml) |
 | Gitea | Git | 1.27 | [gitea.yaml](/docker-compose/git/gitea.yaml) |

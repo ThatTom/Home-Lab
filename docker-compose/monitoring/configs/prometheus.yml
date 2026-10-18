@@ -55,6 +55,39 @@ scrape_configs:
         labels:
           instance: winky
 
+  # cAdvisor also runs on each node's host network, giving per-container CPU and memory
+  - job_name: cadvisor
+    static_configs:
+      - targets: ["10.10.20.10:9338"]
+        labels:
+          instance: dumbledore
+      - targets: ["10.10.20.11:9338"]
+        labels:
+          instance: flitwick
+      - targets: ["10.10.20.20:9338"]
+        labels:
+          instance: dobby
+      - targets: ["10.10.20.21:9338"]
+        labels:
+          instance: winky
+    # Shorten the Docker labels to stack and service. Swarm's labels override the compose ones,
+    # (.+) leaves the label alone when a container doesn't have that Docker label.
+    metric_relabel_configs:
+      - source_labels: [container_label_com_docker_compose_project]
+        regex: (.+)
+        target_label: stack
+      - source_labels: [container_label_com_docker_stack_namespace]
+        regex: (.+)
+        target_label: stack
+      - source_labels: [container_label_com_docker_compose_service]
+        regex: (.+)
+        target_label: service
+      - source_labels: [container_label_com_docker_swarm_service_name]
+        regex: (.+)
+        target_label: service
+      - regex: container_label_.*
+        action: labeldrop
+
   # Web services through Traefik: up, response time and certificate expiry
   - job_name: blackbox-http
     metrics_path: /probe

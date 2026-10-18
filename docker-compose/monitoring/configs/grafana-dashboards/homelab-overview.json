@@ -451,13 +451,91 @@
         "tooltip": { "mode": "multi", "sort": "desc" } }
     },
 
-    { "id": 23, "type": "row", "title": "Backups", "collapsed": false, "panels": [], "gridPos": { "x": 0, "y": 57, "w": 24, "h": 1 } },
+    { "id": 25, "type": "row", "title": "Service resources", "collapsed": false, "panels": [], "gridPos": { "x": 0, "y": 57, "w": 24, "h": 1 } },
+    {
+      "id": 26,
+      "type": "timeseries",
+      "title": "CPU by service",
+      "description": "Summed across every container of the service. 100% is one full CPU core.",
+      "gridPos": { "x": 0, "y": 58, "w": 12, "h": 9 },
+      "datasource": { "type": "prometheus", "uid": "prometheus" },
+      "targets": [
+        { "refId": "A", "datasource": { "type": "prometheus", "uid": "prometheus" }, "legendFormat": "{{service}}",
+          "expr": "sum by (service) (rate(container_cpu_usage_seconds_total{job=\"cadvisor\", service!=\"\"}[$__rate_interval])) * 100" }
+      ],
+      "fieldConfig": {
+        "defaults": { "unit": "percent", "min": 0, "custom": { "fillOpacity": 10, "showPoints": "never" } },
+        "overrides": []
+      },
+      "options": { "legend": { "displayMode": "table", "placement": "right", "calcs": ["lastNotNull", "max"], "sortBy": "Max", "sortDesc": true },
+        "tooltip": { "mode": "multi", "sort": "desc" } }
+    },
+    {
+      "id": 27,
+      "type": "timeseries",
+      "title": "Memory by service",
+      "description": "Working set memory (what the kernel can't reclaim), summed across every container of the service.",
+      "gridPos": { "x": 12, "y": 58, "w": 12, "h": 9 },
+      "datasource": { "type": "prometheus", "uid": "prometheus" },
+      "targets": [
+        { "refId": "A", "datasource": { "type": "prometheus", "uid": "prometheus" }, "legendFormat": "{{service}}",
+          "expr": "sum by (service) (container_memory_working_set_bytes{job=\"cadvisor\", service!=\"\"})" }
+      ],
+      "fieldConfig": {
+        "defaults": { "unit": "bytes", "min": 0, "custom": { "fillOpacity": 10, "showPoints": "never" } },
+        "overrides": []
+      },
+      "options": { "legend": { "displayMode": "table", "placement": "right", "calcs": ["lastNotNull", "max"], "sortBy": "Max", "sortDesc": true },
+        "tooltip": { "mode": "multi", "sort": "desc" } }
+    },
+    {
+      "id": 28,
+      "type": "table",
+      "title": "Service resource usage",
+      "description": "CPU averaged over the last 5 minutes, 100% is one full CPU core.",
+      "gridPos": { "x": 0, "y": 67, "w": 24, "h": 10 },
+      "datasource": { "type": "prometheus", "uid": "prometheus" },
+      "targets": [
+        { "refId": "A", "datasource": { "type": "prometheus", "uid": "prometheus" }, "instant": true, "range": false, "format": "table",
+          "expr": "sum by (service, stack) (rate(container_cpu_usage_seconds_total{job=\"cadvisor\", service!=\"\"}[5m])) * 100" },
+        { "refId": "B", "datasource": { "type": "prometheus", "uid": "prometheus" }, "instant": true, "range": false, "format": "table",
+          "expr": "sum by (service, stack) (container_memory_working_set_bytes{job=\"cadvisor\", service!=\"\"})" }
+      ],
+      "transformations": [
+        { "id": "merge", "options": {} },
+        { "id": "organize", "options": {
+          "excludeByName": { "Time": true },
+          "indexByName": { "service": 0, "stack": 1, "Value #A": 2, "Value #B": 3 },
+          "renameByName": { "service": "Service", "stack": "Stack", "Value #A": "CPU", "Value #B": "Memory" }
+        } }
+      ],
+      "fieldConfig": {
+        "defaults": { "custom": { "align": "auto" } },
+        "overrides": [
+          { "matcher": { "id": "byName", "options": "CPU" }, "properties": [
+            { "id": "unit", "value": "percent" },
+            { "id": "decimals", "value": 1 },
+            { "id": "custom.cellOptions", "value": { "type": "color-text" } },
+            { "id": "thresholds", "value": { "mode": "absolute", "steps": [
+              { "color": "green", "value": null }, { "color": "orange", "value": 50 }, { "color": "red", "value": 100 }] } }
+          ] },
+          { "matcher": { "id": "byName", "options": "Memory" }, "properties": [
+            { "id": "unit", "value": "bytes" },
+            { "id": "decimals", "value": 1 }
+          ] }
+        ]
+      },
+      "options": { "showHeader": true, "cellHeight": "sm", "footer": { "show": false },
+        "sortBy": [{ "displayName": "CPU", "desc": true }] }
+    },
+
+    { "id": 23, "type": "row", "title": "Backups", "collapsed": false, "panels": [], "gridPos": { "x": 0, "y": 77, "w": 24, "h": 1 } },
     {
       "id": 24,
       "type": "table",
       "title": "Rustic backups",
       "description": "Thresholds match the BackupOverdue and PruneOverdue alerts. A node missing here has never reported a backup.",
-      "gridPos": { "x": 0, "y": 58, "w": 24, "h": 7 },
+      "gridPos": { "x": 0, "y": 78, "w": 24, "h": 7 },
       "datasource": { "type": "prometheus", "uid": "prometheus" },
       "targets": [
         { "refId": "A", "datasource": { "type": "prometheus", "uid": "prometheus" }, "instant": true, "range": false, "format": "table",

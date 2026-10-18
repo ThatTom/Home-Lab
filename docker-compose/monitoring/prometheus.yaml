@@ -74,6 +74,29 @@ services:
       restart_policy:
         condition: on-failure
 
+  # One per node on the host network, per-container CPU and memory for the service panels.
+  # Only the labels naming the stack and service are kept, and only CPU and memory are collected.
+  cadvisor:
+    image: ghcr.io/google/cadvisor:v0.60.6
+    command:
+      - "--port=9338"
+      - "--docker_only=true"
+      - "--housekeeping_interval=30s"
+      - "--enable_metrics=cpu,memory"
+      - "--store_container_labels=false"
+      - "--whitelisted_container_labels=com.docker.stack.namespace,com.docker.swarm.service.name,com.docker.compose.project,com.docker.compose.service"
+    volumes:
+      - /:/rootfs:ro
+      - /var/run:/var/run:ro
+      - /sys:/sys:ro
+      - /var/lib/docker:/var/lib/docker:ro
+    networks:
+      - host
+    deploy:
+      mode: global
+      restart_policy:
+        condition: on-failure
+
 volumes:
   prometheus-data:
     name: prometheus-data
@@ -94,7 +117,7 @@ networks:
 
 configs:
   prometheus:
-    name: prometheus-config-v3
+    name: prometheus-config-v4
     file: ./configs/prometheus.yml
 
   alert-rules:
