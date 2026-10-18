@@ -11,6 +11,8 @@ services:
     volumes:
       # SQLite database + uploaded photos live here
       - odd-jobs-data:/data
+    networks:
+      - diagon-alley
     deploy:
       replicas: 1
       placement:
