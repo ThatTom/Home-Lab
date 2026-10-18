@@ -4,10 +4,22 @@ global:
   scrape_interval: 30s
   evaluation_interval: 30s
 
+rule_files:
+  - /etc/prometheus/rules/*.yml
+
+alerting:
+  alertmanagers:
+    - static_configs:
+        - targets: ["alertmanager:9093"]
+
 scrape_configs:
   - job_name: prometheus
     static_configs:
       - targets: ["localhost:9090"]
+
+  - job_name: alertmanager
+    static_configs:
+      - targets: ["alertmanager:9093"]
 
   # Every Traefik copy, found through Swarm's DNS on the diagon-alley network
   - job_name: traefik
@@ -15,3 +27,78 @@ scrape_configs:
       - names: ["tasks.traefik_traefik"]
         type: A
         port: 8080
+
+  # node_exporter runs on each node's host network, addresses match ansible/inventory/homelab.yml
+  - job_name: node
+    static_configs:
+      - targets: ["10.10.20.10:9100"]
+        labels:
+          instance: dumbledore
+      - targets: ["10.10.20.11:9100"]
+        labels:
+          instance: flitwick
+      - targets: ["10.10.20.20:9100"]
+        labels:
+          instance: dobby
+      - targets: ["10.10.20.21:9100"]
+        labels:
+          instance: winky
+
+  # Web services through Traefik: up, response time and certificate expiry
+  - job_name: blackbox-http
+    metrics_path: /probe
+    params:
+      module: [http_2xx]
+    static_configs:
+      - targets:
+          - https://jellyfin.hogwartsnetwork.co.uk
+          - https://seerr.hogwartsnetwork.co.uk
+          - https://radarr.hogwartsnetwork.co.uk
+          - https://sonarr.hogwartsnetwork.co.uk
+          - https://spindle.hogwartsnetwork.co.uk
+          - https://immich.hogwartsnetwork.co.uk
+          - https://documents.hogwartsnetwork.co.uk
+          - https://wiki.hogwartsnetwork.co.uk
+          - https://books.hogwartsnetwork.co.uk
+          - https://travel.hogwartsnetwork.co.uk
+          - https://tankbook.hogwartsnetwork.co.uk
+          - https://jobs.hogwartsnetwork.co.uk
+          - https://spoolman.hogwartsnetwork.co.uk
+          - https://ai.hogwartsnetwork.co.uk
+          - https://homeassistant.hogwartsnetwork.co.uk
+          - https://git.hogwartsnetwork.co.uk
+          - https://gitea-mirror.hogwartsnetwork.co.uk
+          - https://komodo.hogwartsnetwork.co.uk
+          - https://semaphore.hogwartsnetwork.co.uk
+          - https://traefik.hogwartsnetwork.co.uk
+          - https://auth.hogwartsnetwork.co.uk
+          - https://password.hogwartsnetwork.co.uk
+          - https://monitoring.hogwartsnetwork.co.uk
+          - https://ntfy.hogwartsnetwork.co.uk
+          - https://terminal.hogwartsnetwork.co.uk
+          - https://rackpad.hogwartsnetwork.co.uk
+          - https://dashboard.hogwartsnetwork.co.uk
+          # keepalived health checks, a failure means that manager can't take the Traefik VIP
+          - http://10.10.20.10:8082/ping
+          - http://10.10.20.11:8082/ping
+    relabel_configs: &blackbox_relabel
+      - source_labels: [__address__]
+        target_label: __param_target
+      - source_labels: [__param_target]
+        target_label: instance
+      - target_label: __address__
+        replacement: blackbox-exporter:9115
+
+  # Devices without a Traefik route: is their port reachable
+  - job_name: blackbox-tcp
+    metrics_path: /probe
+    params:
+      module: [tcp_connect]
+    static_configs:
+      - targets:
+          - 10.10.20.2:443              # Traefik VIP
+          - 10.10.10.1:80               # leaky-cauldron
+          - 10.10.10.2:80               # floo
+          - 10.10.10.3:80               # portkey
+          - 192.168.100.30:80           # gringotts, still on the legacy network
+    relabel_configs: *blackbox_relabel

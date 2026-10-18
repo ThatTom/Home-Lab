@@ -1,0 +1,102 @@
+# Prometheus alert rules, mounted as a Swarm config (docker-compose/monitoring/prometheus.yaml).
+# Swarm configs can't change in place, so bump the config name's suffix there after editing this file.
+# Alerts go to Alertmanager, which posts them to ntfy (configs/alertmanager.yml).
+groups:
+  - name: backups
+    rules:
+      - alert: BackupOverdue
+        expr: time() - rustic_last_success_timestamp_seconds{task="backup"} > 26 * 3600
+        for: 10m
+        labels:
+          severity: critical
+        annotations:
+          summary: "{{ $labels.instance }}: no successful backup in over 26 hours"
+          description: "The last successful Rustic backup finished {{ $value | humanizeDuration }} ago. Check journalctl -u rustic-backup on {{ $labels.instance }}."
+
+      - alert: BackupFailed
+        expr: rustic_last_run_success{task="backup"} == 0
+        labels:
+          severity: warning
+        annotations:
+          summary: "{{ $labels.instance }}: last backup failed"
+          description: "The last Rustic backup run failed. Check journalctl -u rustic-backup on {{ $labels.instance }}."
+
+      # node_exporter is up but has never seen a backup result, e.g. the backup timer isn't set up
+      - alert: BackupNeverReported
+        expr: up{job="node"} == 1 unless on(instance) rustic_last_run_timestamp_seconds{task="backup"}
+        for: 26h
+        labels:
+          severity: warning
+        annotations:
+          summary: "{{ $labels.instance }}: no backup has ever reported"
+          description: "No Rustic backup result has been recorded in 26 hours. Check that backups.yml has run and the rustic-backup.timer is active."
+
+      - alert: PruneOverdue
+        expr: time() - rustic_last_success_timestamp_seconds{task="prune"} > 8 * 86400
+        for: 10m
+        labels:
+          severity: warning
+        annotations:
+          summary: "{{ $labels.instance }}: Rustic prune hasn't succeeded in over 8 days"
+          description: "Old snapshots are still taking space in B2. Check journalctl -u rustic-prune on {{ $labels.instance }}."
+
+      - alert: PruneFailed
+        expr: rustic_last_run_success{task="prune"} == 0
+        labels:
+          severity: warning
+        annotations:
+          summary: "{{ $labels.instance }}: last Rustic prune failed"
+          description: "Check journalctl -u rustic-prune on {{ $labels.instance }}."
+
+  - name: nodes
+    rules:
+      - alert: NodeExporterDown
+        expr: up{job="node"} == 0
+        for: 5m
+        labels:
+          severity: critical
+        annotations:
+          summary: "{{ $labels.instance }}: not reporting metrics"
+          description: "Prometheus can't reach node_exporter on {{ $labels.instance }}, the node may be down."
+
+      - alert: DiskSpaceLow
+        expr: >-
+          node_filesystem_avail_bytes{fstype!~"tmpfs|ramfs|overlay|squashfs|vfat|nfs.*|fuse.*"}
+          / node_filesystem_size_bytes * 100 < 15
+        for: 15m
+        labels:
+          severity: warning
+        annotations:
+          summary: "{{ $labels.instance }}: {{ $labels.mountpoint }} below 15% free"
+          description: "{{ $labels.mountpoint }} has {{ $value | printf \"%.1f\" }}% free."
+
+      - alert: DiskSpaceCritical
+        expr: >-
+          node_filesystem_avail_bytes{fstype!~"tmpfs|ramfs|overlay|squashfs|vfat|nfs.*|fuse.*"}
+          / node_filesystem_size_bytes * 100 < 5
+        for: 5m
+        labels:
+          severity: critical
+        annotations:
+          summary: "{{ $labels.instance }}: {{ $labels.mountpoint }} below 5% free"
+          description: "{{ $labels.mountpoint }} has {{ $value | printf \"%.1f\" }}% free."
+
+  - name: probes
+    rules:
+      - alert: ServiceDown
+        expr: probe_success{job=~"blackbox-.*"} == 0
+        for: 5m
+        labels:
+          severity: critical
+        annotations:
+          summary: "{{ $labels.instance }} is down"
+          description: "The {{ $labels.job }} check for {{ $labels.instance }} has failed for 5 minutes."
+
+      - alert: CertificateExpiringSoon
+        expr: probe_ssl_earliest_cert_expiry - time() < 14 * 86400
+        for: 1h
+        labels:
+          severity: warning
+        annotations:
+          summary: "{{ $labels.instance }}: certificate expires in {{ $value | humanizeDuration }}"
+          description: "Traefik normally renews 30 days before expiry, so renewal has likely stopped. Check the Traefik logs."

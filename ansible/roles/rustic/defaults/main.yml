@@ -43,3 +43,6 @@ rustic_prune_time: "Sun *-*-* 05:00:00"
 rustic_units: >-
   {{ ['rustic-backup.service', 'rustic-backup.timer']
      + (['rustic-prune.service', 'rustic-prune.timer'] if inventory_hostname == rustic_prune_host else []) }}
+
+# node_exporter's textfile collector reads backup and prune results from here
+rustic_metrics_dir: /var/lib/node_exporter/textfile

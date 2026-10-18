@@ -63,15 +63,15 @@ Services pinned to a node only come back once that node's data is restored.
 | --- | --- | --- |
 | dumbledore | Swarm manager, Traefik VIP holder, Rustic prune | Komodo Core (Postgres, FerretDB), VoidAuth (SSO), ntfy, Leafwiki, Rackpad, Tankbook |
 | flitwick | Swarm manager, Traefik backup | Nemoir, Open WebUI (`ai` label) |
-| dobby | Worker | Gitea, Gitea Mirror, Immich, Paperless, Vaultwarden, Grafana, Prometheus, TREK |
+| dobby | Worker | Gitea, Gitea Mirror, Immich, Paperless, Vaultwarden, Grafana, Prometheus, Alertmanager, TREK |
 | winky | Worker | Semaphore, Spoolman, Odd Jobs |
 | dobby / winky | `media` label | Jellyfin, Radarr, Sonarr, Seerr, Spindle (whichever node they were last on) |
-| Any | | Traefik (managers), Homepage, Termix, Gitea runners, Komodo Periphery, socket-proxy |
+| Any | | Traefik (managers), Homepage, Termix, blackbox_exporter, Gitea runners, node_exporter, Komodo Periphery, socket-proxy |
 
 Knock-on effects to plan for:
 
 - **dumbledore down** - SSO (VoidAuth) and Komodo are unavailable, so log in with local accounts where services have them
-- **dobby down** - Gitea is unavailable, so Semaphore and Komodo cannot pull the repo. Use your local clone (see [Running Ansible Without Semaphore](#running-ansible-without-semaphore))
+- **dobby down** - Gitea is unavailable, so Semaphore and Komodo cannot pull the repo. Use your local clone (see [Running Ansible Without Semaphore](#running-ansible-without-semaphore)). Prometheus and Alertmanager also run there, so no alerts are sent while it is down
 - **winky down** - Semaphore is unavailable, run Ansible from another machine
 
 ## Recovering a Single Node

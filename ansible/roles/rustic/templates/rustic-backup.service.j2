@@ -8,6 +8,9 @@ After=network-online.target docker.service
 Type=oneshot
 Nice=10
 IOSchedulingClass=idle
+ExecStartPre=/usr/local/sbin/rustic-metrics start backup
 ExecStart=/usr/local/bin/rustic backup
 # Remove this node's snapshots outside the retention policy, space is freed by the weekly prune
 ExecStart=/usr/local/bin/rustic forget --filter-host %H
+# Records success or failure for Prometheus, runs whatever the result
+ExecStopPost=/usr/local/sbin/rustic-metrics stop backup

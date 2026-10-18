@@ -1,0 +1,16 @@
+# blackbox_exporter modules, mounted as a Swarm config (docker-compose/monitoring/prometheus.yaml).
+# Swarm configs can't change in place, so bump the config name's suffix there after editing this file.
+modules:
+  # Follows SSO redirects to the login page, also reports certificate expiry for https targets
+  http_2xx:
+    prober: http
+    timeout: 10s
+    http:
+      preferred_ip_protocol: ip4
+      follow_redirects: true
+
+  tcp_connect:
+    prober: tcp
+    timeout: 5s
+    tcp:
+      preferred_ip_protocol: ip4

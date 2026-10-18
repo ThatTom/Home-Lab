@@ -1,3 +1,4 @@
 # Defaults only, the real values live in inventory/group_vars/all.yml and homelab.yml
 swarm_overlay_networks: []
 swarm_node_labels: {}
+swarm_secrets: []

@@ -8,6 +8,8 @@ services:
     configs:
       - source: prometheus
         target: /etc/prometheus/prometheus.yml
+      - source: alert-rules
+        target: /etc/prometheus/rules/alerts.yml
     networks:
       - monitoring-internal
       - diagon-alley
@@ -19,9 +21,65 @@ services:
       restart_policy:
         condition: on-failure
 
+  alertmanager:
+    image: prom/alertmanager:v0.34.1
+    volumes:
+      - alertmanager-data:/alertmanager
+    configs:
+      - source: alertmanager
+        target: /etc/alertmanager/alertmanager.yml
+    secrets:
+      - ntfy-alertmanager-token
+    networks:
+      - monitoring-internal
+      - diagon-alley               # reaches ntfy
+    deploy:
+      replicas: 1
+      placement:
+        constraints:
+          - node.hostname == dobby
+      restart_policy:
+        condition: on-failure
+
+  blackbox-exporter:
+    image: prom/blackbox-exporter:v0.28.0
+    configs:
+      - source: blackbox
+        target: /etc/blackbox_exporter/config.yml
+    networks:
+      - monitoring-internal
+    deploy:
+      replicas: 1
+      restart_policy:
+        condition: on-failure
+
+  # One per node on the host network, so it sees the host's disks and network.
+  # Rustic writes its backup results to the textfile directory (ansible/roles/rustic).
+  node-exporter:
+    image: prom/node-exporter:v1.12.1
+    command:
+      - "--path.rootfs=/host"
+      - "--collector.textfile.directory=/host/var/lib/node_exporter/textfile"
+    volumes:
+      - type: bind
+        source: /
+        target: /host
+        read_only: true
+        bind:
+          propagation: rslave
+    networks:
+      - host
+    deploy:
+      mode: global
+      restart_policy:
+        condition: on-failure
+
 volumes:
   prometheus-data:
     name: prometheus-data
+
+  alertmanager-data:
+    name: alertmanager-data
 
 networks:
   diagon-alley:
@@ -30,7 +88,28 @@ networks:
   monitoring-internal:
     external: true
 
+  host:
+    name: host
+    external: true
+
 configs:
   prometheus:
-    name: prometheus-config-v1
+    name: prometheus-config-v2
     file: ./configs/prometheus.yml
+
+  alert-rules:
+    name: prometheus-alert-rules-v1
+    file: ./configs/alert-rules.yml
+
+  alertmanager:
+    name: alertmanager-config-v1
+    file: ./configs/alertmanager.yml
+
+  blackbox:
+    name: blackbox-config-v1
+    file: ./configs/blackbox.yml
+
+# Created by ansible/swarm.yml from the ntfy_alert_token Semaphore secret
+secrets:
+  ntfy-alertmanager-token:
+    external: true

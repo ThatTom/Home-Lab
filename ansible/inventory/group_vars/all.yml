@@ -57,3 +57,8 @@ nfs_volumes:
     path: /mnt/Hogwarts-Vault/Music
   - name: termix-data
     path: /mnt/Hogwarts-Vault/Termix
+
+# Swarm secrets created by swarm.yml from Semaphore environment variable secrets
+swarm_secrets:
+  - name: ntfy-alertmanager-token        # ntfy access token Alertmanager posts alerts with
+    value: "{{ lookup('ansible.builtin.env', 'ntfy_alert_token') }}"

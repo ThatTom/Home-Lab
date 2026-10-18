@@ -63,6 +63,14 @@
     - /etc/rustic
     - "{{ rustic_dump_dir }}"
 
+- name: Create the node_exporter textfile directory
+  ansible.builtin.file:
+    path: "{{ rustic_metrics_dir }}"
+    state: directory
+    owner: root
+    group: root
+    mode: "0755"
+
 - name: Deploy the Rustic config (holds the B2 key and repository password)
   ansible.builtin.template:
     src: rustic.toml.j2
@@ -79,6 +87,14 @@
     owner: root
     group: root
     mode: "0700"
+
+- name: Deploy the backup metrics script
+  ansible.builtin.template:
+    src: rustic-metrics.sh.j2
+    dest: /usr/local/sbin/rustic-metrics
+    owner: root
+    group: root
+    mode: "0755"
 
 - name: Check whether the repository exists
   ansible.builtin.command: rustic repoinfo

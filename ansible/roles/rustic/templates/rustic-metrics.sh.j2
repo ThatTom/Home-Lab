@@ -1,0 +1,49 @@
+#!/bin/bash
+# Managed by Ansible (roles/rustic). Called by the rustic-backup and rustic-prune units:
+#   rustic-metrics start <task>   records the start time (ExecStartPre)
+#   rustic-metrics stop <task>    writes the result for node_exporter's textfile collector (ExecStopPost)
+# The result comes from systemd's SERVICE_RESULT, so a failed run is recorded as well as a good one.
+set -euo pipefail
+
+action=$1
+task=$2
+metrics_dir={{ rustic_metrics_dir }}
+start_file=/run/rustic-$task.start
+prom_file=$metrics_dir/rustic_$task.prom
+
+case "$action" in
+    start)
+        date +%s > "$start_file"
+        ;;
+    stop)
+        now=$(date +%s)
+        started=$(cat "$start_file" 2>/dev/null || echo "$now")
+        success=0
+        [[ "${SERVICE_RESULT:-}" == "success" ]] && success=1
+
+        # Keep the previous success time when this run failed
+        last_success=$(awk '/^rustic_last_success_timestamp_seconds/ {print $2}' "$prom_file" 2>/dev/null || true)
+        [[ $success == 1 ]] && last_success=$now
+
+        tmp=$(mktemp "$metrics_dir/.rustic_$task.XXXXXX")
+        {
+            echo "# HELP rustic_last_run_success 1 if the last Rustic run succeeded, 0 if it failed."
+            echo "# TYPE rustic_last_run_success gauge"
+            echo "rustic_last_run_success{task=\"$task\"} $success"
+            echo "# HELP rustic_last_run_timestamp_seconds When the last Rustic run finished."
+            echo "# TYPE rustic_last_run_timestamp_seconds gauge"
+            echo "rustic_last_run_timestamp_seconds{task=\"$task\"} $now"
+            echo "# HELP rustic_last_run_duration_seconds How long the last Rustic run took."
+            echo "# TYPE rustic_last_run_duration_seconds gauge"
+            echo "rustic_last_run_duration_seconds{task=\"$task\"} $((now - started))"
+            if [[ -n "$last_success" ]]; then
+                echo "# HELP rustic_last_success_timestamp_seconds When the last successful Rustic run finished."
+                echo "# TYPE rustic_last_success_timestamp_seconds gauge"
+                echo "rustic_last_success_timestamp_seconds{task=\"$task\"} $last_success"
+            fi
+        } > "$tmp"
+        chmod 0644 "$tmp"
+        mv "$tmp" "$prom_file"
+        rm -f "$start_file"
+        ;;
+esac

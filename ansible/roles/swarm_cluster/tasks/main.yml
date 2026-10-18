@@ -26,3 +26,16 @@
   loop: "{{ groups['all'] }}"
   when: hostvars[item].swarm_node_labels | default({}) | length > 0
   run_once: true
+
+# Secrets come from Semaphore environment variables, entries left empty are skipped
+- name: Create Swarm secrets
+  community.docker.docker_secret:
+    name: "{{ item.name }}"
+    data: "{{ item.value }}"
+    state: present
+  loop: "{{ swarm_secrets }}"
+  loop_control:
+    label: "{{ item.name }}"
+  when: item.value | length > 0
+  no_log: true
+  run_once: true
