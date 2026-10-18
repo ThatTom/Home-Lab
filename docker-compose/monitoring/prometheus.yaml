@@ -1,8 +1,8 @@
 services:
   prometheus:
     image: prom/prometheus:v3.15.0
-    #ports:
-    #  - "9090:9090"
+    ports:
+      - "9090:9090"
     volumes:
       - prometheus-data:/prometheus
     configs:
