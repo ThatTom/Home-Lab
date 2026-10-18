@@ -42,7 +42,7 @@ services:
         condition: on-failure
 
   blackbox-exporter:
-    image: prom/blackbox-exporter:v0.28.0
+    image: prom/blackbox-exporter:v0.29.0
     configs:
       - source: blackbox
         target: /etc/blackbox_exporter/config.yml
