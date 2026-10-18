@@ -8,6 +8,10 @@ services:
     configs:
       - source: grafana-datasources
         target: /etc/grafana/provisioning/datasources/prometheus.yaml
+      - source: grafana-dashboard-provider
+        target: /etc/grafana/provisioning/dashboards/homelab.yaml
+      - source: grafana-dashboard-overview
+        target: /etc/grafana/dashboards/homelab-overview.json
     networks:
       - diagon-alley
       - monitoring-internal
@@ -45,3 +49,12 @@ configs:
   grafana-datasources:
     name: grafana-datasources-v1
     file: ./configs/grafana-datasources.yaml
+
+  grafana-dashboard-provider:
+    name: grafana-dashboard-provider-v1
+    file: ./configs/grafana-dashboards.yaml
+
+  # Dashboards are mounted one config each, into the folder the provider above watches
+  grafana-dashboard-overview:
+    name: grafana-dashboard-overview-v1
+    file: ./configs/grafana-dashboards/homelab-overview.json

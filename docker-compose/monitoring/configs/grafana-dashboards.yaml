@@ -1,0 +1,14 @@
+# Mounted into Grafana as a Swarm config (docker-compose/monitoring/grafana.yaml).
+# Swarm configs can't change in place, so bump the config name's suffix there after editing this file.
+# Loads every dashboard JSON mounted into /etc/grafana/dashboards, from configs/grafana-dashboards/.
+apiVersion: 1
+
+providers:
+  - name: homelab
+    folder: HomeLab
+    type: file
+    disableDeletion: true
+    # The repo is the source of truth: edit in the UI, export the JSON, commit it and bump the config suffix
+    allowUiUpdates: false
+    options:
+      path: /etc/grafana/dashboards
