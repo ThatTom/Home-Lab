@@ -27,6 +27,7 @@ Set up by [ansible/backups.yml](/ansible/backups.yml) and the [rustic role](/ans
 - **Excluded**
   - Raw Postgres data directories (the dumps replace them)
   - Cache volumes (`*cache*`) and Semaphore's temp volume
+  - Loki's log storage (`loki-data`), logs start again from empty after a restore
   - NFS volumes (media, Termix), which live on gringotts
 
 ### Not covered by these backups
@@ -63,10 +64,10 @@ Services pinned to a node only come back once that node's data is restored.
 | --- | --- | --- |
 | dumbledore | Swarm manager, Traefik VIP holder, Rustic prune | Komodo Core (Postgres, FerretDB), VoidAuth (SSO), ntfy, Leafwiki, Rackpad, Tankbook |
 | flitwick | Swarm manager, Traefik backup | Nemoir, Open WebUI (`ai` label) |
-| dobby | Worker | Gitea, Gitea Mirror, Immich, Paperless, Vaultwarden, Grafana, Prometheus, Alertmanager, TREK |
+| dobby | Worker | Gitea, Gitea Mirror, Immich, Paperless, Vaultwarden, Grafana, Prometheus, Alertmanager, Loki, TREK |
 | winky | Worker | Semaphore, Spoolman, Odd Jobs |
 | dobby / winky | `media` label | Jellyfin, Radarr, Sonarr, Seerr, Spindle (whichever node they were last on) |
-| Any | | Traefik (managers), Homepage, Termix, blackbox_exporter, Gitea runners, node_exporter, Komodo Periphery, socket-proxy |
+| Any | | Traefik (managers), Homepage, Termix, blackbox_exporter, Gitea runners, node_exporter, Alloy, Komodo Periphery, socket-proxy |
 
 Knock-on effects to plan for:
 

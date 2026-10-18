@@ -1,0 +1,161 @@
+{
+  "uid": "homelab-logs",
+  "title": "HomeLab Logs",
+  "description": "Container and host logs from every node, collected by Alloy into Loki.",
+  "tags": ["homelab", "logs"],
+  "timezone": "browser",
+  "editable": true,
+  "graphTooltip": 1,
+  "time": { "from": "now-1h", "to": "now" },
+  "refresh": "",
+  "schemaVersion": 41,
+  "annotations": { "list": [] },
+  "links": [
+    { "title": "Overview", "type": "link", "url": "/d/homelab-overview", "icon": "dashboard" }
+  ],
+  "templating": {
+    "list": [
+      {
+        "name": "node",
+        "label": "Node",
+        "type": "query",
+        "datasource": { "type": "loki", "uid": "loki" },
+        "query": { "type": 1, "label": "node", "stream": "", "refId": "LokiVariableQueryEditor-VariableQuery" },
+        "definition": "label_values(node)",
+        "refresh": 2,
+        "sort": 1,
+        "multi": true,
+        "includeAll": true,
+        "allValue": ".*",
+        "current": { "text": ["All"], "value": ["$__all"] }
+      },
+      {
+        "name": "stack",
+        "label": "Stack",
+        "type": "query",
+        "datasource": { "type": "loki", "uid": "loki" },
+        "query": { "type": 1, "label": "stack", "stream": "{job=\"docker\", node=~\"$node\"}", "refId": "LokiVariableQueryEditor-VariableQuery" },
+        "definition": "label_values({job=\"docker\", node=~\"$node\"}, stack)",
+        "refresh": 2,
+        "sort": 1,
+        "multi": true,
+        "includeAll": true,
+        "allValue": ".*",
+        "current": { "text": ["All"], "value": ["$__all"] }
+      },
+      {
+        "name": "service",
+        "label": "Service",
+        "type": "query",
+        "datasource": { "type": "loki", "uid": "loki" },
+        "query": { "type": 1, "label": "service", "stream": "{job=\"docker\", node=~\"$node\", stack=~\"$stack\"}", "refId": "LokiVariableQueryEditor-VariableQuery" },
+        "definition": "label_values({job=\"docker\", node=~\"$node\", stack=~\"$stack\"}, service)",
+        "refresh": 2,
+        "sort": 1,
+        "multi": true,
+        "includeAll": true,
+        "allValue": ".*",
+        "current": { "text": ["All"], "value": ["$__all"] }
+      },
+      {
+        "name": "unit",
+        "label": "Host unit",
+        "type": "query",
+        "datasource": { "type": "loki", "uid": "loki" },
+        "query": { "type": 1, "label": "unit", "stream": "{job=\"journal\", node=~\"$node\"}", "refId": "LokiVariableQueryEditor-VariableQuery" },
+        "definition": "label_values({job=\"journal\", node=~\"$node\"}, unit)",
+        "refresh": 2,
+        "sort": 1,
+        "multi": true,
+        "includeAll": true,
+        "allValue": ".*",
+        "current": { "text": ["All"], "value": ["$__all"] }
+      },
+      {
+        "name": "search",
+        "label": "Search (regex)",
+        "type": "textbox",
+        "query": "",
+        "current": { "text": "", "value": "" }
+      }
+    ]
+  },
+  "panels": [
+    { "id": 1, "type": "row", "title": "Containers", "collapsed": false, "panels": [], "gridPos": { "x": 0, "y": 0, "w": 24, "h": 1 } },
+    {
+      "id": 2,
+      "type": "timeseries",
+      "title": "Log lines by stack",
+      "gridPos": { "x": 0, "y": 1, "w": 12, "h": 8 },
+      "datasource": { "type": "loki", "uid": "loki" },
+      "targets": [
+        { "refId": "A", "datasource": { "type": "loki", "uid": "loki" }, "queryType": "range", "legendFormat": "{{stack}}",
+          "expr": "sum by (stack) (count_over_time({job=\"docker\", node=~\"$node\", stack=~\"$stack\", service=~\"$service\"} |~ \"(?i)$search\" [$__auto]))" }
+      ],
+      "fieldConfig": {
+        "defaults": { "unit": "short", "custom": { "drawStyle": "bars", "fillOpacity": 60, "stacking": { "mode": "normal" }, "showPoints": "never" } },
+        "overrides": []
+      },
+      "options": { "legend": { "displayMode": "list", "placement": "bottom" }, "tooltip": { "mode": "multi", "sort": "desc" } }
+    },
+    {
+      "id": 3,
+      "type": "timeseries",
+      "title": "Error lines by service",
+      "description": "Container log lines containing error, fatal, panic or exception, ignoring case.",
+      "gridPos": { "x": 12, "y": 1, "w": 12, "h": 8 },
+      "datasource": { "type": "loki", "uid": "loki" },
+      "targets": [
+        { "refId": "A", "datasource": { "type": "loki", "uid": "loki" }, "queryType": "range", "legendFormat": "{{service}}",
+          "expr": "sum by (service) (count_over_time({job=\"docker\", node=~\"$node\", stack=~\"$stack\", service=~\"$service\"} |~ \"(?i)(error|fatal|panic|exception)\" [$__auto]))" }
+      ],
+      "fieldConfig": {
+        "defaults": { "unit": "short", "color": { "mode": "palette-classic" }, "custom": { "drawStyle": "bars", "fillOpacity": 60, "stacking": { "mode": "normal" }, "showPoints": "never" } },
+        "overrides": []
+      },
+      "options": { "legend": { "displayMode": "list", "placement": "bottom" }, "tooltip": { "mode": "multi", "sort": "desc" } }
+    },
+    {
+      "id": 4,
+      "type": "logs",
+      "title": "Container logs",
+      "gridPos": { "x": 0, "y": 9, "w": 24, "h": 14 },
+      "datasource": { "type": "loki", "uid": "loki" },
+      "targets": [
+        { "refId": "A", "datasource": { "type": "loki", "uid": "loki" }, "queryType": "range", "maxLines": 1000,
+          "expr": "{job=\"docker\", node=~\"$node\", stack=~\"$stack\", service=~\"$service\"} |~ \"(?i)$search\"" }
+      ],
+      "options": { "showTime": true, "showLabels": false, "showCommonLabels": false, "wrapLogMessage": true, "prettifyLogMessage": false,
+        "enableLogDetails": true, "dedupStrategy": "none", "sortOrder": "Descending" }
+    },
+
+    { "id": 5, "type": "row", "title": "Hosts", "collapsed": false, "panels": [], "gridPos": { "x": 0, "y": 23, "w": 24, "h": 1 } },
+    {
+      "id": 6,
+      "type": "logs",
+      "title": "Host warnings and errors",
+      "description": "journald entries at warning priority or above, e.g. failed rustic-backup runs.",
+      "gridPos": { "x": 0, "y": 24, "w": 24, "h": 10 },
+      "datasource": { "type": "loki", "uid": "loki" },
+      "targets": [
+        { "refId": "A", "datasource": { "type": "loki", "uid": "loki" }, "queryType": "range", "maxLines": 500,
+          "expr": "{job=\"journal\", node=~\"$node\", unit=~\"$unit\", level=~\"emerg|alert|crit|err|warning\"} |~ \"(?i)$search\"" }
+      ],
+      "options": { "showTime": true, "showLabels": false, "showCommonLabels": false, "wrapLogMessage": true, "prettifyLogMessage": false,
+        "enableLogDetails": true, "dedupStrategy": "none", "sortOrder": "Descending" }
+    },
+    {
+      "id": 7,
+      "type": "logs",
+      "title": "Host logs",
+      "gridPos": { "x": 0, "y": 34, "w": 24, "h": 14 },
+      "datasource": { "type": "loki", "uid": "loki" },
+      "targets": [
+        { "refId": "A", "datasource": { "type": "loki", "uid": "loki" }, "queryType": "range", "maxLines": 1000,
+          "expr": "{job=\"journal\", node=~\"$node\", unit=~\"$unit\"} |~ \"(?i)$search\"" }
+      ],
+      "options": { "showTime": true, "showLabels": false, "showCommonLabels": false, "wrapLogMessage": true, "prettifyLogMessage": false,
+        "enableLogDetails": true, "dedupStrategy": "none", "sortOrder": "Descending" }
+    }
+  ]
+}

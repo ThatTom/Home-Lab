@@ -21,6 +21,17 @@ scrape_configs:
     static_configs:
       - targets: ["alertmanager:9093"]
 
+  - job_name: loki
+    static_configs:
+      - targets: ["loki:3100"]
+
+  # Every Alloy copy (one per node) in the loki stack, found through Swarm's DNS
+  - job_name: alloy
+    dns_sd_configs:
+      - names: ["tasks.loki_alloy"]
+        type: A
+        port: 12345
+
   # Every Traefik copy, found through Swarm's DNS on the diagon-alley network
   - job_name: traefik
     dns_sd_configs:

@@ -1,0 +1,66 @@
+services:
+  loki:
+    image: grafana/loki:3.7.8
+    command:
+      - "-config.file=/etc/loki/config.yaml"
+    volumes:
+      - loki-data:/loki
+    configs:
+      - source: loki
+        target: /etc/loki/config.yaml
+    networks:
+      - monitoring-internal
+    deploy:
+      replicas: 1
+      placement:
+        constraints:
+          - node.hostname == dobby
+      restart_policy:
+        condition: on-failure
+
+  # One per node, reads the host's journal and its containers' logs through the Docker socket
+  alloy:
+    image: grafana/alloy:v1.20.1
+    command:
+      - "run"
+      - "--server.http.listen-addr=0.0.0.0:12345"
+      - "--storage.path=/var/lib/alloy/data"
+      - "/etc/alloy/config.alloy"
+    environment:
+      NODE_NAME: "{{.Node.Hostname}}"
+    volumes:
+      - alloy-data:/var/lib/alloy/data
+      - /var/run/docker.sock:/var/run/docker.sock:ro
+      - /var/log:/var/log:ro
+      - /run/log:/run/log:ro
+      - /etc/machine-id:/etc/machine-id:ro
+    configs:
+      - source: alloy
+        target: /etc/alloy/config.alloy
+    networks:
+      - monitoring-internal
+    deploy:
+      mode: global
+      restart_policy:
+        condition: on-failure
+
+volumes:
+  loki-data:
+    name: loki-data
+
+  # Where each node's Alloy remembers how far it has read
+  alloy-data:
+    name: alloy-data
+
+networks:
+  monitoring-internal:
+    external: true
+
+configs:
+  loki:
+    name: loki-config-v1
+    file: ./configs/loki.yaml
+
+  alloy:
+    name: alloy-config-v1
+    file: ./configs/alloy.alloy

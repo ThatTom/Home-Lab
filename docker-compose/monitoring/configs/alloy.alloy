@@ -1,0 +1,82 @@
+// Mounted into Alloy as a Swarm config (docker-compose/monitoring/loki.yaml).
+// Swarm configs can't change in place, so bump the config name's suffix there after editing this file.
+// Runs on every node and ships its journald and Docker container logs to Loki.
+// NODE_NAME is set from the Swarm node's hostname in loki.yaml.
+
+loki.write "default" {
+  endpoint {
+    url = "http://loki:3100/loki/api/v1/push"
+  }
+}
+
+// Host logs: systemd units (sshd, docker, keepalived, rustic-backup...) and the kernel
+loki.relabel "journal" {
+  forward_to = []
+
+  rule {
+    source_labels = ["__journal__systemd_unit"]
+    target_label  = "unit"
+  }
+
+  rule {
+    source_labels = ["__journal_priority_keyword"]
+    target_label  = "level"
+  }
+}
+
+// No path set, so it reads both /var/log/journal (persistent) and /run/log/journal (volatile)
+loki.source.journal "host" {
+  max_age       = "12h"
+  relabel_rules = loki.relabel.journal.rules
+  labels        = {job = "journal", node = sys.env("NODE_NAME")}
+  forward_to    = [loki.write.default.receiver]
+}
+
+// Container logs, labelled with the stack and service they belong to
+discovery.docker "containers" {
+  host = "unix:///var/run/docker.sock"
+}
+
+discovery.relabel "containers" {
+  targets = []
+
+  rule {
+    source_labels = ["__meta_docker_container_name"]
+    regex         = "/(.*)"
+    target_label  = "container"
+  }
+
+  // Compose projects run outside the swarm first, so a swarm stack overrides them.
+  // (.+) leaves the label alone when the container doesn't have that Docker label.
+  rule {
+    source_labels = ["__meta_docker_container_label_com_docker_compose_project"]
+    regex         = "(.+)"
+    target_label  = "stack"
+  }
+
+  rule {
+    source_labels = ["__meta_docker_container_label_com_docker_stack_namespace"]
+    regex         = "(.+)"
+    target_label  = "stack"
+  }
+
+  rule {
+    source_labels = ["__meta_docker_container_label_com_docker_compose_service"]
+    regex         = "(.+)"
+    target_label  = "service"
+  }
+
+  rule {
+    source_labels = ["__meta_docker_container_label_com_docker_swarm_service_name"]
+    regex         = "(.+)"
+    target_label  = "service"
+  }
+}
+
+loki.source.docker "containers" {
+  host          = "unix:///var/run/docker.sock"
+  targets       = discovery.docker.containers.targets
+  relabel_rules = discovery.relabel.containers.rules
+  labels        = {job = "docker", node = sys.env("NODE_NAME")}
+  forward_to    = [loki.write.default.receiver]
+}

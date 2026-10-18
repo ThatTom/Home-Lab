@@ -22,6 +22,7 @@ rustic_exclude_globs:
   - /var/lib/docker/volumes/metadata.db
   - /var/lib/docker/volumes/*cache*
   - /var/lib/docker/volumes/*_semaphore_tmp
+  - /var/lib/docker/volumes/loki-data   # 30 days of logs, not worth paying B2 to store
 # A directory holding one of these files is skipped. PG_VERSION marks raw Postgres
 # data, which is covered by the pg_dumpall dumps instead.
 rustic_exclude_if_present:

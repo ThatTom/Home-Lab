@@ -81,6 +81,27 @@ groups:
           summary: "{{ $labels.instance }}: {{ $labels.mountpoint }} below 5% free"
           description: "{{ $labels.mountpoint }} has {{ $value | printf \"%.1f\" }}% free."
 
+  - name: logging
+    rules:
+      - alert: LokiDown
+        expr: up{job="loki"} == 0
+        for: 10m
+        labels:
+          severity: warning
+        annotations:
+          summary: "Loki is down"
+          description: "No logs are being stored. Check docker service logs loki_loki."
+
+      # A stopped Alloy drops out of DNS rather than reporting down, so compare against the nodes that are up
+      - alert: LogShipperMissing
+        expr: (count(up{job="alloy"} == 1) or vector(0)) < count(up{job="node"} == 1)
+        for: 10m
+        labels:
+          severity: warning
+        annotations:
+          summary: "Alloy isn't running on every node"
+          description: "{{ $value }} Alloy copies are up, fewer than the nodes reporting metrics, so some node's logs aren't being collected. Check docker service ps loki_alloy."
+
   - name: probes
     rules:
       - alert: ServiceDown

@@ -94,11 +94,11 @@ networks:
 
 configs:
   prometheus:
-    name: prometheus-config-v2
+    name: prometheus-config-v3
     file: ./configs/prometheus.yml
 
   alert-rules:
-    name: prometheus-alert-rules-v1
+    name: prometheus-alert-rules-v2
     file: ./configs/alert-rules.yml
 
   alertmanager:
