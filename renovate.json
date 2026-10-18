@@ -28,6 +28,12 @@
     {
       "matchPackageNames": ["ghcr.io/immich-app/**", "vaultwarden/server"],
       "labels": ["renovate", "careful"]
+    },
+    {
+      "description": "A Postgres major version can't read the previous one's data, upgrading needs a dump and restore",
+      "matchPackageNames": ["ghcr.io/immich-app/postgres"],
+      "matchUpdateTypes": ["major"],
+      "enabled": false
     }
   ]
 }
