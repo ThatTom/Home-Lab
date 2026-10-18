@@ -1,6 +1,6 @@
 services:
   odd-jobs:
-    image: git.hogwartsnetwork.co.uk/hogwartsimages/odd-jobs:14.10.26
+    image: git.hogwartsnetwork.co.uk/hogwartsimages/odd-jobs:19.10.26
     environment:
       # Must match the URL you open the app on, otherwise form submissions are rejected.
       # e.g. https://odd-jobs.your-tailnet.ts.net or http://192.168.1.50:3000
