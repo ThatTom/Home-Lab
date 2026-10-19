@@ -19,6 +19,11 @@ docker_daemon_settings:
     max-size: 10m
     max-file: "3"
 
+# A node running a container whose name matches this is the one running the playbook (Semaphore).
+# Docker isn't restarted there, pass -e docker_skip_controller=false when running from another machine.
+docker_controller_container: '(^|_)semaphore\.'
+docker_skip_controller: true
+
 # Weekly clean up of images, build cache and stopped containers older than docker_prune_until.
 # Volumes are never pruned.
 docker_prune_time: "Sat *-*-* 04:00:00"

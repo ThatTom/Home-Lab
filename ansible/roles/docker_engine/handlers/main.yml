@@ -1,8 +1,10 @@
-# Restarts every container on the node, docker.yml runs one node at a time so the rest keep serving
+# Restarts every container on the node, docker.yml runs one node at a time so the rest keep serving.
+# Skipped on the node running Semaphore, see tasks/main.yml.
 - name: Restart Docker
   ansible.builtin.systemd:
     name: docker
     state: restarted
+  when: not docker_is_controller | bool
 
 - name: Reload systemd
   ansible.builtin.systemd:
