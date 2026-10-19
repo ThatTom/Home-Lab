@@ -13,6 +13,12 @@ services:
     networks:
       - monitoring-internal
       - diagon-alley
+    healthcheck:
+      test: ["CMD", "wget", "-qO", "/dev/null", "http://localhost:9090/-/healthy"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 60s
     deploy:
       replicas: 1
       placement:
@@ -30,9 +36,16 @@ services:
         target: /etc/alertmanager/alertmanager.yml
     secrets:
       - ntfy-alertmanager-token
+      - healthchecks-ping-url
     networks:
       - monitoring-internal
       - diagon-alley               # reaches ntfy
+    healthcheck:
+      test: ["CMD", "wget", "-qO", "/dev/null", "http://localhost:9093/-/healthy"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 20s
     deploy:
       replicas: 1
       placement:
@@ -48,6 +61,12 @@ services:
         target: /etc/blackbox_exporter/config.yml
     networks:
       - monitoring-internal
+    healthcheck:
+      test: ["CMD", "wget", "-qO", "/dev/null", "http://localhost:9115/-/healthy"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 10s
     deploy:
       replicas: 1
       restart_policy:
@@ -69,6 +88,12 @@ services:
           propagation: rslave
     networks:
       - host
+    healthcheck:
+      test: ["CMD", "wget", "-qO", "/dev/null", "http://localhost:9100/"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 10s
     deploy:
       mode: global
       restart_policy:
@@ -121,18 +146,21 @@ configs:
     file: ./configs/prometheus.yml
 
   alert-rules:
-    name: prometheus-alert-rules-v2
+    name: prometheus-alert-rules-v3
     file: ./configs/alert-rules.yml
 
   alertmanager:
-    name: alertmanager-config-v1
+    name: alertmanager-config-v2
     file: ./configs/alertmanager.yml
 
   blackbox:
     name: blackbox-config-v1
     file: ./configs/blackbox.yml
 
-# Created by ansible/swarm.yml from the ntfy_alert_token Semaphore secret
+# Created by ansible/swarm.yml from the ntfy_alert_token and healthchecks_ping_url Semaphore secrets
 secrets:
   ntfy-alertmanager-token:
+    external: true
+
+  healthchecks-ping-url:
     external: true

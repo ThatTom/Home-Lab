@@ -62,3 +62,5 @@ nfs_volumes:
 swarm_secrets:
   - name: ntfy-alertmanager-token        # ntfy access token Alertmanager posts alerts with
     value: "{{ lookup('ansible.builtin.env', 'ntfy_alert_token') }}"
+  - name: healthchecks-ping-url          # healthchecks.io ping URL Alertmanager sends the Watchdog heartbeat to
+    value: "{{ lookup('ansible.builtin.env', 'healthchecks_ping_url') }}"

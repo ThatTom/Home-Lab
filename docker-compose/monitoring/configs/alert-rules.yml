@@ -2,6 +2,18 @@
 # Swarm configs can't change in place, so bump the config name's suffix there after editing this file.
 # Alerts go to Alertmanager, which posts them to ntfy (configs/alertmanager.yml).
 groups:
+  # Always firing. Alertmanager sends it to healthchecks.io, which alerts by email when it stops arriving,
+  # so a dead dobby, Prometheus or Alertmanager is still noticed (configs/alertmanager.yml)
+  - name: meta
+    rules:
+      - alert: Watchdog
+        expr: vector(1)
+        labels:
+          severity: none
+        annotations:
+          summary: "Alerting pipeline heartbeat"
+          description: "Always firing, its absence at healthchecks.io means alerts aren't being sent."
+
   - name: backups
     rules:
       - alert: BackupOverdue

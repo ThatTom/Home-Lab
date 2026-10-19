@@ -72,7 +72,7 @@ Services pinned to a node only come back once that node's data is restored.
 Knock-on effects to plan for:
 
 - **dumbledore down** - SSO (VoidAuth) and Komodo are unavailable, so log in with local accounts where services have them
-- **dobby down** - Gitea is unavailable, so Semaphore and Komodo cannot pull the repo. Use your local clone (see [Running Ansible Without Semaphore](#running-ansible-without-semaphore)). Prometheus and Alertmanager also run there, so no alerts are sent while it is down
+- **dobby down** - Gitea is unavailable, so Semaphore and Komodo cannot pull the repo. Use your local clone (see [Running Ansible Without Semaphore](#running-ansible-without-semaphore)). Prometheus and Alertmanager also run there, so no alerts are sent while it is down. healthchecks.io emails you when their Watchdog heartbeat stops arriving
 - **winky down** - Semaphore is unavailable, run Ansible from another machine
 
 ## Recovering a Single Node
