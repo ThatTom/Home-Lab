@@ -59,8 +59,6 @@ services:
             ]
           }
         }
-    ports:
-      - "8800:8000"
     volumes:
       - data:/usr/src/paperless/data
       - media:/usr/src/paperless/media
