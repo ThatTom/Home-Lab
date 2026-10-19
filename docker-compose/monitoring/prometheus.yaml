@@ -146,7 +146,7 @@ configs:
     file: ./configs/prometheus.yml
 
   alert-rules:
-    name: prometheus-alert-rules-v4
+    name: prometheus-alert-rules-v5
     file: ./configs/alert-rules.yml
 
   alertmanager:

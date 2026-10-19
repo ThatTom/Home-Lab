@@ -23,8 +23,9 @@ services:
           }
         }
     volumes:
-      - semaphore_data:/var/lib/semaphore
-      - semaphore_config:/etc/semaphore
+      # Database and config on the NAS so Semaphore can run on any node, repo clones stay local
+      - semaphore-data:/var/lib/semaphore:nocopy
+      - semaphore-config:/etc/semaphore:nocopy
       - semaphore_tmp:/tmp/semaphore
     networks:
       - diagon-alley
@@ -35,10 +36,8 @@ services:
       retries: 3
       start_period: 30s
     deploy:
+      # Never more than one copy, SQLite can only be opened by one Semaphore at a time
       replicas: 1
-      placement:
-        constraints:
-          - node.hostname == winky
       restart_policy:
         condition: on-failure
       labels:
@@ -54,8 +53,14 @@ services:
         - "traefik.http.services.semaphore-api.loadbalancer.server.port=3000"
 
 volumes:
-  semaphore_data:
-  semaphore_config:
+  semaphore-data:
+    name: semaphore-data
+    external: true    # NFS share, created on every node by ansible/swarm.yml
+
+  semaphore-config:
+    name: semaphore-config
+    external: true    # NFS share, created on every node by ansible/swarm.yml
+
   semaphore_tmp:
 
 networks:

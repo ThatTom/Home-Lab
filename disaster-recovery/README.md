@@ -28,13 +28,13 @@ Set up by [ansible/backups.yml](/ansible/backups.yml) and the [rustic role](/ans
   - Raw Postgres data directories (the dumps replace them)
   - Cache volumes (`*cache*`) and Semaphore's temp volume
   - Loki's log storage (`loki-data`), logs start again from empty after a restore
-  - NFS volumes (media, Termix), which live on gringotts
+  - NFS volumes (media, Termix, Semaphore), which live on gringotts
 
 ### Not covered by these backups
 
 | Item | Where it is | Risk |
 | --- | --- | --- |
-| Media and Termix data | gringotts NFS shares | Needs the NAS's own backup/redundancy |
+| Media, Termix and Semaphore data | gringotts NFS shares | Needs the NAS's own backup/redundancy |
 | Komodo `core.env` / `periphery.env` | `~/komodo` on dumbledore | Not backed up, keep a copy in the break-glass kit |
 | Komodo backups path (`COMPOSE_KOMODO_BACKUPS_PATH`) | Host folder on dumbledore | Not backed up |
 | Stack `.env` files (Nemoir, Paperless, Rackpad) | Wherever the stacks are deployed from | Keep copies, or move the values into Komodo |
@@ -65,15 +65,15 @@ Services pinned to a node only come back once that node's data is restored.
 | dumbledore | Swarm manager, Traefik VIP holder, Rustic prune, restore test | Traefik (`traefik` label), Komodo Core (Postgres, FerretDB), VoidAuth (SSO), ntfy, Leafwiki, Rackpad, Tankbook |
 | flitwick | Swarm manager, Traefik backup | Traefik (`traefik` label), Nemoir, Open WebUI (`ai` label) |
 | dobby | Worker | Gitea, Gitea Mirror, Immich, Paperless, Vaultwarden, Grafana, Prometheus, Alertmanager, Loki, TREK |
-| winky | Swarm manager | Semaphore, Spoolman, Odd Jobs |
+| winky | Swarm manager | Spoolman, Odd Jobs |
 | dobby / winky | `media` label | Jellyfin, Radarr, Sonarr, Seerr, Spindle (whichever node they were last on) |
-| Any | | Homepage, Termix, blackbox_exporter, Gitea runners, node_exporter, cAdvisor, Alloy, Komodo Periphery, socket-proxy |
+| Any | | Homepage, Termix, Semaphore (data on gringotts), blackbox_exporter, Gitea runners, node_exporter, cAdvisor, Alloy, Komodo Periphery, socket-proxy |
 
 Knock-on effects to plan for:
 
 - **dumbledore down** - SSO (VoidAuth) and Komodo are unavailable, so log in with local accounts where services have them
 - **dobby down** - Gitea is unavailable, so Semaphore and Komodo cannot pull the repo. Use your local clone (see [Running Ansible Without Semaphore](#running-ansible-without-semaphore)). Prometheus and Alertmanager also run there, so no alerts are sent while it is down. healthchecks.io emails you when their Watchdog heartbeat stops arriving
-- **winky down** - Semaphore is unavailable, run Ansible from another machine
+- **gringotts down** - Semaphore and Termix are unavailable (their data is on the NAS), run Ansible from another machine
 
 ## Recovering a Single Node
 
@@ -231,7 +231,7 @@ If it was a manager and you rebuilt the cluster in step 1, re-add it as a manage
 
 ## Running Ansible Without Semaphore
 
-For when winky (Semaphore) or dobby (Gitea) is down. From any Linux machine (or WSL) that can reach the nodes:
+For when Semaphore, gringotts (its data) or dobby (Gitea) is down. From any Linux machine (or WSL) that can reach the nodes:
 
 ```
 pipx install ansible-core
@@ -280,5 +280,5 @@ Every few months, by hand:
 
 - **Security updates** are installed daily by unattended-upgrades ([updates.yml](/ansible/updates.yml)), which never reboots and never upgrades Docker
 - **Everything else** is installed by [patch.yml](/ansible/patch.yml), one node at a time: drain, upgrade, reboot if needed, wait for the node to rejoin, make it active again. It stops at the first failure and leaves that node drained to look at. Services pinned to a node are down while it's drained
-- **winky** runs Semaphore, so a run from Semaphore skips it. Patch it from another machine ([without Semaphore](#running-ansible-without-semaphore)) with `patch.yml --limit winky -e os_patch_skip_controller=false`
+- **The node running Semaphore** is skipped by a run from Semaphore, since draining it would stop the run. Either drain that node by hand first (`docker node update --availability drain <node>`, Semaphore moves to another node, then make it active again) and run patch.yml again, or patch it from another machine ([without Semaphore](#running-ansible-without-semaphore)) with `patch.yml --limit <node> -e os_patch_skip_controller=false`
 - `RebootRequired` alerts when a node has needed a reboot for over 8 days

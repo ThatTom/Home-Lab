@@ -119,7 +119,7 @@ groups:
           severity: warning
         annotations:
           summary: "{{ $labels.instance }}: has needed a reboot for over 8 days"
-          description: "Updates installed {{ $value | humanizeDuration }} ago need a reboot. Run patch.yml for {{ $labels.instance }} (winky has to be patched from outside Semaphore)."
+          description: "Updates installed {{ $value | humanizeDuration }} ago need a reboot. Run patch.yml for {{ $labels.instance }} (a run from Semaphore skips the node Semaphore is on)."
 
   - name: logging
     rules:
