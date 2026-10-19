@@ -56,7 +56,7 @@ nfs_volumes:
   - name: media-music
     path: /mnt/Hogwarts-Vault/Music
   - name: termix-data
-    path: /mnt/Hogwarts-Vault/Termix
+    path: /mnt/Hogwarts-Vault/DockerVolumes/Termix
   # Semaphore's database and its config.json (which holds the key its stored secrets are encrypted with).
   # create: true makes the folder on the share if it's missing, owned by Semaphore's user.
   - name: semaphore-data
