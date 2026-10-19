@@ -1,0 +1,26 @@
+# Docker is installed from Docker's own apt repository on nodes that don't have it yet.
+# Nodes that already have Docker are left as they are, patch.yml upgrades it with everything else.
+docker_packages:
+  - docker-ce
+  - docker-ce-cli
+  - containerd.io
+  - docker-buildx-plugin
+  - docker-compose-plugin
+docker_apt_arch_map:
+  x86_64: amd64
+  aarch64: arm64
+  armv7l: armhf
+
+# Merged into the node's existing /etc/docker/daemon.json, these keys win over what's there.
+# Log options only apply to containers created after the change, Swarm tasks pick them up on their next update.
+docker_daemon_settings:
+  log-driver: json-file
+  log-opts:
+    max-size: 10m
+    max-file: "3"
+
+# Weekly clean up of images, build cache and stopped containers older than docker_prune_until.
+# Volumes are never pruned.
+docker_prune_time: "Sat *-*-* 04:00:00"
+docker_prune_random_delay: 30min
+docker_prune_until: 168h

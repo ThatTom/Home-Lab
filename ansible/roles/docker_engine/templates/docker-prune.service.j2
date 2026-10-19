@@ -1,0 +1,13 @@
+# Managed by Ansible (roles/docker_engine). Volumes are never pruned.
+[Unit]
+Description=Remove unused Docker images, build cache and stopped containers
+After=docker.service
+Requires=docker.service
+
+[Service]
+Type=oneshot
+Nice=10
+IOSchedulingClass=idle
+ExecStart=/usr/bin/docker container prune --force --filter until={{ docker_prune_until }}
+ExecStart=/usr/bin/docker image prune --all --force --filter until={{ docker_prune_until }}
+ExecStart=/usr/bin/docker builder prune --all --force --filter until={{ docker_prune_until }}

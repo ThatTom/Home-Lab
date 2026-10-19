@@ -1,0 +1,10 @@
+# Docker Engine on every node, see roles/docker_engine: installs it on fresh nodes, keeps daemon.json's
+# log rotation in place and cleans up old images weekly. One node at a time, since a daemon.json
+# change restarts Docker and every container on that node.
+- name: Docker Engine install, config and clean up
+  hosts: all
+  become: true
+  serial: 1
+  max_fail_percentage: 0
+  roles:
+    - docker_engine

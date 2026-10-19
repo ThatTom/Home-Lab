@@ -1,0 +1,11 @@
+# Managed by Ansible (roles/docker_engine)
+[Unit]
+Description=Weekly Docker clean up
+
+[Timer]
+OnCalendar={{ docker_prune_time }}
+RandomizedDelaySec={{ docker_prune_random_delay }}
+Persistent=true
+
+[Install]
+WantedBy=timers.target

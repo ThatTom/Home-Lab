@@ -1,0 +1,9 @@
+# Restarts every container on the node, docker.yml runs one node at a time so the rest keep serving
+- name: Restart Docker
+  ansible.builtin.systemd:
+    name: docker
+    state: restarted
+
+- name: Reload systemd
+  ansible.builtin.systemd:
+    daemon_reload: true

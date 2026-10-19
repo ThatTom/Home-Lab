@@ -1,0 +1,112 @@
+- name: Check whether Docker is installed
+  ansible.builtin.stat:
+    path: /usr/bin/docker
+  register: docker_binary
+
+# Only on fresh nodes, so an existing install's apt source is never duplicated
+- name: Install Docker from Docker's apt repository
+  when: not docker_binary.stat.exists
+  block:
+    - name: Install the packages needed to add the repository
+      ansible.builtin.apt:
+        name:
+          - ca-certificates
+          - curl
+        state: present
+        update_cache: true
+
+    - name: Create the apt keyrings directory
+      ansible.builtin.file:
+        path: /etc/apt/keyrings
+        state: directory
+        owner: root
+        group: root
+        mode: "0755"
+
+    - name: Download Docker's signing key
+      ansible.builtin.get_url:
+        url: https://download.docker.com/linux/{{ docker_distro }}/gpg
+        dest: /etc/apt/keyrings/docker.asc
+        mode: "0644"
+
+    - name: Add Docker's apt repository
+      ansible.builtin.copy:
+        content: |
+          # Managed by Ansible (roles/docker_engine)
+          Types: deb
+          URIs: https://download.docker.com/linux/{{ docker_distro }}
+          Suites: {{ ansible_facts.distribution_release }}
+          Components: stable
+          Architectures: {{ docker_apt_arch_map[ansible_facts.architecture] }}
+          Signed-By: /etc/apt/keyrings/docker.asc
+        dest: /etc/apt/sources.list.d/docker.sources
+        owner: root
+        group: root
+        mode: "0644"
+
+    - name: Install Docker
+      ansible.builtin.apt:
+        name: "{{ docker_packages }}"
+        state: present
+        update_cache: true
+  vars:
+    # Raspberry Pi OS reports itself as Debian
+    docker_distro: "{{ ansible_facts.distribution | lower }}"
+
+- name: Enable and start Docker
+  ansible.builtin.systemd:
+    name: docker
+    enabled: true
+    state: started
+
+- name: Read the current daemon.json
+  ansible.builtin.slurp:
+    src: /etc/docker/daemon.json
+  register: docker_daemon_current
+  failed_when: false
+
+- name: Merge the managed settings into daemon.json
+  ansible.builtin.copy:
+    content: "{{ docker_daemon_existing | combine(docker_daemon_settings, recursive=True) | to_nice_json }}\n"
+    dest: /etc/docker/daemon.json
+    owner: root
+    group: root
+    mode: "0644"
+  vars:
+    docker_daemon_existing: >-
+      {{ (docker_daemon_current.content | b64decode | from_json)
+         if docker_daemon_current.content is defined and (docker_daemon_current.content | b64decode | trim | length > 0)
+         else {} }}
+  notify: Restart Docker
+
+- name: Restart Docker now if its config changed
+  ansible.builtin.meta: flush_handlers
+
+- name: Wait for Docker to answer
+  ansible.builtin.command: !unsafe docker info --format '{{.Swarm.LocalNodeState}}'
+  register: docker_swarm_state
+  until: docker_swarm_state.rc == 0 and docker_swarm_state.stdout in ['active', 'inactive']
+  retries: 30
+  delay: 10
+  changed_when: false
+
+- name: Deploy the clean up units
+  ansible.builtin.template:
+    src: "{{ item }}.j2"
+    dest: /etc/systemd/system/{{ item }}
+    owner: root
+    group: root
+    mode: "0644"
+  loop:
+    - docker-prune.service
+    - docker-prune.timer
+  notify: Reload systemd
+
+- name: Apply systemd changes now
+  ansible.builtin.meta: flush_handlers
+
+- name: Enable the clean up timer
+  ansible.builtin.systemd:
+    name: docker-prune.timer
+    enabled: true
+    state: started
