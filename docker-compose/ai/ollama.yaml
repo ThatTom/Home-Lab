@@ -9,6 +9,13 @@ services:
       - "11434:11434"
     volumes:
       - ollama:/root/.ollama
+    healthcheck:
+      # The CLI asks the running server for its models, so it fails if the server is down
+      test: ["CMD", "ollama", "ls"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 30s
     restart: unless-stopped
 
 volumes:

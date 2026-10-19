@@ -13,6 +13,12 @@ services:
     networks:
       - media
       - diagon-alley
+    healthcheck:
+      test: ["CMD", "curl", "-fsS", "-o", "/dev/null", "http://localhost:8989/ping"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 60s
     deploy:
       replicas: 1
       placement:

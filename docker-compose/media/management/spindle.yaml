@@ -32,6 +32,13 @@ services:
     networks:
       - media        # same network as sonarr/radarr — never exposed externally
       - diagon-alley  # only network traefik touches
+    healthcheck:
+      # /api/health skips the login gate
+      test: ["CMD", "curl", "-fsS", "-o", "/dev/null", "http://localhost:3000/api/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 20s
     deploy:
       replicas: 1
       placement:

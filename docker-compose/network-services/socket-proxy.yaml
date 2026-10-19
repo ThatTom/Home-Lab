@@ -9,6 +9,12 @@ services:
       - target: 2375
         published: 2375
         mode: host
+    healthcheck:
+      test: ["CMD", "wget", "-qO", "/dev/null", "http://localhost:2375/_ping"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 10s
     deploy:
       mode: global
       placement:

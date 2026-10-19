@@ -24,6 +24,12 @@ services:
       - postgres-data:/var/lib/postgresql/data
     networks:
       - komodo-core-internal
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U \"$$POSTGRES_USER\" -d postgres"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+      start_period: 30s
     deploy:
       replicas: 1
       placement:
@@ -72,6 +78,12 @@ services:
       - komodo-core-internal
       - diagon-alley
       - komodo-link
+    healthcheck:
+      test: ["CMD", "curl", "-fsS", "-o", "/dev/null", "http://localhost:9120/"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 60s
     deploy:
       replicas: 1
       placement:
