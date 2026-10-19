@@ -1,0 +1,8 @@
+# Managed by Ansible (roles/updates)
+[Unit]
+Description=Record whether this node needs a reboot
+
+[Service]
+Type=oneshot
+ExecStart=/usr/local/sbin/reboot-required-metric
+StandardOutput=null

@@ -1,0 +1,42 @@
+#!/bin/bash
+# Managed by Ansible (roles/updates). Run by reboot-required-metric.timer, and by patch.yml to decide on a reboot.
+# A reboot is needed when apt has flagged one, or when a newer kernel of the running flavour is installed
+# (Raspberry Pi OS doesn't always write /var/run/reboot-required). Prints 1 or 0 and writes the result
+# for node_exporter's textfile collector.
+set -euo pipefail
+
+metrics_dir={{ updates_metrics_dir }}
+prom_file=$metrics_dir/reboot_required.prom
+required=0
+since=
+
+if [[ -f /var/run/reboot-required ]]; then
+    required=1
+    since=$(stat -c %Y /var/run/reboot-required)
+fi
+
+# Only compare kernels of the running flavour, e.g. -generic or +rpt-rpi-v8, the Pi ships several
+running=$(uname -r)
+flavour=$(sed -E 's/^[0-9.]+(-[0-9]+)?//' <<< "$running")
+newest=$(find /lib/modules -mindepth 1 -maxdepth 1 -type d -name "*$flavour" -printf '%f\n' | sort -V | tail -n1)
+if [[ -n "$newest" && "$newest" != "$running" ]]; then
+    required=1
+    installed=$(stat -c %Y "/lib/modules/$newest")
+    if [[ -z "$since" || "$installed" -lt "$since" ]]; then since=$installed; fi
+fi
+
+tmp=$(mktemp "$metrics_dir/.reboot_required.XXXXXX")
+{
+    echo "# HELP node_reboot_required 1 if the node needs a reboot to finish applying updates."
+    echo "# TYPE node_reboot_required gauge"
+    echo "node_reboot_required $required"
+    if [[ -n "$since" ]]; then
+        echo "# HELP node_reboot_required_since_timestamp_seconds When the node first needed a reboot."
+        echo "# TYPE node_reboot_required_since_timestamp_seconds gauge"
+        echo "node_reboot_required_since_timestamp_seconds $since"
+    fi
+} > "$tmp"
+chmod 0644 "$tmp"
+mv "$tmp" "$prom_file"
+
+echo "$required"

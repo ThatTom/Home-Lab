@@ -1,0 +1,16 @@
+# How long to wait for a drained node's tasks to move off it before upgrading anyway
+os_patch_drain_retries: 30
+os_patch_drain_delay: 10
+
+# How long a node gets to come back after a reboot
+os_patch_reboot_timeout: 900
+
+# How long to wait for the node's services to be running again before moving to the next node
+os_patch_settle_retries: 30
+os_patch_settle_delay: 10
+
+# A node running a container whose name matches this is the one running the playbook (Semaphore),
+# draining it would stop the run halfway, so it's skipped and has to be patched from elsewhere.
+# Running from another machine, pass -e os_patch_skip_controller=false to patch it too.
+os_patch_controller_container: '(^|_)semaphore\.'
+os_patch_skip_controller: true

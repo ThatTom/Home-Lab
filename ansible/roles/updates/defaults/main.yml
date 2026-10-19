@@ -1,0 +1,9 @@
+# unattended-upgrades installs security updates daily, everything else and every reboot is left to patch.yml
+# Packages unattended-upgrades never touches, so a Docker upgrade only happens on a drained node
+updates_package_blacklist:
+  - docker-ce
+  - docker-ce-cli
+  - containerd.io
+
+# node_exporter's textfile collector reads the reboot-required metric from here
+updates_metrics_dir: /var/lib/node_exporter/textfile

@@ -1,0 +1,167 @@
+# Upgrades one node, run by patch.yml with serial: 1. Swarm commands run on another manager,
+# since the node being patched may itself be one.
+- name: Pick a manager to run Swarm commands from
+  ansible.builtin.set_fact:
+    os_patch_manager: "{{ groups['swarm_managers'] | difference([inventory_hostname]) | first }}"
+
+- name: Check the cluster is healthy before draining anything
+  delegate_to: "{{ os_patch_manager }}"
+  vars:
+    ansible_become_exe: "{{ hostvars[os_patch_manager].ansible_become_exe | default('sudo') }}"
+  block:
+    - name: List the swarm nodes
+      ansible.builtin.command: !unsafe docker node ls --format '{{.Hostname}} {{.Status}} {{.Availability}}'
+      register: os_patch_nodes
+      changed_when: false
+
+    - name: Check every other node is ready and active
+      ansible.builtin.assert:
+        that: os_patch_unhealthy | length == 0
+        fail_msg: >-
+          Not patching {{ inventory_hostname }} while other nodes aren't ready and active:
+          {{ os_patch_unhealthy | join(', ') }}
+      vars:
+        os_patch_unhealthy: >-
+          {{ os_patch_nodes.stdout_lines | reject('match', inventory_hostname ~ ' ')
+             | reject('match', '^\S+ Ready Active$') | list }}
+
+- name: Look for containers on this node
+  ansible.builtin.command: !unsafe docker ps --format '{{.Names}}'
+  register: os_patch_containers
+  changed_when: false
+
+- name: Skip the node running this playbook
+  when:
+    - os_patch_skip_controller | bool
+    - os_patch_containers.stdout_lines | select('search', os_patch_controller_container) | list | length > 0
+  block:
+    - name: Explain why this node is skipped
+      ansible.builtin.debug:
+        msg: >-
+          {{ inventory_hostname }} runs Semaphore, so draining it would stop this run halfway.
+          Patch it from another machine instead, see disaster-recovery/README.md#running-ansible-without-semaphore:
+          ansible-playbook -i inventory/homelab.yml patch.yml --limit {{ inventory_hostname }} -e os_patch_skip_controller=false
+
+    - name: Move on to the next node
+      ansible.builtin.meta: end_host
+
+- name: Refresh the package lists
+  ansible.builtin.apt:
+    update_cache: true
+
+- name: Count the pending upgrades
+  ansible.builtin.shell: set -o pipefail; apt-get -s -o Debug::NoLocking=1 dist-upgrade | grep -c '^Inst ' || true
+  args:
+    executable: /bin/bash
+  register: os_patch_pending
+  changed_when: false
+
+- name: Check whether a reboot is already due
+  ansible.builtin.command: /usr/local/sbin/reboot-required-metric
+  register: os_patch_reboot_before
+  changed_when: false
+
+- name: Report this node is already up to date
+  ansible.builtin.debug:
+    msg: "{{ inventory_hostname }} has no upgrades and doesn't need a reboot, nothing to do"
+  when: os_patch_pending.stdout | int == 0 and os_patch_reboot_before.stdout != '1'
+
+- name: Upgrade the node
+  when: os_patch_pending.stdout | int > 0 or os_patch_reboot_before.stdout == '1'
+  block:
+    - name: Drain the node
+      ansible.builtin.command: docker node update --availability drain {{ inventory_hostname }}
+      delegate_to: "{{ os_patch_manager }}"
+      vars:
+        ansible_become_exe: "{{ hostvars[os_patch_manager].ansible_become_exe | default('sudo') }}"
+
+    # Pinned services stop here until the node is back, the rest move to other nodes
+    - name: Wait for its tasks to move off
+      ansible.builtin.command: docker node ps {{ inventory_hostname }} --filter desired-state=running --quiet
+      delegate_to: "{{ os_patch_manager }}"
+      vars:
+        ansible_become_exe: "{{ hostvars[os_patch_manager].ansible_become_exe | default('sudo') }}"
+      register: os_patch_remaining
+      until: os_patch_remaining.stdout | length == 0
+      retries: "{{ os_patch_drain_retries }}"
+      delay: "{{ os_patch_drain_delay }}"
+      changed_when: false
+      failed_when: false
+
+    - name: Install the upgrades
+      ansible.builtin.apt:
+        upgrade: dist
+        autoremove: true
+
+    - name: Check whether the upgrades need a reboot
+      ansible.builtin.command: /usr/local/sbin/reboot-required-metric
+      register: os_patch_reboot_after
+      changed_when: false
+
+    - name: Reboot
+      ansible.builtin.reboot:
+        reboot_timeout: "{{ os_patch_reboot_timeout }}"
+        msg: Rebooting to finish OS updates (patch.yml)
+      when: os_patch_reboot_after.stdout == '1'
+
+    - name: Record the reboot is done
+      ansible.builtin.command: /usr/local/sbin/reboot-required-metric
+      changed_when: false
+      when: os_patch_reboot_after.stdout == '1'
+
+    - name: Wait for Docker to rejoin the swarm
+      ansible.builtin.command: !unsafe docker info --format '{{.Swarm.LocalNodeState}}'
+      register: os_patch_swarm_state
+      until: os_patch_swarm_state.stdout == 'active'
+      retries: 30
+      delay: 10
+      changed_when: false
+
+    - name: Bring the node back into service
+      delegate_to: "{{ os_patch_manager }}"
+      vars:
+        ansible_become_exe: "{{ hostvars[os_patch_manager].ansible_become_exe | default('sudo') }}"
+      block:
+        - name: Wait for the swarm to see the node as ready
+          ansible.builtin.command: docker node inspect --format {{ os_patch_format | quote }} {{ inventory_hostname }}
+          vars:
+            os_patch_format: !unsafe '{{.Status.State}} {{.Spec.Role}} {{if .ManagerStatus}}{{.ManagerStatus.Reachability}}{{end}}'
+          register: os_patch_node_state
+          until: >-
+            os_patch_node_state.stdout.split()[0] == 'ready'
+            and (os_patch_node_state.stdout.split()[1] != 'manager' or os_patch_node_state.stdout.split()[-1] == 'reachable')
+          retries: 30
+          delay: 10
+          changed_when: false
+
+        - name: Make the node active again
+          ansible.builtin.command: docker node update --availability active {{ inventory_hostname }}
+
+        - name: Wait for its services to be running again
+          ansible.builtin.command: docker node ps {{ inventory_hostname }} --filter desired-state=running --format {{ os_patch_format | quote }}
+          vars:
+            os_patch_format: !unsafe '{{.CurrentState}}'
+          register: os_patch_tasks
+          until: os_patch_tasks.stdout_lines | reject('match', '^Running') | list | length == 0
+          retries: "{{ os_patch_settle_retries }}"
+          delay: "{{ os_patch_settle_delay }}"
+          changed_when: false
+          failed_when: false
+
+    - name: Warn about services that didn't come back
+      ansible.builtin.debug:
+        msg: >-
+          Some tasks on {{ inventory_hostname }} still aren't running: {{ os_patch_tasks.stdout_lines | reject('match', '^Running') | join(', ') }}.
+          Check docker node ps {{ inventory_hostname }}.
+      when: os_patch_tasks.stdout_lines | reject('match', '^Running') | list | length > 0
+
+    # Traefik is pinned to the traefik-labelled nodes, so its copy comes back here once the node is active
+    - name: Check Traefik answers on this node again
+      ansible.builtin.uri:
+        url: http://127.0.0.1:8082/ping
+        timeout: 2
+      register: os_patch_traefik
+      until: os_patch_traefik.status | default(0) == 200
+      retries: 30
+      delay: 5
+      when: (swarm_node_labels | default({})).traefik | default('') == 'yes'

@@ -1,0 +1,13 @@
+# Rolling OS updates, one node at a time, see roles/os_patch. Each node is drained, upgraded,
+# rebooted if needed and made active again before the next one starts, and the run stops at the
+# first failure, leaving that node drained to look at. Workers go first, then the managers.
+# Services pinned to a node are down while that node is drained.
+- name: Rolling OS updates
+  hosts: swarm_workers:swarm_managers
+  become: true
+  gather_facts: false
+  serial: 1
+  max_fail_percentage: 0
+  roles:
+    - updates
+    - os_patch
