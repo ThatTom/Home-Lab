@@ -82,15 +82,21 @@ services:
       retries: 3
       start_period: 20s
     deploy:
-      # One copy on each manager, the keepalived VIP points at a healthy one.
-      # Raise replicas if another manager is added.
+      # One copy on each traefik-labelled node (set by ansible/swarm.yml), which are the ones with
+      # keepalived and the dynamic config. A drained node's copy waits for it rather than moving.
+      # Raise replicas if another node is labelled.
       replicas: 2
       placement:
         max_replicas_per_node: 1
         constraints:
-          - node.role == manager
+          - node.labels.traefik == yes
       restart_policy:
         condition: on-failure
+      # Update one copy at a time, keepalived keeps the VIP on the copy still running
+      update_config:
+        parallelism: 1
+        delay: 30s
+        failure_action: rollback
       labels:
         # Traefik
         - "traefik.enable=true"
