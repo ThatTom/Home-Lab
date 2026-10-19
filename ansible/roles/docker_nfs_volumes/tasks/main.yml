@@ -6,6 +6,33 @@
     update_cache: true
     cache_valid_time: 3600
 
+# Docker can't mount a folder that doesn't exist yet. For volumes marked create: true, the parent folder
+# is mounted in a throwaway container and the volume's folder made there, owned by owner if it's set.
+# Folders that already exist are left alone. Needs the share to allow root (TrueNAS: Maproot User root).
+- name: Create the NFS folders the volumes point at
+  ansible.builtin.command:
+    argv:
+      - docker
+      - run
+      - --rm
+      - --mount
+      - >-
+        type=volume,dst=/parent,volume-driver=local,volume-opt=type=nfs,volume-opt=device=:{{ item.path | dirname }},"volume-opt=o=addr={{ nas_address }},{{ nfs_mount_options }}"
+      - "{{ nfs_helper_image }}"
+      - sh
+      - -c
+      - >-
+        if [ -d "/parent/$0" ]; then echo exists;
+        else mkdir "/parent/$0" && { [ -z "$1" ] || chown "$1" "/parent/$0"; } && echo created; fi
+      - "{{ item.path | basename }}"
+      - "{{ item.owner | default('') }}"
+  register: nfs_folder
+  changed_when: "'created' in nfs_folder.stdout"
+  loop: "{{ nfs_volumes | selectattr('create', 'defined') | selectattr('create') | list }}"
+  loop_control:
+    label: "{{ item.path }}"
+  run_once: true
+
 # A changed address or path recreates the volume, which fails while a container uses it:
 # stop the services using it, run this, then start them again.
 - name: Create the NFS volumes

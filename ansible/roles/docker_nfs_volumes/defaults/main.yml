@@ -2,3 +2,6 @@
 nas_address: ""
 nfs_mount_options: rw,nfsvers=4,hard
 nfs_volumes: []
+
+# Throwaway container that creates the folders for volumes marked create: true
+nfs_helper_image: alpine:3.22
