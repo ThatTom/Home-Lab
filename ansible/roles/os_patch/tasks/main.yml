@@ -1,13 +1,12 @@
 # Upgrades one node, run by patch.yml with serial: 1. Swarm commands run on another manager,
-# since the node being patched may itself be one.
+# since the node being patched may itself be one. Delegated tasks use that manager's own
+# connection and become settings.
 - name: Pick a manager to run Swarm commands from
   ansible.builtin.set_fact:
     os_patch_manager: "{{ groups['swarm_managers'] | difference([inventory_hostname]) | first }}"
 
 - name: Check the cluster is healthy before draining anything
   delegate_to: "{{ os_patch_manager }}"
-  vars:
-    ansible_become_exe: "{{ hostvars[os_patch_manager].ansible_become_exe | default('sudo') }}"
   block:
     - name: List the swarm nodes
       ansible.builtin.command: !unsafe docker node ls --format '{{.Hostname}} {{.Status}} {{.Availability}}'
@@ -72,15 +71,11 @@
     - name: Drain the node
       ansible.builtin.command: docker node update --availability drain {{ inventory_hostname }}
       delegate_to: "{{ os_patch_manager }}"
-      vars:
-        ansible_become_exe: "{{ hostvars[os_patch_manager].ansible_become_exe | default('sudo') }}"
 
     # Pinned services stop here until the node is back, the rest move to other nodes
     - name: Wait for its tasks to move off
       ansible.builtin.command: docker node ps {{ inventory_hostname }} --filter desired-state=running --quiet
       delegate_to: "{{ os_patch_manager }}"
-      vars:
-        ansible_become_exe: "{{ hostvars[os_patch_manager].ansible_become_exe | default('sudo') }}"
       register: os_patch_remaining
       until: os_patch_remaining.stdout | length == 0
       retries: "{{ os_patch_drain_retries }}"
@@ -119,8 +114,6 @@
 
     - name: Bring the node back into service
       delegate_to: "{{ os_patch_manager }}"
-      vars:
-        ansible_become_exe: "{{ hostvars[os_patch_manager].ansible_become_exe | default('sudo') }}"
       block:
         - name: Wait for the swarm to see the node as ready
           ansible.builtin.command: docker node inspect --format {{ os_patch_format | quote }} {{ inventory_hostname }}
