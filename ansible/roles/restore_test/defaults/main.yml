@@ -1,0 +1,21 @@
+# Monthly check that the backups restore, see templates/restore-test.sh.j2.
+# Runs on one node, which needs the rustic role (backups.yml) for the repository config.
+restore_test_time: "Sat *-*-01..07 06:00:00"    # first Saturday of the month
+restore_test_dir: /var/tmp/rustic-restore-test
+
+# Each node's latest snapshot of the database dumps is restored and checked
+restore_test_nodes: "{{ groups['swarm'] }}"
+restore_test_source: /var/backups/rustic
+
+# This dump is also loaded into a throwaway Postgres to prove it restores. The other dumps need
+# Postgres extensions (Immich's VectorChord, Komodo's DocumentDB), so are only checked for completeness.
+restore_test_postgres_node: dumbledore
+restore_test_postgres_dump: tankbook_db
+restore_test_postgres_database: tankbook
+restore_test_postgres_image: postgres:16-alpine
+
+# node_exporter's textfile collector reads the result from here
+restore_test_metrics_dir: /var/lib/node_exporter/textfile
+
+# Run the test straight away as well as scheduling it: -e restore_test_run_now=true
+restore_test_run_now: false

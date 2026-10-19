@@ -1,0 +1,135 @@
+#!/bin/bash
+# Managed by Ansible (roles/restore_test). Run monthly by restore-test.timer.
+# Restores each node's latest database dumps from the Rustic repository and checks they're usable:
+#   SQLite copies pass PRAGMA integrity_check
+#   Postgres dumps decompress and end with pg_dumpall's completion marker
+#   {{ restore_test_postgres_dump }} loads into a throwaway Postgres and has tables
+# Writes the result for node_exporter's textfile collector, alerted on by RestoreTestFailed/Overdue.
+set -uo pipefail
+
+dir={{ restore_test_dir }}
+metrics_dir={{ restore_test_metrics_dir }}
+prom_file=$metrics_dir/restore_test.prom
+container=restore-test-postgres
+failures=0
+
+fail() {
+    echo "FAIL: $*"
+    failures=$((failures + 1))
+}
+
+cleanup() {
+    docker rm -f "$container" > /dev/null 2>&1
+    rm -rf "$dir"
+}
+trap cleanup EXIT
+
+check_postgres_load() {
+    local dump=$1
+    docker rm -f "$container" > /dev/null 2>&1
+    if ! docker run -d --name "$container" -e POSTGRES_PASSWORD=restore-test {{ restore_test_postgres_image }} > /dev/null; then
+        fail "couldn't start a throwaway Postgres"
+        return
+    fi
+    # Over TCP, so the temporary server the image runs while initialising doesn't count as ready
+    for _ in $(seq 60); do
+        docker exec "$container" pg_isready -h 127.0.0.1 -U postgres -q && break
+        sleep 2
+    done
+    # Errors about the postgres role already existing are expected, the table count decides
+    zcat "$dump" | docker exec -i "$container" psql -h 127.0.0.1 -U postgres -d postgres -q > "$dir/psql.log" 2>&1
+    local tables
+    tables=$(docker exec "$container" psql -h 127.0.0.1 -U postgres -d {{ restore_test_postgres_database }} -Atc \
+        "SELECT count(*) FROM pg_tables WHERE schemaname NOT IN ('pg_catalog', 'information_schema')" 2>/dev/null)
+    if [[ "${tables:-0}" -gt 0 ]]; then
+        echo "{{ restore_test_postgres_dump }} loaded into Postgres with $tables tables"
+    else
+        fail "{{ restore_test_postgres_dump }} didn't load into Postgres, see the psql output:"
+        tail -n 20 "$dir/psql.log"
+    fi
+    docker rm -f "$container" > /dev/null 2>&1
+}
+
+rm -rf "$dir"
+mkdir -p "$dir"
+chmod 0700 "$dir"
+started=$(date +%s)
+
+for node in {{ restore_test_nodes | join(' ') }}; do
+    echo "== $node"
+    target=$dir/$node
+    if ! rustic restore --filter-host "$node" "latest:{{ restore_test_source }}" "$target" > "$dir/rustic.log" 2>&1; then
+        fail "$node: couldn't restore its latest snapshot"
+        tail -n 20 "$dir/rustic.log"
+        continue
+    fi
+
+    sqlite=0
+    while IFS= read -r -d '' db; do
+        sqlite=$((sqlite + 1))
+        result=$(sqlite3 "$db" 'PRAGMA integrity_check' 2>&1 | head -n1)
+        [[ "$result" == ok ]] || fail "$node: SQLite ${db#"$target"/} - $result"
+    done < <(find "$target/sqlite" -type f -print0 2>/dev/null)
+
+    postgres=0
+    while IFS= read -r -d '' dump; do
+        postgres=$((postgres + 1))
+        name=${dump#"$target"/postgres/}
+        if ! gzip -t "$dump" 2>/dev/null; then
+            fail "$node: Postgres dump $name is corrupt"
+        elif ! zcat "$dump" | tail -n 5 | grep -q 'PostgreSQL database cluster dump complete'; then
+            fail "$node: Postgres dump $name is incomplete"
+        fi
+    done < <(find "$target/postgres" -type f -name '*.sql.gz' -print0 2>/dev/null)
+
+    echo "$node: checked $sqlite SQLite and $postgres Postgres copies"
+
+    if [[ "$node" == "{{ restore_test_postgres_node }}" ]]; then
+        dump=$target/postgres/{{ restore_test_postgres_dump }}.sql.gz
+        if [[ -f "$dump" ]]; then
+            check_postgres_load "$dump"
+        else
+            fail "$node: no {{ restore_test_postgres_dump }} dump to load"
+        fi
+    fi
+
+    # One node at a time, so only one node's dumps take up disk space
+    rm -rf "$target"
+done
+
+now=$(date +%s)
+success=0
+[[ $failures == 0 ]] && success=1
+last_success=$(awk '/^restore_test_last_success_timestamp_seconds/ {print $2}' "$prom_file" 2>/dev/null || true)
+[[ $success == 1 ]] && last_success=$now
+
+mkdir -p "$metrics_dir"
+tmp=$(mktemp "$metrics_dir/.restore_test.XXXXXX")
+{
+    echo "# HELP restore_test_last_run_success 1 if the last restore test passed, 0 if it failed."
+    echo "# TYPE restore_test_last_run_success gauge"
+    echo "restore_test_last_run_success $success"
+    echo "# HELP restore_test_last_run_failures Number of checks that failed in the last restore test."
+    echo "# TYPE restore_test_last_run_failures gauge"
+    echo "restore_test_last_run_failures $failures"
+    echo "# HELP restore_test_last_run_timestamp_seconds When the last restore test finished."
+    echo "# TYPE restore_test_last_run_timestamp_seconds gauge"
+    echo "restore_test_last_run_timestamp_seconds $now"
+    echo "# HELP restore_test_last_run_duration_seconds How long the last restore test took."
+    echo "# TYPE restore_test_last_run_duration_seconds gauge"
+    echo "restore_test_last_run_duration_seconds $((now - started))"
+    if [[ -n "$last_success" ]]; then
+        echo "# HELP restore_test_last_success_timestamp_seconds When the last passing restore test finished."
+        echo "# TYPE restore_test_last_success_timestamp_seconds gauge"
+        echo "restore_test_last_success_timestamp_seconds $last_success"
+    fi
+} > "$tmp"
+chmod 0644 "$tmp"
+mv "$tmp" "$prom_file"
+
+if [[ $failures == 0 ]]; then
+    echo "Restore test passed"
+else
+    echo "Restore test failed with $failures problems"
+    exit 1
+fi

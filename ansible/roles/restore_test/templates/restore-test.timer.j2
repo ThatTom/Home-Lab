@@ -1,0 +1,10 @@
+# Managed by Ansible (roles/restore_test)
+[Unit]
+Description=Monthly restore test
+
+[Timer]
+OnCalendar={{ restore_test_time }}
+Persistent=true
+
+[Install]
+WantedBy=timers.target

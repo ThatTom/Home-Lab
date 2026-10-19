@@ -1,0 +1,11 @@
+# Managed by Ansible (roles/restore_test)
+[Unit]
+Description=Restore the latest database dumps from Rustic and check they're usable
+Wants=network-online.target
+After=network-online.target docker.service
+
+[Service]
+Type=oneshot
+Nice=10
+IOSchedulingClass=idle
+ExecStart=/usr/local/sbin/restore-test

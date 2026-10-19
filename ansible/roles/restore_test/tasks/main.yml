@@ -1,0 +1,51 @@
+- name: Check Rustic is set up on this node
+  ansible.builtin.stat:
+    path: /etc/rustic/rustic.toml
+  register: restore_test_rustic_config
+
+- name: Make sure backups.yml has run here first
+  ansible.builtin.assert:
+    that: restore_test_rustic_config.stat.exists
+    fail_msg: "{{ inventory_hostname }} has no Rustic config, run backups.yml on it first"
+
+- name: Deploy the restore test script
+  ansible.builtin.template:
+    src: restore-test.sh.j2
+    dest: /usr/local/sbin/restore-test
+    owner: root
+    group: root
+    mode: "0700"
+
+- name: Deploy the restore test units
+  ansible.builtin.template:
+    src: "{{ item }}.j2"
+    dest: /etc/systemd/system/{{ item }}
+    owner: root
+    group: root
+    mode: "0644"
+  loop:
+    - restore-test.service
+    - restore-test.timer
+  notify: Reload systemd
+
+- name: Apply systemd changes now
+  ansible.builtin.meta: flush_handlers
+
+- name: Enable the monthly timer
+  ansible.builtin.systemd:
+    name: restore-test.timer
+    enabled: true
+    state: started
+
+- name: Run the restore test now
+  ansible.builtin.command: /usr/local/sbin/restore-test
+  register: restore_test_result
+  changed_when: false
+  failed_when: false
+  when: restore_test_run_now | bool
+
+- name: Show the restore test output
+  ansible.builtin.debug:
+    msg: "{{ restore_test_result.stdout_lines }}"
+  when: restore_test_run_now | bool
+  failed_when: restore_test_result.rc != 0

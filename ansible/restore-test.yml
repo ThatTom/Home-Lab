@@ -1,0 +1,8 @@
+# Monthly restore test on dumbledore, see roles/restore_test. Schedules it, and with
+# -e restore_test_run_now=true also runs it straight away and shows the result.
+- name: Monthly backup restore test
+  hosts: dumbledore
+  become: true
+  gather_facts: false
+  roles:
+    - restore_test
