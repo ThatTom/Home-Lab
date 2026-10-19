@@ -52,4 +52,4 @@ Image updates are managed by [Renovate](/renovate.json), which runs daily at 03:
 - Major version updates require approval on the dependency dashboard first
 - Immich and Vaultwarden updates are labelled `careful`
 
-Updates are then deployed following the release process in the [Docker Compose README](/docker-compose/README.md#update-deployment)
+Updates are then deployed following the release process in the [Docker Compose README](/docker-compose/README.md#update-deployment). The [changelog](/hosted-services/CHANGELOG.md) of live versions is regenerated from the compose files by a [Gitea Actions workflow](/.gitea/workflows/changelog.yaml) on every push to `main`

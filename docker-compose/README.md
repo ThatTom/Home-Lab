@@ -88,44 +88,45 @@ Only the keys a service needs are included, always in the below order
 
 All images defined should also have a statically set version rather than using :latest to allow for easier version control, updating and pre-release testing
 
+Every long running service has a `healthcheck` so Swarm restarts it when it stops responding, not only when it exits. Leave it out when the image already defines one (`docker buildx imagetools inspect --format "{{json .Image.config.Healthcheck}}" <image>`), and check the image has the tool the test uses, many have `wget` or `curl` but not both
+
 Where possible individual services should be combined into a stack instead of using separate compose files for each
 
 ## Update Deployment
 
-1. New version made available for a service that is in service
-2. Review updates purpose
+Image versions are pinned in the compose files, and [Renovate](/renovate.json) opens a pull request in Gitea for each new version once it's at least 7 days old. The compose file in `main` is the record of what should be running, and the [changelog](/hosted-services/CHANGELOG.md) is regenerated from it on every push.
 
-- If the update is purely feature based refer to standard release
-- If the update is security based/addresses an urgent issue refer to urgent release
-- If the update is a development build being used in a non production service then refer to development release
+### Standard update
 
-#### Urgent Release
+1. Read the release notes linked in the Renovate pull request, looking for breaking changes, required migrations or new required settings
+2. Updates labelled `careful` (Immich, Vaultwarden) or `major` need extra care: check the upstream upgrade guide and that last night's backup succeeded first
+3. Merge the pull request
+4. Deploy the stack from `main`
+5. Check the service: `docker service ps <stack>_<service>` shows it running (and healthy, where it has a healthcheck), the site loads, and anything that depends on it still works
 
-1. Check current version configured within the .env for the service/stack
-2. Check new version that is available
-3. Update the service/stack .env with the updated version
-4. Manually perform a service/stack deployment
-5. Verify that the service has been deployed as expected
-6. Ensure all other services that depend on the service are also operating as expected
+### Urgent update
 
-*If services fail to restore, check logs for any clear issues; if not immediately resolvable, change the version back to the previous version and redeploy the stack/service immediately*
+For security fixes or a bug affecting a running service, when waiting for Renovate isn't an option:
 
-#### Standard Release
+1. Change the image tag in the compose file on `main` (or merge Renovate's pull request early from the dependency dashboard)
+2. Deploy and check it as in a standard update
 
-1. Check current version configured within the .env for the service/stack
-2. Check new version that is available
-3. Await 1 week post release and check for any reported bugs or issues
-4. If no service breaking bugs/issues are found then update the service/stack .env with the updated version
-5. Configure the container update procedure with the relevant stack/service and configure the run time to be 2AM of the next morning
-6. Following the completion of the procedure verify the service has restored/successfully update the next morning
-7. Ensure all other services that depend on the service are also operating as expected
+### Our own images
 
-*If services fail to restore, check logs for any clear issues; if not immediately resolvable, change the version back to the previous version and redeploy the stack/service immediately*
+Images built from our own repositories (Odd Jobs, Nemoir, MeshHub, Spindle) are tagged by their build workflows and bumped here by hand. Check the new tag was built for every architecture its service can run on: the Raspberry Pis are `arm64` and the Lenovos `amd64`.
 
-#### Development Release
+```
+docker buildx imagetools inspect <image>:<tag>
+```
 
-1. Check current version configured within the .env for the service/stack
-2. Check new version that is available
-3. Update the service/stack .env with the updated version
-4. Manually perform a service/stack deployment
-5. Verify that the service has been deployed as expected
+### Rolling back
+
+If a service doesn't come back after an update and the logs (`docker service logs <stack>_<service>`) don't show an obvious fix, revert the commit and redeploy straight away:
+
+```
+git revert <commit>
+```
+
+`docker service rollback <stack>_<service>` is quicker in an emergency, but the next deploy puts the new version back unless the commit is reverted too.
+
+An update that migrated a database may not run against the older version again. In that case restore the service's data from the backup taken before the update (see [Restoring a Single Service](/disaster-recovery/README.md#restoring-a-single-service)).

@@ -1,0 +1,40 @@
+name: changelog
+
+# Regenerates hosted-services/CHANGELOG.md from the compose files and commits it when it changes.
+# Commits pushed with the workflow's own token don't start workflows, so this can't loop.
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - 'docker-compose/**'
+      - '.gitea/scripts/generate-changelog.sh'
+  workflow_dispatch:
+
+concurrency:
+  group: changelog
+  cancel-in-progress: false
+
+jobs:
+  changelog:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out main
+        uses: actions/checkout@v4
+        with:
+          ref: main
+
+      - name: Generate the changelog
+        run: bash .gitea/scripts/generate-changelog.sh > hosted-services/CHANGELOG.md
+
+      - name: Commit if it changed
+        run: |
+          if git diff --quiet -- hosted-services/CHANGELOG.md; then
+            echo "Changelog already up to date"
+            exit 0
+          fi
+          git config user.name "Gitea Actions"
+          git config user.email "actions@hogwartsnetwork.co.uk"
+          git commit -m "Regenerate the live services changelog" -- hosted-services/CHANGELOG.md
+          git pull --rebase origin main
+          git push origin HEAD:main
