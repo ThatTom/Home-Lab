@@ -1,7 +1,14 @@
 # Brings every host to its full configured state in one run.
 # bootstrap.yml picks the login per host, so no extra variables are needed.
+# patch.yml isn't included, it's run on its own schedule.
 - name: Base setup
   ansible.builtin.import_playbook: bootstrap.yml
+
+- name: Docker Engine
+  ansible.builtin.import_playbook: docker.yml
+
+- name: Unattended security updates
+  ansible.builtin.import_playbook: updates.yml
 
 - name: Swarm networks, node labels and NFS volumes
   ansible.builtin.import_playbook: swarm.yml
@@ -14,3 +21,6 @@
 
 - name: Backups
   ansible.builtin.import_playbook: backups.yml
+
+- name: Restore test
+  ansible.builtin.import_playbook: restore-test.yml

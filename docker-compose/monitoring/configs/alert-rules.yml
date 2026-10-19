@@ -60,6 +60,24 @@ groups:
           summary: "{{ $labels.instance }}: last Rustic prune failed"
           description: "Check journalctl -u rustic-prune on {{ $labels.instance }}."
 
+      # Monthly restore test on dumbledore (ansible/restore-test.yml)
+      - alert: RestoreTestFailed
+        expr: restore_test_last_run_failures > 0
+        labels:
+          severity: warning
+        annotations:
+          summary: "{{ $labels.instance }}: monthly restore test failed"
+          description: "{{ $value }} checks failed. Check journalctl -u restore-test on {{ $labels.instance }}."
+
+      - alert: RestoreTestOverdue
+        expr: time() - restore_test_last_success_timestamp_seconds > 40 * 86400
+        for: 1h
+        labels:
+          severity: warning
+        annotations:
+          summary: "No passing restore test in over 40 days"
+          description: "The last passing restore test finished {{ $value | humanizeDuration }} ago. Check systemctl status restore-test.timer on {{ $labels.instance }}."
+
   - name: nodes
     rules:
       - alert: NodeExporterDown
@@ -92,6 +110,16 @@ groups:
         annotations:
           summary: "{{ $labels.instance }}: {{ $labels.mountpoint }} below 5% free"
           description: "{{ $labels.mountpoint }} has {{ $value | printf \"%.1f\" }}% free."
+
+      # patch.yml runs weekly and reboots nodes that need it, so a week means it isn't running or is skipping the node
+      - alert: RebootRequired
+        expr: time() - node_reboot_required_since_timestamp_seconds > 8 * 86400 and node_reboot_required == 1
+        for: 1h
+        labels:
+          severity: warning
+        annotations:
+          summary: "{{ $labels.instance }}: has needed a reboot for over 8 days"
+          description: "Updates installed {{ $value | humanizeDuration }} ago need a reboot. Run patch.yml for {{ $labels.instance }} (winky has to be patched from outside Semaphore)."
 
   - name: logging
     rules:

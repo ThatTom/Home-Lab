@@ -62,12 +62,12 @@ Services pinned to a node only come back once that node's data is restored.
 
 | Node | Role | Pinned services |
 | --- | --- | --- |
-| dumbledore | Swarm manager, Traefik VIP holder, Rustic prune | Komodo Core (Postgres, FerretDB), VoidAuth (SSO), ntfy, Leafwiki, Rackpad, Tankbook |
-| flitwick | Swarm manager, Traefik backup | Nemoir, Open WebUI (`ai` label) |
+| dumbledore | Swarm manager, Traefik VIP holder, Rustic prune, restore test | Traefik (`traefik` label), Komodo Core (Postgres, FerretDB), VoidAuth (SSO), ntfy, Leafwiki, Rackpad, Tankbook |
+| flitwick | Swarm manager, Traefik backup | Traefik (`traefik` label), Nemoir, Open WebUI (`ai` label) |
 | dobby | Worker | Gitea, Gitea Mirror, Immich, Paperless, Vaultwarden, Grafana, Prometheus, Alertmanager, Loki, TREK |
-| winky | Worker | Semaphore, Spoolman, Odd Jobs |
+| winky | Swarm manager | Semaphore, Spoolman, Odd Jobs |
 | dobby / winky | `media` label | Jellyfin, Radarr, Sonarr, Seerr, Spindle (whichever node they were last on) |
-| Any | | Traefik (managers), Homepage, Termix, blackbox_exporter, Gitea runners, node_exporter, cAdvisor, Alloy, Komodo Periphery, socket-proxy |
+| Any | | Homepage, Termix, blackbox_exporter, Gitea runners, node_exporter, cAdvisor, Alloy, Komodo Periphery, socket-proxy |
 
 Knock-on effects to plan for:
 
@@ -87,34 +87,42 @@ From a working manager:
 docker node ls
 ```
 
-**If the failed node was a worker** (dobby, winky):
+**If the failed node was a worker** (dobby):
 
 ```
 docker node rm --force <node>
 ```
 
-**If the failed node was a manager** (dumbledore, flitwick): with only two managers the survivor has lost quorum, so running services keep going but nothing can be changed or rescheduled. On the surviving manager:
+**If the failed node was a manager** (dumbledore, flitwick, winky): the other two managers still have quorum, so demote it first:
+
+```
+docker node demote <node>
+docker node rm --force <node>
+```
+
+If two managers are lost at once, the last one has lost quorum: running services keep going but nothing can be changed or rescheduled. On the surviving manager:
 
 ```
 docker swarm init --force-new-cluster --advertise-addr <survivor ip>
 docker node rm --force <node>
 ```
 
-The keepalived VIP (`10.10.20.2`) moves to the surviving manager on its own as long as its Traefik is healthy.
+The keepalived VIP (`10.10.20.2`) moves to the other Traefik node (dumbledore or flitwick) on its own as long as its Traefik is healthy.
 
 ### 2. Rebuild the operating system
 
 1. Install the same OS the node had (Raspberry Pi OS / Ubuntu Server)
 2. Set the hostname to `<node>` and the static address to `<ip>` (VLAN 20)
 3. Create the bootstrap user **harry** with sudo rights and the break-glass password
-4. Install Docker Engine
-5. On Ubuntu 25.10+, check `/usr/bin/sudo.ws` exists (`sudo apt install sudo` if not), Ansible uses it on the workers
+4. On Ubuntu 25.10+, check `/usr/bin/sudo.ws` exists (`sudo apt install sudo` if not), Ansible uses it on the workers
 
 ### 3. Bootstrap with Ansible
 
-Run the **bootstrap** template in Semaphore (or [without Semaphore](#running-ansible-without-semaphore)). It logs in as harry, creates the `tomt` and `ansible` accounts with their keys, turns off password SSH, then disables harry.
+Run the **bootstrap** template in Semaphore (or [without Semaphore](#running-ansible-without-semaphore)). It logs in as harry, creates the `tomt` and `ansible` accounts with their keys, turns off password SSH, sets up time sync and the journal size limit, then disables harry.
 
 The node's SSH host key has changed, so if Semaphore refuses to connect, clear the old entry from Semaphore's known hosts or run it once more (it uses `accept-new`).
+
+Then run `docker.yml` with `--limit <node>`, which installs Docker from Docker's apt repository with the log rotation and weekly clean up in place.
 
 ### 4. Rejoin the swarm, drained
 
@@ -135,8 +143,10 @@ docker node update --availability drain <node>
 Run these templates (or `site.yml`, which runs them all):
 
 1. `swarm.yml` - node labels and NFS volumes
-2. `traefik-config.yml` and `keepalived.yml` - managers only
+2. `traefik-config.yml` and `keepalived.yml` - dumbledore and flitwick only
 3. `backups.yml` - installs Rustic and its config, needed for the restore
+4. `updates.yml` - unattended security updates and the reboot-required metric
+5. `restore-test.yml` - dumbledore only, the monthly restore test
 
 ### 6. Restore the volumes
 
@@ -251,8 +261,24 @@ For a SQLite or Postgres service, use the dump from `/var/backups/rustic` as in 
 
 ## Testing
 
-A backup that has never been restored is not proven. Every few months:
+A backup that has never been restored is not proven.
+
+On the first Saturday of each month dumbledore runs a restore test ([restore-test.yml](/ansible/restore-test.yml)). It restores every node's latest database dumps from B2 and checks:
+
+- every SQLite copy passes `PRAGMA integrity_check`
+- every Postgres dump decompresses and ends with pg_dumpall's completion marker
+- the Tankbook dump loads into a throwaway Postgres container and has tables
+
+`RestoreTestFailed` alerts when a check fails, and `RestoreTestOverdue` when there's been no passing run for 40 days. To run it now, run `restore-test.yml` with `-e restore_test_run_now=true`, or `systemctl start restore-test` on dumbledore, then read `journalctl -u restore-test`.
+
+Every few months, by hand:
 
 - [ ] Restore one service's volume to a spare path (`rustic restore <id>:/var/lib/docker/volumes/<volume> /tmp/restore-test`) and check the files
-- [ ] Load one Postgres dump into a throwaway `postgres` container
 - [ ] Check the break-glass kit is complete and its secrets still work
+
+## OS Updates
+
+- **Security updates** are installed daily by unattended-upgrades ([updates.yml](/ansible/updates.yml)), which never reboots and never upgrades Docker
+- **Everything else** is installed by [patch.yml](/ansible/patch.yml), one node at a time: drain, upgrade, reboot if needed, wait for the node to rejoin, make it active again. It stops at the first failure and leaves that node drained to look at. Services pinned to a node are down while it's drained
+- **winky** runs Semaphore, so a run from Semaphore skips it. Patch it from another machine ([without Semaphore](#running-ansible-without-semaphore)) with `patch.yml --limit winky -e os_patch_skip_controller=false`
+- `RebootRequired` alerts when a node has needed a reboot for over 8 days
