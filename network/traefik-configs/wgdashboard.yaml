@@ -1,0 +1,16 @@
+http:
+  routers:
+    wgdashboard:
+      rule: "Host(`wireguard.hogwartsnetwork.co.uk`)"
+      entryPoints:
+        - websecure
+      service: wgdashboard
+      tls:
+        certResolver: cloudflare
+
+  services:
+    wgdashboard:
+      loadBalancer:
+        servers:
+          # WGDashboard runs outside the swarm on flitwick (docker-compose/network-services/wireguard.yaml)
+          - url: "http://10.10.20.11:10086"

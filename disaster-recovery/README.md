@@ -40,7 +40,7 @@ Set up by [ansible/backups.yml](/ansible/backups.yml) and the [rustic role](/ans
 | Stack `.env` files (Nemoir, Paperless, Rackpad) | Wherever the stacks are deployed from | Keep copies, or move the values into Komodo |
 | Paperless export / consume folders | `/home/tomt/export`, `/mnt/consume` on dobby | Not backed up |
 | Router and switch configs | leaky-cauldron, floo, portkey | Export them after every change |
-| Non-Swarm services (Ollama, WGDashboard, meshhub) | Their own hosts | Volumes are only covered if the host runs the Rustic role |
+| Non-Swarm services (Ollama, meshhub) | Their own hosts | Volumes are only covered if the host runs the Rustic role. WGDashboard runs on flitwick, so its volumes are backed up |
 | Traefik certificates | `traefik-letsencrypt` volume on each manager | Not needed, re-issued automatically |
 
 ## Break-Glass Kit

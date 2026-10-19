@@ -110,6 +110,7 @@ scrape_configs:
           - https://spoolman.hogwartsnetwork.co.uk
           - https://ai.hogwartsnetwork.co.uk
           - https://homeassistant.hogwartsnetwork.co.uk
+          - https://wireguard.hogwartsnetwork.co.uk
           - https://git.hogwartsnetwork.co.uk
           - https://gitea-mirror.hogwartsnetwork.co.uk
           - https://komodo.hogwartsnetwork.co.uk
