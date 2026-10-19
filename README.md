@@ -17,6 +17,10 @@ Hosted services within the Hogwarts Network/Homelab, changelog version tracking 
 | dobby | Lenovo Micro PC | |
 | winky | Lenovo Micro PC | |
 
+## [3D Models](/3d-models/)
+
+Printable parts for the 10 inch rack the nodes sit in, and the mounts for the kit inside it
+
 ## [Network](/network/)
 
 Split into VLANs on `10.10.0.0/16`, where the third octet matches the VLAN ID
