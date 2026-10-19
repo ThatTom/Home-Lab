@@ -3,7 +3,7 @@
 Printable parts for the 10 inch server rack the homelab sits in, and the mounts for the kit inside it.
 
 | Folder | Contents |
-| --- | :---: | --- |
+| --- | --- |
 | [server-rack](/3d-models/server-rack/) | The rack itself: the top and bottom frames, and the parts for each 3U section |
 | [accessories](/3d-models/accessories/) | Shelves, plates and mounts that fit inside the rack |
 
@@ -37,7 +37,7 @@ To make an existing rack taller, print just the 3U section parts for each sectio
 Print these as needed for what's going in the rack.
 
 | Part | Use |
-| --- | :---: | --- |
+| --- | --- |
 | [10 Inch - Blank Plate.stl](/3d-models/accessories/10%20Inch%20-%20Blank%20Plate.stl) | Covers an empty space in the rack |
 | [10 Inch - Shelf.stl](/3d-models/accessories/10%20Inch%20-%20Shelf.stl) | General purpose shelf |
 | [10 Inch - Lenovo Mini Centre Mount.stl](/3d-models/accessories/10%20Inch%20-%20Lenovo%20Mini%20Centre%20Mount.stl) | Holds a Lenovo Micro PC (dobby, winky) in the centre of the rack |
