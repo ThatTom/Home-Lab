@@ -57,6 +57,11 @@ nfs_volumes:
     path: /mnt/Hogwarts-Vault/Music
   - name: termix-data
     path: /mnt/Hogwarts-Vault/Termix
+  # Semaphore's database and its config.json (which holds the key its stored secrets are encrypted with)
+  - name: semaphore-data
+    path: /mnt/Hogwarts-Vault/DockerVolumes/Semaphore/data
+  - name: semaphore-config
+    path: /mnt/Hogwarts-Vault/DockerVolumes/Semaphore/config
 
 # Swarm secrets created by swarm.yml from Semaphore environment variable secrets
 swarm_secrets:
