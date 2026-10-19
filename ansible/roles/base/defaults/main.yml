@@ -4,3 +4,6 @@ ssh_password_authentication: false
 
 # Public keys for each user are read from <base_ssh_key_dir>/<user>/*.pub
 base_ssh_key_dir: "{{ role_path }}/files/ssh-keys"
+
+# Largest the persistent systemd journal can grow to, Loki keeps the long-term copy
+base_journal_max_use: 500M

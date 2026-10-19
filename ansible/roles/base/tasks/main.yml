@@ -56,3 +56,42 @@
     mode: "0644"
     validate: sshd -t -f %s
   notify: Reload sshd
+
+# Swarm's Raft and certificates expect the nodes' clocks to agree. Ubuntu 25.10+ ships chrony,
+# Debian / Raspberry Pi OS systemd-timesyncd, whichever is installed is kept
+- name: Check which time sync service is installed
+  ansible.builtin.package_facts:
+
+- name: Install systemd-timesyncd where no time sync service is installed
+  ansible.builtin.apt:
+    name: systemd-timesyncd
+    state: present
+    update_cache: true
+    cache_valid_time: 3600
+  when: "'chrony' not in ansible_facts.packages and 'systemd-timesyncd' not in ansible_facts.packages"
+
+- name: Keep time sync running
+  ansible.builtin.systemd:
+    name: "{{ 'chrony' if 'chrony' in ansible_facts.packages else 'systemd-timesyncd' }}"
+    enabled: true
+    state: started
+
+- name: Create the journald drop-in directory
+  ansible.builtin.file:
+    path: /etc/systemd/journald.conf.d
+    state: directory
+    owner: root
+    group: root
+    mode: "0755"
+
+- name: Cap the size of the systemd journal
+  ansible.builtin.copy:
+    content: |
+      # Managed by Ansible (roles/base)
+      [Journal]
+      SystemMaxUse={{ base_journal_max_use }}
+    dest: /etc/systemd/journald.conf.d/10-homelab.conf
+    owner: root
+    group: root
+    mode: "0644"
+  notify: Restart journald
