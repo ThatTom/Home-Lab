@@ -5,22 +5,22 @@
     - Jellyfin:
         href: https://jellyfin.hogwartsnetwork.co.uk
         description: Films, shows, music and books
-        icon: jellyfin.png
+        icon: sh-jellyfin.svg
         siteMonitor: https://jellyfin.hogwartsnetwork.co.uk
     - Seerr:
         href: https://seerr.hogwartsnetwork.co.uk
         description: Request films and shows
-        icon: jellyseerr.png
+        icon: sh-seerr.svg
         siteMonitor: https://seerr.hogwartsnetwork.co.uk
     - Radarr:
         href: https://radarr.hogwartsnetwork.co.uk
         description: Film library
-        icon: radarr.png
+        icon: sh-radarr.svg
         siteMonitor: https://radarr.hogwartsnetwork.co.uk
     - Sonarr:
         href: https://sonarr.hogwartsnetwork.co.uk
         description: TV library
-        icon: sonarr.png
+        icon: sh-sonarr.svg
         siteMonitor: https://sonarr.hogwartsnetwork.co.uk
     - Spindle:
         href: https://spindle.hogwartsnetwork.co.uk
@@ -30,19 +30,19 @@
     - Immich:
         href: https://immich.hogwartsnetwork.co.uk
         description: Photos and videos
-        icon: immich.png
+        icon: sh-immich.svg
         siteMonitor: https://immich.hogwartsnetwork.co.uk
 
 - Life & Documents:
     - Paperless:
         href: https://documents.hogwartsnetwork.co.uk
         description: Scanned documents
-        icon: paperless-ngx.png
+        icon: sh-paperless-ngx.svg
         siteMonitor: https://documents.hogwartsnetwork.co.uk
     - Wiki:
         href: https://wiki.hogwartsnetwork.co.uk
         description: LeafWiki notes
-        icon: mdi-book-open-page-variant
+        icon: sh-leafwiki.svg
         siteMonitor: https://wiki.hogwartsnetwork.co.uk
     - Books:
         href: https://books.hogwartsnetwork.co.uk
@@ -52,7 +52,7 @@
     - Travel:
         href: https://travel.hogwartsnetwork.co.uk
         description: TREK trip planner
-        icon: mdi-airplane
+        icon: sh-trek.svg
         siteMonitor: https://travel.hogwartsnetwork.co.uk
     - Tankbook:
         href: https://tankbook.hogwartsnetwork.co.uk
@@ -67,19 +67,19 @@
     - Spoolman:
         href: https://spoolman.hogwartsnetwork.co.uk
         description: 3D printer filament
-        icon: spoolman.png
+        icon: sh-spoolman.svg
         siteMonitor: https://spoolman.hogwartsnetwork.co.uk
     - AI Chat:
         href: https://ai.hogwartsnetwork.co.uk
         description: Open WebUI
-        icon: open-webui.png
+        icon: sh-open-webui.svg
         siteMonitor: https://ai.hogwartsnetwork.co.uk
 
 - Home:
     - Home Assistant:
         href: https://homeassistant.hogwartsnetwork.co.uk
         description: burrow
-        icon: home-assistant.png
+        icon: sh-home-assistant.svg
         siteMonitor: https://homeassistant.hogwartsnetwork.co.uk
     - 3D Printer:
         description: ollivander
@@ -90,86 +90,86 @@
     - Gitea:
         href: https://git.hogwartsnetwork.co.uk
         description: Git repositories
-        icon: gitea.png
+        icon: sh-gitea.svg
         siteMonitor: https://git.hogwartsnetwork.co.uk
     - Gitea Mirror:
         href: https://gitea-mirror.hogwartsnetwork.co.uk
         description: GitHub mirroring
-        icon: mdi-source-repository-multiple
+        icon: sh-gitea-mirror.png
         siteMonitor: https://gitea-mirror.hogwartsnetwork.co.uk
     - Komodo:
         href: https://komodo.hogwartsnetwork.co.uk
         description: Stack deployments
-        icon: komodo.png
+        icon: sh-komodo.svg
         siteMonitor: https://komodo.hogwartsnetwork.co.uk
     - Semaphore:
         href: https://semaphore.hogwartsnetwork.co.uk
         description: Ansible runs
-        icon: ansible.png
+        icon: sh-semaphore-ui.svg
         siteMonitor: https://semaphore.hogwartsnetwork.co.uk
 
 - Infrastructure:
     - Traefik:
         href: https://traefik.hogwartsnetwork.co.uk
         description: Reverse proxy, VIP 10.10.20.2
-        icon: traefik.png
+        icon: sh-traefik.svg
         siteMonitor: https://traefik.hogwartsnetwork.co.uk
     - VoidAuth:
         href: https://auth.hogwartsnetwork.co.uk
         description: Hogwarts SSO
-        icon: mdi-shield-account
+        icon: sh-voidauth.svg
         siteMonitor: https://auth.hogwartsnetwork.co.uk
     - Vaultwarden:
         href: https://password.hogwartsnetwork.co.uk
         description: Passwords
-        icon: vaultwarden.png
+        icon: sh-vaultwarden.svg
         siteMonitor: https://password.hogwartsnetwork.co.uk
     - Grafana:
         href: https://monitoring.hogwartsnetwork.co.uk
         description: Monitoring dashboards
-        icon: grafana.png
+        icon: sh-grafana.svg
         siteMonitor: https://monitoring.hogwartsnetwork.co.uk
     - ntfy:
         href: https://ntfy.hogwartsnetwork.co.uk
         description: Notifications
-        icon: ntfy.png
+        icon: sh-ntfy.svg
         siteMonitor: https://ntfy.hogwartsnetwork.co.uk
     - Termix:
         href: https://terminal.hogwartsnetwork.co.uk
         description: Web SSH terminal
-        icon: mdi-console
+        icon: sh-termix.svg
         siteMonitor: https://terminal.hogwartsnetwork.co.uk
     - Rackpad:
         href: https://rackpad.hogwartsnetwork.co.uk
         description: Rack and device inventory
-        icon: mdi-server-network
+        icon: sh-rackpad.svg
         siteMonitor: https://rackpad.hogwartsnetwork.co.uk
 
 - Network:
     - leaky-cauldron:
         href: http://10.10.10.1
         description: Router, MikroTik hEX S
-        icon: mikrotik.png
+        icon: sh-mikrotik.svg
         ping: 10.10.10.1
     - floo:
         href: http://10.10.10.2
         description: Access switch
-        icon: mdi-switch
+        icon: sh-tp-link.svg
         ping: 10.10.10.2
     - portkey:
         href: http://10.10.10.3
         description: Access switch
-        icon: mdi-switch
+        icon: sh-tp-link.svg
         ping: 10.10.10.3
 
 - Servers:
     - dumbledore:
         description: Swarm manager, Raspberry Pi 4B
-        icon: raspberry-pi.png
+        icon: sh-raspberry-pi.svg
         ping: 10.10.20.10
     - flitwick:
         description: Swarm manager, Raspberry Pi 4B
-        icon: raspberry-pi.png
+        icon: sh-raspberry-pi.svg
         ping: 10.10.20.11
     - dobby:
         description: Swarm worker, Lenovo Micro PC
@@ -182,5 +182,5 @@
     - gringotts:
         href: http://10.10.20.30
         description: NAS
-        icon: mdi-nas
+        icon: sh-truenas-scale.svg
         ping: 10.10.20.30

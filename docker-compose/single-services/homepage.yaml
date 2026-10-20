@@ -50,7 +50,7 @@ configs:
     file: ./configs/homepage/settings.yaml
 
   homepage-services:
-    name: homepage-services-v2
+    name: homepage-services-v3
     file: ./configs/homepage/services.yaml
 
   homepage-widgets:
@@ -58,5 +58,5 @@ configs:
     file: ./configs/homepage/widgets.yaml
 
   homepage-bookmarks:
-    name: homepage-bookmarks-v1
+    name: homepage-bookmarks-v2
     file: ./configs/homepage/bookmarks.yaml

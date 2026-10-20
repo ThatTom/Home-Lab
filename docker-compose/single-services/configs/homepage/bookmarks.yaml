@@ -2,16 +2,16 @@
 # Swarm configs can't change in place, so bump the config name's suffix there after editing this file.
 - Homelab:
     - Home-Lab repo:
-        - icon: gitea.png
+        - icon: sh-gitea.svg
           href: https://git.hogwartsnetwork.co.uk/ThatT0m/Home-Lab
     - Komodo fallback:
-        - icon: komodo.png
+        - icon: sh-komodo.svg
           href: http://10.10.20.10:9120
 
 - External:
     - Cloudflare:
-        - icon: cloudflare.png
+        - icon: sh-cloudflare.svg
           href: https://dash.cloudflare.com
     - Backblaze B2:
-        - icon: backblaze.png
+        - icon: sh-backblaze.svg
           href: https://secure.backblaze.com/b2_buckets.htm
