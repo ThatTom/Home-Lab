@@ -1,0 +1,3 @@
+# Python bytecode from running or testing the Ansible plugins locally
+__pycache__/
+*.pyc
