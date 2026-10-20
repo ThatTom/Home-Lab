@@ -134,6 +134,16 @@ groups:
           summary: "{{ $labels.instance }}: ZFS pool {{ $labels.zpool }} is {{ $labels.state }}"
           description: "Check Storage in the TrueNAS UI, or zpool status {{ $labels.zpool }} on {{ $labels.instance }}."
 
+      # From the zfs list textfile a TrueNAS cron job writes on gringotts. ZFS slows down past about 80% full.
+      - alert: ZfsPoolSpaceLow
+        expr: zfs_pool_used_bytes / (zfs_pool_used_bytes + zfs_pool_available_bytes) * 100 > 80
+        for: 30m
+        labels:
+          severity: warning
+        annotations:
+          summary: "{{ $labels.instance }}: ZFS pool {{ $labels.zpool }} is over 80% full"
+          description: "{{ $labels.zpool }} is {{ $value | printf \"%.1f\" }}% full."
+
   - name: logging
     rules:
       - alert: LokiDown

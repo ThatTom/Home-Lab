@@ -451,13 +451,62 @@
         "tooltip": { "mode": "multi", "sort": "desc" } }
     },
 
-    { "id": 25, "type": "row", "title": "Service resources", "collapsed": false, "panels": [], "gridPos": { "x": 0, "y": 57, "w": 24, "h": 1 } },
+    { "id": 29, "type": "row", "title": "Storage", "collapsed": false, "panels": [], "gridPos": { "x": 0, "y": 57, "w": 24, "h": 1 } },
+    {
+      "id": 30,
+      "type": "gauge",
+      "title": "Hogwarts-Vault used",
+      "description": "Matches the pool usage TrueNAS shows, snapshots included. Thresholds match the ZfsPoolSpaceLow alert.",
+      "gridPos": { "x": 0, "y": 58, "w": 6, "h": 8 },
+      "datasource": { "type": "prometheus", "uid": "prometheus" },
+      "targets": [
+        { "refId": "A", "datasource": { "type": "prometheus", "uid": "prometheus" }, "instant": true, "range": false,
+          "expr": "zfs_pool_used_bytes{zpool=\"Hogwarts-Vault\"} / (zfs_pool_used_bytes{zpool=\"Hogwarts-Vault\"} + zfs_pool_available_bytes{zpool=\"Hogwarts-Vault\"}) * 100" }
+      ],
+      "fieldConfig": {
+        "defaults": {
+          "unit": "percent", "min": 0, "max": 100, "decimals": 1,
+          "color": { "mode": "thresholds" },
+          "thresholds": { "mode": "absolute", "steps": [
+            { "color": "green", "value": null }, { "color": "orange", "value": 80 }, { "color": "red", "value": 90 }] }
+        },
+        "overrides": []
+      },
+      "options": { "showThresholdMarkers": true, "showThresholdLabels": false,
+        "reduceOptions": { "calcs": ["lastNotNull"], "fields": "", "values": false } }
+    },
+    {
+      "id": 31,
+      "type": "timeseries",
+      "title": "Hogwarts-Vault capacity",
+      "description": "Space used against the pool's usable size, from zfs list on gringotts (written every 5 minutes by a TrueNAS cron job).",
+      "gridPos": { "x": 6, "y": 58, "w": 18, "h": 8 },
+      "datasource": { "type": "prometheus", "uid": "prometheus" },
+      "targets": [
+        { "refId": "A", "datasource": { "type": "prometheus", "uid": "prometheus" }, "legendFormat": "Used",
+          "expr": "zfs_pool_used_bytes{zpool=\"Hogwarts-Vault\"}" },
+        { "refId": "B", "datasource": { "type": "prometheus", "uid": "prometheus" }, "legendFormat": "Usable size",
+          "expr": "zfs_pool_used_bytes{zpool=\"Hogwarts-Vault\"} + zfs_pool_available_bytes{zpool=\"Hogwarts-Vault\"}" }
+      ],
+      "fieldConfig": {
+        "defaults": { "unit": "bytes", "min": 0, "custom": { "fillOpacity": 10, "showPoints": "never" } },
+        "overrides": [
+          { "matcher": { "id": "byName", "options": "Usable size" }, "properties": [
+            { "id": "custom.fillOpacity", "value": 0 }, { "id": "custom.lineStyle", "value": { "fill": "dash", "dash": [10, 10] } }
+          ] }
+        ]
+      },
+      "options": { "legend": { "displayMode": "table", "placement": "right", "calcs": ["lastNotNull"] },
+        "tooltip": { "mode": "multi", "sort": "desc" } }
+    },
+
+    { "id": 25, "type": "row", "title": "Service resources", "collapsed": false, "panels": [], "gridPos": { "x": 0, "y": 66, "w": 24, "h": 1 } },
     {
       "id": 26,
       "type": "timeseries",
       "title": "CPU by service",
       "description": "Summed across every container of the service. 100% is one full CPU core.",
-      "gridPos": { "x": 0, "y": 58, "w": 12, "h": 9 },
+      "gridPos": { "x": 0, "y": 67, "w": 12, "h": 9 },
       "datasource": { "type": "prometheus", "uid": "prometheus" },
       "targets": [
         { "refId": "A", "datasource": { "type": "prometheus", "uid": "prometheus" }, "legendFormat": "{{service}}",
@@ -475,7 +524,7 @@
       "type": "timeseries",
       "title": "Memory by service",
       "description": "Working set memory (what the kernel can't reclaim), summed across every container of the service.",
-      "gridPos": { "x": 12, "y": 58, "w": 12, "h": 9 },
+      "gridPos": { "x": 12, "y": 67, "w": 12, "h": 9 },
       "datasource": { "type": "prometheus", "uid": "prometheus" },
       "targets": [
         { "refId": "A", "datasource": { "type": "prometheus", "uid": "prometheus" }, "legendFormat": "{{service}}",
@@ -493,7 +542,7 @@
       "type": "table",
       "title": "Service resource usage",
       "description": "CPU averaged over the last 5 minutes, 100% is one full CPU core.",
-      "gridPos": { "x": 0, "y": 67, "w": 24, "h": 10 },
+      "gridPos": { "x": 0, "y": 76, "w": 24, "h": 10 },
       "datasource": { "type": "prometheus", "uid": "prometheus" },
       "targets": [
         { "refId": "A", "datasource": { "type": "prometheus", "uid": "prometheus" }, "instant": true, "range": false, "format": "table",
@@ -529,13 +578,13 @@
         "sortBy": [{ "displayName": "CPU", "desc": true }] }
     },
 
-    { "id": 23, "type": "row", "title": "Backups", "collapsed": false, "panels": [], "gridPos": { "x": 0, "y": 77, "w": 24, "h": 1 } },
+    { "id": 23, "type": "row", "title": "Backups", "collapsed": false, "panels": [], "gridPos": { "x": 0, "y": 86, "w": 24, "h": 1 } },
     {
       "id": 24,
       "type": "table",
       "title": "Rustic backups",
       "description": "Thresholds match the BackupOverdue and PruneOverdue alerts. A node missing here has never reported a backup.",
-      "gridPos": { "x": 0, "y": 78, "w": 24, "h": 7 },
+      "gridPos": { "x": 0, "y": 87, "w": 24, "h": 7 },
       "datasource": { "type": "prometheus", "uid": "prometheus" },
       "targets": [
         { "refId": "A", "datasource": { "type": "prometheus", "uid": "prometheus" }, "instant": true, "range": false, "format": "table",
