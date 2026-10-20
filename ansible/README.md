@@ -87,7 +87,7 @@ A real run arms a rollback before changing anything: the router saves a backup a
 
 **Before the first run** the router needs:
 
-- A user for Ansible, with its username and password added to Semaphore as above. Restrict it to the swarm nodes with `/user set ansible address=10.10.20.10-10.10.20.29`
+- A user for Ansible, with its username and password added to Semaphore as above. Restrict it to the swarm nodes with `/user set ansible address=10.10.20.10/31,10.10.20.20/31` (the four nodes)
 - The `www-ssl` service enabled with a certificate (`/ip service`), which the REST API uses
 - Firewall rules letting the swarm nodes (Semaphore runs on any of them) reach the router's HTTPS (input chain) and the switches' web UI on port 80 (forward chain to `10.10.10.0/24`), placed before the rules that drop other traffic to the Management VLAN
 
