@@ -161,11 +161,6 @@
         description: Access switch
         icon: mdi-switch
         ping: 10.10.10.3
-    - gringotts:
-        href: http://192.168.100.30
-        description: NAS, still on the legacy network
-        icon: mdi-nas
-        ping: 192.168.100.30
 
 - Servers:
     - dumbledore:
@@ -184,3 +179,8 @@
         description: Swarm worker, Lenovo Micro PC
         icon: mdi-desktop-tower
         ping: 10.10.20.21
+    - gringotts:
+        href: http://10.10.20.30
+        description: NAS
+        icon: mdi-nas
+        ping: 10.10.20.30

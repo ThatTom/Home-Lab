@@ -44,8 +44,7 @@ swarm_overlay_networks:
   - name: monitoring-internal
 
 # NFS shares on gringotts, created as Docker volumes on every node (swarm.yml).
-# Still on the legacy network until gringotts moves to 10.10.20.30.
-nas_address: 192.168.100.30
+nas_address: 10.10.20.30
 nfs_volumes:
   - name: media-movies
     path: /mnt/Hogwarts-Vault/Movies

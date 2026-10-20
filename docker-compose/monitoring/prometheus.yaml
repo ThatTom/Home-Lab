@@ -140,11 +140,11 @@ networks:
 
 configs:
   prometheus:
-    name: prometheus-config-v5
+    name: prometheus-config-v6
     file: ./configs/prometheus.yml
 
   alert-rules:
-    name: prometheus-alert-rules-v5
+    name: prometheus-alert-rules-v6
     file: ./configs/alert-rules.yml
 
   alertmanager:

@@ -33,9 +33,10 @@ groups:
           summary: "{{ $labels.instance }}: last backup failed"
           description: "The last Rustic backup run failed. Check journalctl -u rustic-backup on {{ $labels.instance }}."
 
-      # node_exporter is up but has never seen a backup result, e.g. the backup timer isn't set up
+      # node_exporter is up but has never seen a backup result, e.g. the backup timer isn't set up.
+      # gringotts is left out, Rustic only runs on the Swarm nodes.
       - alert: BackupNeverReported
-        expr: up{job="node"} == 1 unless on(instance) rustic_last_run_timestamp_seconds{task="backup"}
+        expr: up{job="node", instance!="gringotts"} == 1 unless on(instance) rustic_last_run_timestamp_seconds{task="backup"}
         for: 26h
         labels:
           severity: warning
@@ -121,6 +122,18 @@ groups:
           summary: "{{ $labels.instance }}: has needed a reboot for over 8 days"
           description: "Updates installed {{ $value | humanizeDuration }} ago need a reboot. Run patch.yml for {{ $labels.instance }} (a run from Semaphore skips the node Semaphore is on)."
 
+  - name: storage
+    rules:
+      # node_exporter's ZFS collector on gringotts, 1 on the pool's current state
+      - alert: ZfsPoolUnhealthy
+        expr: node_zfs_zpool_state{state!="online"} == 1
+        for: 5m
+        labels:
+          severity: critical
+        annotations:
+          summary: "{{ $labels.instance }}: ZFS pool {{ $labels.zpool }} is {{ $labels.state }}"
+          description: "Check Storage in the TrueNAS UI, or zpool status {{ $labels.zpool }} on {{ $labels.instance }}."
+
   - name: logging
     rules:
       - alert: LokiDown
@@ -132,9 +145,9 @@ groups:
           summary: "Loki is down"
           description: "No logs are being stored. Check docker service logs loki_loki."
 
-      # A stopped Alloy drops out of DNS rather than reporting down, so compare against the nodes that are up
+      # A stopped Alloy drops out of DNS rather than reporting down, so compare against the Swarm nodes that are up
       - alert: LogShipperMissing
-        expr: (count(up{job="alloy"} == 1) or vector(0)) < count(up{job="node"} == 1)
+        expr: (count(up{job="alloy"} == 1) or vector(0)) < count(up{job="node", instance!="gringotts"} == 1)
         for: 10m
         labels:
           severity: warning

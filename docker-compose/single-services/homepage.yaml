@@ -50,7 +50,7 @@ configs:
     file: ./configs/homepage/settings.yaml
 
   homepage-services:
-    name: homepage-services-v1
+    name: homepage-services-v2
     file: ./configs/homepage/services.yaml
 
   homepage-widgets:

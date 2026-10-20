@@ -54,6 +54,10 @@ scrape_configs:
       - targets: ["10.10.20.21:9100"]
         labels:
           instance: winky
+      # Not a Swarm node: node_exporter runs as a TrueNAS custom app, so no Rustic or Alloy (see alert-rules.yml)
+      - targets: ["10.10.20.30:9100"]
+        labels:
+          instance: gringotts
 
   # cAdvisor also runs on each node's host network, giving per-container CPU and memory
   - job_name: cadvisor
@@ -145,5 +149,5 @@ scrape_configs:
           - 10.10.10.1:80               # leaky-cauldron
           - 10.10.10.2:80               # floo
           - 10.10.10.3:80               # portkey
-          - 192.168.100.30:80           # gringotts, still on the legacy network
+          - 10.10.20.30:80              # gringotts
     relabel_configs: *blackbox_relabel
