@@ -8,7 +8,7 @@
     - swarm_cluster
 
 - name: NFS-backed Docker volumes
-  hosts: all
+  hosts: swarm
   become: true
   gather_facts: false
   roles:

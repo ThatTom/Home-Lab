@@ -30,7 +30,7 @@ Split into VLANs on `10.10.0.0/16`, where the third octet matches the VLAN ID
 
 ## [Ansible](/ansible/)
 
-Playbooks run from Semaphore that set up the nodes (users, Docker, OS updates, backups, the Traefik floating IP) and the Swarm networks, labels, secrets and NFS volumes the stacks rely on
+Playbooks run from Semaphore that set up the nodes (users, Docker, OS updates, backups, the Traefik floating IP) and the Swarm networks, labels, secrets and NFS volumes the stacks rely on, and read, back up and manage the router and switches
 
 ## [Disaster Recovery](/disaster-recovery/)
 

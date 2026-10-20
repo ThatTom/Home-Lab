@@ -2,7 +2,7 @@
 # log rotation in place and cleans up old images weekly. One node at a time, since a daemon.json
 # change restarts Docker and every container on that node.
 - name: Docker Engine install, config and clean up
-  hosts: all
+  hosts: swarm
   become: true
   serial: 1
   max_fail_percentage: 0

@@ -23,7 +23,7 @@
     hostname: "{{ item }}"
     labels: "{{ hostvars[item].swarm_node_labels }}"
     labels_state: merge
-  loop: "{{ groups['all'] }}"
+  loop: "{{ groups['swarm'] }}"
   when: hostvars[item].swarm_node_labels | default({}) | length > 0
   run_once: true
 

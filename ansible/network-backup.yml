@@ -1,0 +1,20 @@
+# Saves the router's export and each switch's config to dumbledore, under the Rustic dump folder so they're
+# in the nightly encrypted backup. Exports include secrets, so they never go in this repo.
+- name: Back up the router
+  hosts: routeros
+  gather_facts: false
+  roles:
+    - role: routeros
+      vars:
+        routeros_read: false
+        routeros_backup: true
+
+- name: Back up the switches
+  hosts: tplink_switches
+  gather_facts: false
+  serial: 1
+  roles:
+    - role: tplink_easy_smart
+      vars:
+        tplink_read: false
+        tplink_backup: true

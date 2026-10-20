@@ -1,0 +1,17 @@
+# Desired state for leaky-cauldron, applied by network-apply.yml (see roles/routeros).
+# A menu is only managed once its variable is set here. Get the current values from the output of
+# network-read.yml, paste in the menus to manage, then run network-apply.yml as a dry run: it should
+# show no changes until something here is edited.
+#
+# Menus and the fields that identify an entry (roles/routeros/vars/main.yml):
+#   routeros_vlans            interface/vlan             name
+#   routeros_bridge_vlans     interface/bridge/vlan      bridge + vlan-ids
+#   routeros_ip_addresses     ip/address                 address
+#   routeros_dhcp_leases      ip/dhcp-server/lease       mac-address
+#   routeros_dns_static       ip/dns/static              name
+#   routeros_address_lists    ip/firewall/address-list   list + address
+#   routeros_firewall_filter  ip/firewall/filter         comment (kept in the order listed)
+#
+# Entries that aren't listed are left alone unless their menu is set true in routeros_purge, e.g.
+# routeros_purge:
+#   routeros_dhcp_leases: true

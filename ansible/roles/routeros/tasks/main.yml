@@ -1,0 +1,21 @@
+- name: Check the router login is set
+  ansible.builtin.assert:
+    that:
+      - routeros_username | length > 0
+      - routeros_password | length > 0
+    fail_msg: >-
+      Add routeros_username and routeros_password as environment variable secrets
+      in the template's Semaphore Variable Group.
+  run_once: true
+
+- name: Read the router
+  ansible.builtin.include_tasks: read.yml
+  when: routeros_read | bool
+
+- name: Back up the router config
+  ansible.builtin.include_tasks: backup.yml
+  when: routeros_backup | bool
+
+- name: Apply the desired config
+  ansible.builtin.include_tasks: apply.yml
+  when: routeros_apply | bool

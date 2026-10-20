@@ -1,0 +1,63 @@
+- name: Read system info and port settings
+  ansible.builtin.uri:
+    url: "{{ tplink_url }}/{{ item }}"
+    headers: "{{ tplink_headers }}"
+    return_content: true
+    timeout: 10
+  loop:
+    - SystemInfoRpm.htm
+    - PortSettingRpm.htm
+  register: tplink_pages
+  check_mode: false   # read-only, so it also runs in a dry run
+
+# A page that comes back with logonInfo is the login page, i.e. the session wasn't accepted
+- name: Check the pages were returned logged in
+  ansible.builtin.assert:
+    that: (item.content | tplink_vars).logonInfo is not defined
+    fail_msg: "{{ inventory_hostname }} returned its login page for {{ item.item }}, the session wasn't accepted"
+    quiet: true
+  loop: "{{ tplink_pages.results }}"
+  loop_control:
+    label: "{{ item.item }}"
+
+- name: Record the switch state
+  ansible.builtin.set_fact:
+    tplink_info: "{{ info }}"
+    tplink_port_state: >-
+      {{ range(1, ports.max_port_num | int + 1) | map('tplink_port', ports.all_info) | list }}
+  vars:
+    info: "{{ (tplink_pages.results[0].content | tplink_vars).info_ds | default({}) }}"
+    ports: "{{ tplink_pages.results[1].content | tplink_vars }}"
+
+- name: Show the switch
+  ansible.builtin.debug:
+    msg:
+      switch: "{{ tplink_info.descriStr | default(['?']) | first }}"
+      model: "{{ tplink_info.hardwareStr | default(['?']) | first }}"
+      firmware: "{{ tplink_info.firmwareStr | default(['?']) | first }}"
+      ip: "{{ tplink_info.ipStr | default(['?']) | first }}"
+      mac: "{{ tplink_info.macStr | default(['?']) | first }}"
+      ports: "{{ tplink_port_state }}"
+  when: tplink_read | bool
+
+- name: Read the extra pages
+  ansible.builtin.uri:
+    url: "{{ tplink_url }}/{{ item }}"
+    headers: "{{ tplink_headers }}"
+    return_content: true
+    timeout: 10
+  loop: "{{ tplink_extra_pages }}"
+  register: tplink_extra
+  failed_when: false
+  when: tplink_read | bool
+  check_mode: false   # read-only, so it also runs in a dry run
+
+- name: Show the extra pages
+  ansible.builtin.debug:
+    msg: >-
+      {{ item.item }}: {{ (item.content | tplink_vars) if item.status | default(0) == 200
+         else 'not available on this firmware (HTTP ' ~ (item.status | default('error')) ~ ')' }}
+  loop: "{{ tplink_extra.results | default([]) }}"
+  loop_control:
+    label: "{{ item.item }}"
+  when: tplink_read | bool

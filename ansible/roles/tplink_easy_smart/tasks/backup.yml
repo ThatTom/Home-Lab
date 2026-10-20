@@ -1,0 +1,68 @@
+# The web UI's "Backup Config" button. The endpoint isn't documented and may differ between firmware versions,
+# so a reply that's a web page rather than a config file is reported and skipped instead of failing the run.
+- name: Make a temporary file on the controller
+  ansible.builtin.tempfile:
+    suffix: .bin
+  register: tplink_tmp
+
+- name: Download the switch config
+  ansible.builtin.uri:
+    url: "{{ tplink_url }}/config_back.cgi?btnBackup=Backup"
+    headers: "{{ tplink_headers }}"
+    dest: "{{ tplink_tmp.path }}"
+    timeout: 20
+  register: tplink_config
+  failed_when: false
+
+- name: Check it's a config file rather than a web page
+  ansible.builtin.command: grep -qiE '<html|<script' {{ tplink_tmp.path | quote }}
+  register: tplink_config_is_page
+  changed_when: false
+  failed_when: false
+
+- name: Report a backup that didn't work
+  ansible.builtin.debug:
+    msg: >-
+      {{ inventory_hostname }} didn't return a config file (HTTP {{ tplink_config.status | default('error') }}),
+      this firmware may use a different backup address. Back it up from the web UI instead: System Tools, Backup and Restore.
+  when: tplink_config.status | default(0) != 200 or tplink_config_is_page.rc == 0
+
+- name: Store the config on {{ network_backup_host }}
+  delegate_to: "{{ network_backup_host }}"
+  become: true
+  when: tplink_config.status | default(0) == 200 and tplink_config_is_page.rc != 0
+  block:
+    - name: Create the backup folder
+      ansible.builtin.file:
+        path: "{{ network_backup_dir }}/{{ inventory_hostname }}"
+        state: directory
+        owner: root
+        group: root
+        mode: "0700"
+
+    - name: Copy the config
+      ansible.builtin.copy:
+        src: "{{ tplink_tmp.path }}"
+        dest: "{{ network_backup_dir }}/{{ inventory_hostname }}/{{ inventory_hostname }}-{{ now(fmt='%Y%m%d-%H%M%S') }}.bin"
+        owner: root
+        group: root
+        mode: "0600"
+
+    - name: Find older configs
+      ansible.builtin.find:
+        paths: "{{ network_backup_dir }}/{{ inventory_hostname }}"
+        patterns: "*.bin"
+      register: tplink_configs
+
+    - name: Keep the newest {{ network_backup_keep }}
+      ansible.builtin.file:
+        path: "{{ item.path }}"
+        state: absent
+      loop: "{{ (tplink_configs.files | sort(attribute='mtime', reverse=true))[network_backup_keep:] }}"
+      loop_control:
+        label: "{{ item.path | basename }}"
+
+- name: Remove the temporary file
+  ansible.builtin.file:
+    path: "{{ tplink_tmp.path }}"
+    state: absent

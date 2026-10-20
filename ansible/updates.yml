@@ -1,7 +1,7 @@
 # Daily security updates (no automatic reboots) and the reboot-required metric, see roles/updates.
 # Everything else, and every reboot, is done by patch.yml.
 - name: Unattended security updates
-  hosts: all
+  hosts: swarm
   become: true
   gather_facts: false
   roles:

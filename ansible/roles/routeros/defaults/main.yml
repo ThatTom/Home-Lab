@@ -1,0 +1,31 @@
+# REST API on the router (RouterOS v7). The account comes from the Semaphore environment secrets
+# routeros_username and routeros_password.
+routeros_url: "https://{{ routeros_host }}"
+routeros_username: "{{ lookup('ansible.builtin.env', 'routeros_username') }}"
+routeros_password: "{{ lookup('ansible.builtin.env', 'routeros_password') }}"
+# The router's web certificate is self-signed, set this true once it has one the controller trusts
+routeros_validate_certs: false
+
+# What the role does, set by each network-*.yml playbook
+routeros_read: true
+routeros_backup: false
+routeros_apply: false
+
+# Backups are kept on this node under the Rustic dump folder, so they're in the nightly encrypted backup to B2
+network_backup_host: dumbledore
+network_backup_dir: /var/backups/rustic/network
+network_backup_keep: 30
+
+# Before applying changes the router saves a backup and starts a timer. If Ansible can't reach the REST API
+# afterwards to cancel it, the router restores that backup (and reboots) once the timer runs out.
+routeros_rollback_after: 300
+
+# Desired state, one variable per menu (see vars/main.yml for the menus and the fields that identify an entry).
+# A menu is only managed when its variable is defined in inventory/group_vars/routeros.yml, so nothing is
+# touched until it's been filled in, normally by pasting the output of network-read.yml.
+#   routeros_vlans, routeros_bridge_vlans, routeros_ip_addresses, routeros_dhcp_leases,
+#   routeros_dns_static, routeros_address_lists, routeros_firewall_filter
+
+# Menus where entries that aren't listed get removed, e.g. {routeros_dhcp_leases: true}.
+# Dynamic entries are never touched. Leave off for the firewall until every rule has a comment.
+routeros_purge: {}

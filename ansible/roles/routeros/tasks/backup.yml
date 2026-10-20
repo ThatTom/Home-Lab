@@ -1,0 +1,61 @@
+# The export includes secrets (show-sensitive: the PPPoE password, WireGuard keys) so a restore is complete.
+# It's only ever written to the backup node, root-only, and from there into the encrypted Rustic backup.
+- name: Export the router config
+  ansible.builtin.uri:
+    url: "{{ routeros_url }}/rest/execute"
+    method: POST
+    user: "{{ routeros_username }}"
+    password: "{{ routeros_password }}"
+    force_basic_auth: true
+    validate_certs: "{{ routeros_validate_certs }}"
+    body_format: json
+    body:
+      script: /export show-sensitive
+      as-string: ""
+    timeout: 60
+    return_content: true
+  register: routeros_export
+  no_log: true
+
+- name: Check the export came back
+  ansible.builtin.assert:
+    that: (routeros_export.json.ret | default('')) is search('/interface')
+    fail_msg: >-
+      The router didn't return its export ({{ routeros_export.json.keys() | list if routeros_export.json is mapping else 'no JSON' }}).
+      execute with as-string may not be supported on this RouterOS version.
+    quiet: true
+
+- name: Store the export on {{ network_backup_host }}
+  delegate_to: "{{ network_backup_host }}"
+  become: true
+  block:
+    - name: Create the backup folder
+      ansible.builtin.file:
+        path: "{{ network_backup_dir }}/{{ inventory_hostname }}"
+        state: directory
+        owner: root
+        group: root
+        mode: "0700"
+
+    - name: Write the export
+      ansible.builtin.copy:
+        content: "{{ routeros_export.json.ret }}"
+        dest: "{{ network_backup_dir }}/{{ inventory_hostname }}/{{ inventory_hostname }}-{{ now(fmt='%Y%m%d-%H%M%S') }}.rsc"
+        owner: root
+        group: root
+        mode: "0600"
+      no_log: true
+
+    - name: Find older exports
+      ansible.builtin.find:
+        paths: "{{ network_backup_dir }}/{{ inventory_hostname }}"
+        patterns: "*.rsc"
+      register: routeros_exports
+
+    - name: Keep the newest {{ network_backup_keep }}
+      ansible.builtin.file:
+        path: "{{ item.path }}"
+        state: absent
+      loop: "{{ (routeros_exports.files | sort(attribute='mtime', reverse=true))[network_backup_keep:] }}"
+      loop_control:
+        label: "{{ item.path | basename }}"

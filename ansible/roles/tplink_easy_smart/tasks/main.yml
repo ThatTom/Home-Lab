@@ -1,0 +1,63 @@
+- name: Check the switch login is set
+  ansible.builtin.assert:
+    that:
+      - tplink_username | length > 0
+      - tplink_password | length > 0
+    fail_msg: >-
+      Add tplink_username and tplink_password as environment variable secrets
+      in the template's Semaphore Variable Group.
+  run_once: true
+
+- name: Log in, do the work, always log out
+  block:
+    - name: Log in
+      ansible.builtin.uri:
+        url: "{{ tplink_url }}/logon.cgi"
+        method: POST
+        body_format: form-urlencoded
+        body:
+          username: "{{ tplink_username }}"
+          password: "{{ tplink_password }}"
+          logon: Login
+        return_content: true
+        timeout: 10
+      register: tplink_login
+      no_log: true
+      check_mode: false   # read-only, so it also runs in a dry run
+
+    # logonInfo's first value: 0 logged in, 1 wrong login, 2 user blocked, 3/4 too many sessions, 5 timed out
+    - name: Check the login worked
+      ansible.builtin.assert:
+        that: tplink_logon_code == 0
+        fail_msg: >-
+          Login to {{ inventory_hostname }} failed: {{ {1: 'wrong username or password', 2: 'user not allowed to log in',
+          3: 'too many sessions, close the web UI and wait for it to time out', 4: 'too many sessions',
+          5: 'session timed out'}[tplink_logon_code] | default('unexpected reply, logonInfo ' ~ tplink_logon_code) }}
+        quiet: true
+      vars:
+        tplink_logon_code: "{{ (tplink_login.content | tplink_vars).logonInfo | default(['missing']) | first }}"
+
+    - name: Keep the session cookie, where the firmware uses one
+      ansible.builtin.set_fact:
+        tplink_headers: "{{ {'Cookie': tplink_login.cookies_string} if tplink_login.cookies_string | default('') else {} }}"
+
+    - name: Read the switch
+      ansible.builtin.include_tasks: read.yml
+      when: tplink_read | bool or tplink_apply | bool
+
+    - name: Back up the switch config, before any changes
+      ansible.builtin.include_tasks: backup.yml
+      when: tplink_backup | bool
+
+    - name: Apply port settings
+      ansible.builtin.include_tasks: apply.yml
+      when: tplink_apply | bool
+
+  always:
+    - name: Log out
+      ansible.builtin.uri:
+        url: "{{ tplink_url }}/Logout.htm"
+        headers: "{{ tplink_headers | default({}) }}"
+        timeout: 10
+      failed_when: false
+      check_mode: false   # read-only, so it also runs in a dry run

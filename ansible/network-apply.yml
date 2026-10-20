@@ -1,0 +1,29 @@
+# Makes the router match inventory/group_vars/routeros.yml and the switches' ports match tplink_ports.
+# Run it as a dry run first (Semaphore: Dry Run, or --check --diff) to see the changes, which touches nothing.
+# A real run backs up each device first, and on the router arms a rollback that restores the old config if
+# the router can't be reached after the changes, see roles/routeros/tasks/apply.yml.
+- name: Apply the router config
+  hosts: routeros
+  gather_facts: false
+  roles:
+    - role: routeros
+      vars:
+        routeros_read: false
+        routeros_backup: true
+      when: not ansible_check_mode
+
+    - role: routeros
+      vars:
+        routeros_read: false
+        routeros_apply: true
+
+- name: Apply the switch port settings
+  hosts: tplink_switches
+  gather_facts: false
+  serial: 1
+  roles:
+    - role: tplink_easy_smart
+      vars:
+        tplink_read: false
+        tplink_backup: "{{ not ansible_check_mode }}"
+        tplink_apply: true

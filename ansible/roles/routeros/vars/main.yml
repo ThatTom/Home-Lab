@@ -1,0 +1,46 @@
+# The RouterOS menus this role reads and manages, in the order changes are applied.
+#   var     inventory variable holding the desired entries
+#   path    menu path in the REST URL
+#   key     fields that identify an entry, so it's updated rather than added again
+#   fields  fields network-read.yml prints for each entry
+#   ordered entries are kept in the order listed (firewall rules)
+routeros_sections:
+  - var: routeros_vlans
+    path: interface/vlan
+    key: [name]
+    fields: [name, vlan-id, interface, comment, disabled]
+
+  - var: routeros_bridge_vlans
+    path: interface/bridge/vlan
+    key: [bridge, vlan-ids]
+    fields: [bridge, vlan-ids, tagged, untagged, comment, disabled]
+
+  - var: routeros_ip_addresses
+    path: ip/address
+    key: [address]
+    fields: [address, interface, comment, disabled]
+
+  - var: routeros_dhcp_leases
+    path: ip/dhcp-server/lease
+    key: [mac-address]
+    fields: [mac-address, address, server, comment, disabled]
+
+  - var: routeros_dns_static
+    path: ip/dns/static
+    key: [name]
+    fields: [name, type, address, cname, ttl, comment, disabled]
+
+  - var: routeros_address_lists
+    path: ip/firewall/address-list
+    key: [list, address]
+    fields: [list, address, comment, disabled]
+
+  # Rules are matched by comment, so every managed rule needs a unique one
+  - var: routeros_firewall_filter
+    path: ip/firewall/filter
+    key: [comment]
+    ordered: true
+    fields: [chain, action, comment, disabled, connection-state, connection-nat-state, protocol,
+             src-address, dst-address, src-address-list, dst-address-list, src-port, dst-port,
+             in-interface, out-interface, in-interface-list, out-interface-list,
+             jump-target, reject-with, log, log-prefix, hw-offload, ipsec-policy]

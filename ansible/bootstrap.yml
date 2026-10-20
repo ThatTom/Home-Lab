@@ -3,7 +3,7 @@
 # with the password in the Semaphore secret variable harry_password.
 # Once a host is set up, harry is disabled there and every later run uses the ansible user.
 - name: Pick the login for each host
-  hosts: all
+  hosts: swarm
   gather_facts: false
   tasks:
     - name: Try logging in as the ansible user
@@ -16,7 +16,7 @@
         login_user: "{{ bootstrap_user if ansible_login.unreachable | default(false) else 'ansible' }}"
 
 - name: Create consistent logins and the Ansible user
-  hosts: all
+  hosts: swarm
   become: true
   gather_facts: false
   vars:
@@ -36,7 +36,7 @@
     - base
 
 - name: Disable the bootstrap user
-  hosts: all
+  hosts: swarm
   become: true
   gather_facts: false
   vars:

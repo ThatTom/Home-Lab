@@ -1,0 +1,32 @@
+# TP-Link Easy Smart switches (TL-SG108E / TL-SG108PE). They have no API, so this role drives the web UI the
+# way a browser does, over plain HTTP. The login comes from the Semaphore environment secrets tplink_username
+# and tplink_password. Only one session is allowed at a time, so close the web UI before running this.
+tplink_url: "http://{{ tplink_host }}"
+tplink_username: "{{ lookup('ansible.builtin.env', 'tplink_username') }}"
+tplink_password: "{{ lookup('ansible.builtin.env', 'tplink_password') }}"
+
+# What the role does, set by each network-*.yml playbook
+tplink_read: true
+tplink_backup: false
+tplink_apply: false
+
+# The tagged uplink to the router. It's never disabled or slowed down, since that would cut off the switch.
+tplink_uplink_port: 8
+
+# Extra pages read and shown as-is by network-read.yml. Their names and contents vary between firmware
+# versions, a page that doesn't exist is reported and skipped.
+tplink_extra_pages:
+  - Vlan8021QRpm.htm          # 802.1Q VLAN membership
+  - Vlan8021QPvidRpm.htm      # port PVIDs
+
+# Desired port settings, only applied when defined (per switch, in host_vars or homelab.yml), e.g.
+#   tplink_ports:
+#     - {port: 5, enabled: false}
+#     - {port: 3, speed: 100f}
+# speed is auto, 10h, 10f, 100h, 100f or 1000f. Ports not listed are left alone.
+tplink_speed_codes: {auto: 1, 10h: 2, 10f: 3, 100h: 4, 100f: 5, 1000f: 6}
+
+# Backups go to the same place as the router's, see roles/routeros
+network_backup_host: dumbledore
+network_backup_dir: /var/backups/rustic/network
+network_backup_keep: 30

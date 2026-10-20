@@ -1,0 +1,14 @@
+# Reads the router and switches and changes nothing. The router's config is printed in the same form as the
+# inventory variables network-apply.yml uses, ready to paste into inventory/group_vars/routeros.yml.
+- name: Read the router
+  hosts: routeros
+  gather_facts: false
+  roles:
+    - routeros
+
+- name: Read the switches
+  hosts: tplink_switches
+  gather_facts: false
+  serial: 1
+  roles:
+    - tplink_easy_smart

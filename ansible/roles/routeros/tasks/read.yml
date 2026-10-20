@@ -1,0 +1,53 @@
+- name: Read the router's identity and resources
+  ansible.builtin.uri:
+    url: "{{ routeros_url }}/rest/{{ item }}"
+    user: "{{ routeros_username }}"
+    password: "{{ routeros_password }}"
+    force_basic_auth: true
+    validate_certs: "{{ routeros_validate_certs }}"
+    return_content: true
+  loop:
+    - system/identity
+    - system/resource
+  register: routeros_system
+  no_log: true
+  check_mode: false   # read-only, so it also runs in a dry run
+
+- name: Read each managed menu
+  ansible.builtin.uri:
+    url: "{{ routeros_url }}/rest/{{ item.path }}"
+    user: "{{ routeros_username }}"
+    password: "{{ routeros_password }}"
+    force_basic_auth: true
+    validate_certs: "{{ routeros_validate_certs }}"
+    return_content: true
+  loop: "{{ routeros_sections }}"
+  loop_control:
+    label: "{{ item.path }}"
+  register: routeros_menus
+  check_mode: false   # read-only, so it also runs in a dry run
+
+- name: Show the router
+  ansible.builtin.debug:
+    msg: >-
+      {{ routeros_system.results[0].json.name }}: RouterOS {{ routeros_system.results[1].json.version }}
+      on {{ routeros_system.results[1].json['board-name'] }}, up {{ routeros_system.results[1].json.uptime }},
+      CPU {{ routeros_system.results[1].json['cpu-load'] }}%,
+      {{ ((routeros_system.results[1].json['free-memory'] | int) / 1048576) | round(1) }} MiB memory free
+
+# In the same form as the inventory variables, so it can be pasted into inventory/group_vars/routeros.yml.
+# Dynamic entries (from DHCP, VPN etc.) are left out since they can't be managed.
+- name: Show the current config as inventory variables
+  ansible.builtin.debug:
+    msg: "{{ routeros_menus.results | routeros_inventory | to_nice_yaml(indent=2, width=200) }}"
+
+- name: Warn about firewall rules that can't be managed yet
+  ansible.builtin.debug:
+    msg: >-
+      {{ uncommented | length }} firewall filter rules have no comment, so can't be matched up.
+      Give each a unique comment before managing routeros_firewall_filter.
+  vars:
+    uncommented: >-
+      {{ (routeros_menus.results | selectattr('item.var', 'equalto', 'routeros_firewall_filter') | first).json
+         | default([]) | routeros_uncommented }}
+  when: uncommented | length > 0

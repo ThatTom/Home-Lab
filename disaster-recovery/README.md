@@ -39,7 +39,7 @@ Set up by [ansible/backups.yml](/ansible/backups.yml) and the [rustic role](/ans
 | Komodo backups path (`COMPOSE_KOMODO_BACKUPS_PATH`) | Host folder on dumbledore | Not backed up |
 | Stack `.env` files (Nemoir, Paperless, Rackpad) | Wherever the stacks are deployed from | Keep copies, or move the values into Komodo |
 | Paperless export / consume folders | `/home/tomt/export`, `/mnt/consume` on dobby | Not backed up |
-| Router and switch configs | leaky-cauldron, floo, portkey | Export them after every change |
+| Router and switch configs | `/var/backups/rustic/network` on dumbledore, from [network-backup.yml](/ansible/network-backup.yml) | In the nightly backup once network-backup.yml runs. Run it after any change made by hand |
 | Non-Swarm services (Ollama, meshhub) | Their own hosts | Volumes are only covered if the host runs the Rustic role. WGDashboard runs on flitwick, so its volumes are backed up |
 | Traefik certificates | `traefik-letsencrypt` volume on each manager | Not needed, re-issued automatically |
 
@@ -54,7 +54,7 @@ Keep these **outside the lab** (e.g. a password manager not hosted on it, plus a
 - [ ] The password used for the **harry** bootstrap user
 - [ ] Komodo `core.env` and `periphery.env`, and the stack `.env` files
 - [ ] A recent clone of this repository (Gitea runs on dobby)
-- [ ] Router and switch config exports
+- [ ] Router and switch config exports (the latest from network-backup.yml), since restoring them from B2 needs a working network
 
 ## Which Services Run Where
 

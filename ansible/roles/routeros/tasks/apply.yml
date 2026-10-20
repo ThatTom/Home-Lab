@@ -1,0 +1,137 @@
+# Makes each managed menu match its inventory variable. A dry run (check mode) shows the changes and
+# touches nothing. A real run that has changes first arms a rollback on the router: it saves a backup and
+# starts a timer that restores it unless Ansible can still reach the REST API afterwards and cancels it.
+- name: Pick the menus that have a desired state
+  ansible.builtin.set_fact:
+    routeros_managed: "{{ routeros_sections | selectattr('var', 'in', vars) | list }}"
+
+- name: Report that nothing is managed yet
+  ansible.builtin.debug:
+    msg: >-
+      None of {{ routeros_sections | map(attribute='var') | join(', ') }} are set in
+      inventory/group_vars/routeros.yml, so there's nothing to apply. Run network-read.yml to get the current values.
+  when: routeros_managed | length == 0
+
+- name: Work out what would change
+  routeros_resource:
+    url: "{{ routeros_url }}"
+    username: "{{ routeros_username }}"
+    password: "{{ routeros_password }}"
+    validate_certs: "{{ routeros_validate_certs }}"
+    path: "{{ item.path }}"
+    key: "{{ item.key }}"
+    entries: "{{ lookup('ansible.builtin.vars', item.var) }}"
+    purge: "{{ routeros_purge[item.var] | default(false) }}"
+    ordered: "{{ item.ordered | default(false) }}"
+  check_mode: true
+  diff: true
+  loop: "{{ routeros_managed }}"
+  loop_control:
+    label: "{{ item.path }}"
+  register: routeros_plan
+
+- name: Apply the changes, with a rollback armed
+  when:
+    - routeros_plan.results | default([]) | selectattr('changed') | list | length > 0
+    - not ansible_check_mode
+  block:
+    - name: Save a backup to roll back to
+      ansible.builtin.uri:
+        url: "{{ routeros_url }}/rest/system/backup/save"
+        method: POST
+        user: "{{ routeros_username }}"
+        password: "{{ routeros_password }}"
+        force_basic_auth: true
+        validate_certs: "{{ routeros_validate_certs }}"
+        body_format: json
+        body:
+          name: ansible-rollback
+          dont-encrypt: "yes"
+        timeout: 60
+
+    # Runs in the background on the router. Changes only start once this has been set up.
+    - name: Start the rollback timer ({{ routeros_rollback_after }}s)
+      ansible.builtin.uri:
+        url: "{{ routeros_url }}/rest/execute"
+        method: POST
+        user: "{{ routeros_username }}"
+        password: "{{ routeros_password }}"
+        force_basic_auth: true
+        validate_certs: "{{ routeros_validate_certs }}"
+        body_format: json
+        body:
+          script: |
+            :global ansibleRollbackArmed true
+            :delay {{ routeros_rollback_after }}s
+            :global ansibleRollbackArmed
+            :if ($ansibleRollbackArmed = true) do={
+              /log warning "Ansible did not confirm its changes, restoring ansible-rollback.backup"
+              /system backup load name=ansible-rollback.backup password=""
+            }
+        timeout: 30
+
+    - name: Apply the changes
+      block:
+        - name: Make each menu match
+          routeros_resource:
+            url: "{{ routeros_url }}"
+            username: "{{ routeros_username }}"
+            password: "{{ routeros_password }}"
+            validate_certs: "{{ routeros_validate_certs }}"
+            path: "{{ item.item.path }}"
+            key: "{{ item.item.key }}"
+            entries: "{{ lookup('ansible.builtin.vars', item.item.var) }}"
+            purge: "{{ routeros_purge[item.item.var] | default(false) }}"
+            ordered: "{{ item.item.ordered | default(false) }}"
+          loop: "{{ routeros_plan.results | selectattr('changed') | list }}"
+          loop_control:
+            label: "{{ item.item.path }}"
+
+        - name: Check the REST API still answers
+          ansible.builtin.uri:
+            url: "{{ routeros_url }}/rest/system/identity"
+            user: "{{ routeros_username }}"
+            password: "{{ routeros_password }}"
+            force_basic_auth: true
+            validate_certs: "{{ routeros_validate_certs }}"
+            timeout: 10
+          register: routeros_still_there
+          until: routeros_still_there.status == 200
+          retries: 6
+          delay: 5
+
+        - name: Cancel the rollback
+          ansible.builtin.uri:
+            url: "{{ routeros_url }}/rest/execute"
+            method: POST
+            user: "{{ routeros_username }}"
+            password: "{{ routeros_password }}"
+            force_basic_auth: true
+            validate_certs: "{{ routeros_validate_certs }}"
+            body_format: json
+            body:
+              script: ":global ansibleRollbackArmed false"
+
+        - name: Check the rollback is cancelled
+          ansible.builtin.uri:
+            url: "{{ routeros_url }}/rest/system/script/environment"
+            user: "{{ routeros_username }}"
+            password: "{{ routeros_password }}"
+            force_basic_auth: true
+            validate_certs: "{{ routeros_validate_certs }}"
+            return_content: true
+          register: routeros_globals
+          until: >-
+            (routeros_globals.json | default([]) | selectattr('name', 'equalto', 'ansibleRollbackArmed')
+             | map(attribute='value') | first | default('')) == 'false'
+          retries: 5
+          delay: 2
+
+      rescue:
+        - name: Explain what happens next
+          ansible.builtin.fail:
+            msg: >-
+              Applying the changes failed ({{ ansible_failed_result.msg | default('see above') }}). The router restores
+              the config from before this run {{ routeros_rollback_after }}s after the timer started, and reboots.
+              To keep the router as it is now instead, run this in its terminal before then:
+              :global ansibleRollbackArmed false

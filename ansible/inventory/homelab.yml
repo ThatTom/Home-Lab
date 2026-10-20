@@ -1,4 +1,4 @@
-# Addresses match the Servers VLAN (20) in network/README.md
+# Swarm nodes on the Servers VLAN (20) and network devices on the Management VLAN (10), addresses match network/README.md
 all:
   vars:
     ansible_user: ansible               # created by bootstrap.yml, key held by Semaphore
@@ -34,3 +34,20 @@ all:
               ansible_host: 10.10.20.21
               swarm_node_labels:
                 media: "yes"
+    # Router and switches on the Management VLAN (10). There's nothing to log in to: every task is an
+    # HTTPS / HTTP call made from the Ansible controller, see roles/routeros and roles/tplink_easy_smart.
+    network:
+      vars:
+        ansible_connection: local
+        ansible_python_interpreter: "{{ ansible_playbook_python }}"
+      children:
+        routeros:
+          hosts:
+            leaky-cauldron:
+              routeros_host: 10.10.10.1
+        tplink_switches:
+          hosts:
+            floo:
+              tplink_host: 10.10.10.2
+            portkey:
+              tplink_host: 10.10.10.3

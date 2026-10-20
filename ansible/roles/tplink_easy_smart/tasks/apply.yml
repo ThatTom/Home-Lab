@@ -1,0 +1,22 @@
+# Makes the ports listed in tplink_ports match, leaving everything else as read. Fields left out of an entry
+# keep their current value. The uplink port is never disabled or slowed down. In check mode the changes are
+# only reported.
+- name: Work out the port changes
+  ansible.builtin.set_fact:
+    tplink_port_changes: "{{ tplink_ports | default([]) | tplink_port_changes(tplink_port_state, tplink_uplink_port) }}"
+
+- name: Apply the port settings
+  ansible.builtin.uri:
+    url: >-
+      {{ tplink_url }}/port_setting.cgi?portid={{ item.port }}&state={{ item.enabled | ternary(1, 0) }}&speed={{ tplink_speed_codes[item.speed] }}&flowcontrol={{ item.flow_control | ternary(1, 0) }}&apply=Apply
+    headers: "{{ tplink_headers }}"
+    timeout: 10
+  loop: "{{ tplink_port_changes }}"
+  loop_control:
+    label: "port {{ item.port }}: {{ item.enabled | ternary('on', 'off') }}, {{ item.speed }}, flow control {{ item.flow_control | ternary('on', 'off') }}"
+  changed_when: true
+
+- name: Show the port changes a dry run would make
+  ansible.builtin.debug:
+    msg: "{{ tplink_port_changes if tplink_port_changes else 'No port changes' }}"
+  when: ansible_check_mode
