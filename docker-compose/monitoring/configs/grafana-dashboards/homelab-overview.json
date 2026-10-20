@@ -6,7 +6,7 @@
   "timezone": "browser",
   "editable": true,
   "graphTooltip": 1,
-  "time": { "from": "now-6h", "to": "now" },
+  "time": { "from": "now-24h", "to": "now" },
   "refresh": "1m",
   "schemaVersion": 41,
   "templating": { "list": [] },
@@ -151,13 +151,13 @@
       "datasource": { "type": "prometheus", "uid": "prometheus" },
       "targets": [
         { "refId": "A", "datasource": { "type": "prometheus", "uid": "prometheus" }, "instant": true, "range": false, "format": "table",
-          "expr": "max by (service) (label_replace(label_replace(label_replace(probe_success{job=\"blackbox-http\"}, \"service\", \"$1\", \"instance\", \"(.*)\"), \"service\", \"$1\", \"instance\", \"https://([^.]+)[.].*\"), \"service\", \"keepalived $1\", \"instance\", \"http://([0-9.]+):8082/ping\"))" },
+          "expr": "max by (service) (label_replace(label_replace(label_replace(probe_success{job=\"blackbox-http\"}, \"service\", \"$1\", \"instance\", \"(.*)\"), \"service\", \"$1\", \"instance\", \"https://([^.]+)[.].*\"), \"service\", \"keepalived $1\", \"node\", \"(.+)\"))" },
         { "refId": "B", "datasource": { "type": "prometheus", "uid": "prometheus" }, "instant": true, "range": false, "format": "table",
-          "expr": "max by (service) (label_replace(label_replace(label_replace(probe_duration_seconds{job=\"blackbox-http\"}, \"service\", \"$1\", \"instance\", \"(.*)\"), \"service\", \"$1\", \"instance\", \"https://([^.]+)[.].*\"), \"service\", \"keepalived $1\", \"instance\", \"http://([0-9.]+):8082/ping\"))" },
+          "expr": "max by (service) (label_replace(label_replace(label_replace(probe_duration_seconds{job=\"blackbox-http\"}, \"service\", \"$1\", \"instance\", \"(.*)\"), \"service\", \"$1\", \"instance\", \"https://([^.]+)[.].*\"), \"service\", \"keepalived $1\", \"node\", \"(.+)\"))" },
         { "refId": "C", "datasource": { "type": "prometheus", "uid": "prometheus" }, "instant": true, "range": false, "format": "table",
-          "expr": "max by (service) (label_replace(label_replace(label_replace(probe_http_status_code{job=\"blackbox-http\"}, \"service\", \"$1\", \"instance\", \"(.*)\"), \"service\", \"$1\", \"instance\", \"https://([^.]+)[.].*\"), \"service\", \"keepalived $1\", \"instance\", \"http://([0-9.]+):8082/ping\"))" },
+          "expr": "max by (service) (label_replace(label_replace(label_replace(probe_http_status_code{job=\"blackbox-http\"}, \"service\", \"$1\", \"instance\", \"(.*)\"), \"service\", \"$1\", \"instance\", \"https://([^.]+)[.].*\"), \"service\", \"keepalived $1\", \"node\", \"(.+)\"))" },
         { "refId": "D", "datasource": { "type": "prometheus", "uid": "prometheus" }, "instant": true, "range": false, "format": "table",
-          "expr": "max by (service) (label_replace(label_replace(label_replace(probe_ssl_earliest_cert_expiry{job=\"blackbox-http\"} - time(), \"service\", \"$1\", \"instance\", \"(.*)\"), \"service\", \"$1\", \"instance\", \"https://([^.]+)[.].*\"), \"service\", \"keepalived $1\", \"instance\", \"http://([0-9.]+):8082/ping\"))" }
+          "expr": "max by (service) (label_replace(label_replace(label_replace(probe_ssl_earliest_cert_expiry{job=\"blackbox-http\"} - time(), \"service\", \"$1\", \"instance\", \"(.*)\"), \"service\", \"$1\", \"instance\", \"https://([^.]+)[.].*\"), \"service\", \"keepalived $1\", \"node\", \"(.+)\"))" }
       ],
       "transformations": [
         { "id": "merge", "options": {} },
@@ -205,7 +205,7 @@
       "datasource": { "type": "prometheus", "uid": "prometheus" },
       "targets": [
         { "refId": "A", "datasource": { "type": "prometheus", "uid": "prometheus" }, "legendFormat": "{{service}}",
-          "expr": "max by (service) (label_replace(label_replace(label_replace(probe_success{job=\"blackbox-http\"}, \"service\", \"$1\", \"instance\", \"(.*)\"), \"service\", \"$1\", \"instance\", \"https://([^.]+)[.].*\"), \"service\", \"keepalived $1\", \"instance\", \"http://([0-9.]+):8082/ping\"))" }
+          "expr": "max by (service) (label_replace(label_replace(label_replace(probe_success{job=\"blackbox-http\"}, \"service\", \"$1\", \"instance\", \"(.*)\"), \"service\", \"$1\", \"instance\", \"https://([^.]+)[.].*\"), \"service\", \"keepalived $1\", \"node\", \"(.+)\"))" }
       ],
       "fieldConfig": {
         "defaults": {
@@ -229,7 +229,7 @@
       "datasource": { "type": "prometheus", "uid": "prometheus" },
       "targets": [
         { "refId": "A", "datasource": { "type": "prometheus", "uid": "prometheus" }, "legendFormat": "{{service}}",
-          "expr": "max by (service) (label_replace(label_replace(label_replace(probe_duration_seconds{job=\"blackbox-http\"}, \"service\", \"$1\", \"instance\", \"(.*)\"), \"service\", \"$1\", \"instance\", \"https://([^.]+)[.].*\"), \"service\", \"keepalived $1\", \"instance\", \"http://([0-9.]+):8082/ping\"))" }
+          "expr": "max by (service) (label_replace(label_replace(label_replace(probe_duration_seconds{job=\"blackbox-http\"}, \"service\", \"$1\", \"instance\", \"(.*)\"), \"service\", \"$1\", \"instance\", \"https://([^.]+)[.].*\"), \"service\", \"keepalived $1\", \"node\", \"(.+)\"))" }
       ],
       "fieldConfig": {
         "defaults": { "unit": "s", "custom": { "fillOpacity": 10, "showPoints": "never" } },

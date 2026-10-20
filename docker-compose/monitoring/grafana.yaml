@@ -64,7 +64,7 @@ configs:
 
   # Dashboards are mounted one config each, into the folder the provider above watches
   grafana-dashboard-overview:
-    name: grafana-dashboard-overview-v4
+    name: grafana-dashboard-overview-v5
     file: ./configs/grafana-dashboards/homelab-overview.json
 
   grafana-dashboard-logs:

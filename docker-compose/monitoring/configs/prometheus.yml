@@ -127,9 +127,14 @@ scrape_configs:
           - https://terminal.hogwartsnetwork.co.uk
           - https://rackpad.hogwartsnetwork.co.uk
           - https://dashboard.hogwartsnetwork.co.uk
-          # keepalived health checks, a failure means that manager can't take the Traefik VIP
-          - http://10.10.20.10:8082/ping
-          - http://10.10.20.11:8082/ping
+      # keepalived health checks, a failure means that manager can't take the Traefik VIP.
+      # node names them on the dashboard, instance is still the URL.
+      - targets: ["http://10.10.20.10:8082/ping"]
+        labels:
+          node: dumbledore
+      - targets: ["http://10.10.20.11:8082/ping"]
+        labels:
+          node: flitwick
     relabel_configs: &blackbox_relabel
       - source_labels: [__address__]
         target_label: __param_target
