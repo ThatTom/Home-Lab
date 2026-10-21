@@ -12,8 +12,8 @@ config.schedule = "Run every day at 02:00 am"
 name = "Repo Update"
 enabled = true
 executions = [
-  { execution.type = "PullRepo", execution.params.repo = "HogwartsNetwork", enabled = true },
-  { execution.type = "PullRepo", execution.params.repo = "HogwartsNetwork-GitHub", enabled = true }
+  { execution.type = "CloneRepo", execution.params.repo = "HogwartsNetwork", enabled = true },
+  { execution.type = "CloneRepo", execution.params.repo = "HogwartsNetwork-GitHub", enabled = true }
 ]
 
 [[procedure.config.stage]]

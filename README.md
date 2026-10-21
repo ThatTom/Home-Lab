@@ -54,7 +54,7 @@ All compose files follow the layout and standards in the [Docker Compose README]
 
 ## [Komodo Resources](/komodo-resources/)
 
-Komodo resource definitions in TOML, such as the [2AM - Auto Update](/komodo-resources/auto-update.toml) procedure that pulls the repos and deploys any stacks that changed on `main`
+Komodo resource definitions in TOML, such as the [2AM - Auto Update](/komodo-resources/auto-update.toml) procedure that re-clones the repos and deploys any stacks that changed on `main`
 
 ## Updates
 
