@@ -2,15 +2,15 @@
 # 🦎 KOMODO CORE - SWARM STACK (FERRETDB) #
 ###########################################
 ## Deploys Postgres + FerretDB + Komodo Core, pinned to dumbledore.
-## Periphery is a separate stack - see periphery-stack.yml.
+## Periphery is a separate stack - see periphery.yaml.
 ##
-## One-time, before first deploy (shared network for Core <-> Periphery):
-##   docker network create -d overlay --attachable komodo-link
+## Deployed by ansible/komodo.yml, which copies this file to ~/komodo/komodo-core.yml on dumbledore
+## (next to core.env) and redeploys it when it changes. The komodo-link network comes from ansible/swarm.yml.
 ##
-## Deploy from dumbledore (stack name MUST be "komodo" to reuse existing volumes):
+## By hand from dumbledore (stack name MUST be "komodo" to reuse existing volumes):
 ##   cd ~/komodo
 ##   set -a; . ./core.env; set +a
-##   docker stack deploy -c komodo-stack.yml komodo --detach=false
+##   docker stack deploy -c komodo-core.yml komodo --detach=false
 
 services:
   postgres:

@@ -3,10 +3,13 @@
 ###############################################
 ## One Periphery per node, outbound mode (Periphery dials Core).
 ##
-## Deploy from a manager, after the komodo stack is up:
+## Deployed by ansible/komodo.yml after the komodo stack, which copies this file to
+## ~/komodo/komodo-periphery.yml on dumbledore (next to periphery.env) and redeploys it when it changes.
+##
+## By hand from dumbledore, after the komodo stack is up:
 ##   cd ~/komodo
 ##   set -a; . ./periphery.env; set +a
-##   docker stack deploy -c periphery-stack.yml komodo-periphery --detach=false
+##   docker stack deploy -c komodo-periphery.yml komodo-periphery --detach=false
 
 services:
   periphery:

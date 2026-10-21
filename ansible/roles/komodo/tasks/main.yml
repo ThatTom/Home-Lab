@@ -1,0 +1,47 @@
+- name: Check the .env files are in place
+  ansible.builtin.stat:
+    path: "{{ komodo_dir }}/{{ item.env }}"
+  loop: "{{ komodo_stacks }}"
+  loop_control:
+    label: "{{ item.env }}"
+  register: komodo_env_files
+
+- name: Stop if a .env file is missing
+  ansible.builtin.assert:
+    that: item.stat.exists
+    fail_msg: "{{ komodo_dir }}/{{ item.item.env }} is missing, restore it from the break-glass kit"
+    quiet: true
+  loop: "{{ komodo_env_files.results }}"
+  loop_control:
+    label: "{{ item.item.env }}"
+
+- name: Copy the compose files from the repo
+  ansible.builtin.copy:
+    src: "{{ komodo_compose_src }}/{{ item.src }}"
+    dest: "{{ komodo_dir }}/{{ item.dest }}"
+    owner: "{{ komodo_owner }}"
+    group: "{{ komodo_owner }}"
+    mode: "0644"
+  loop: "{{ komodo_stacks }}"
+  loop_control:
+    label: "{{ item.dest }}"
+  register: komodo_compose_files
+
+# The .env is loaded for the ${...} in the compose file, env_file is read relative to it.
+# Only services whose definition changed are updated, and --detach=false waits for them.
+- name: Deploy the stacks whose compose file changed
+  ansible.builtin.shell: |
+    set -a; . ./{{ item.item.env }}; set +a
+    docker stack deploy -c {{ item.item.dest }} {{ item.item.name }} --detach=false
+  args:
+    chdir: "{{ komodo_dir }}"
+    executable: /bin/bash
+  loop: "{{ komodo_compose_files.results }}"
+  loop_control:
+    label: "{{ item.item.name }}"
+  when: item.changed or komodo_force_deploy | bool
+
+- name: Restart Core and Periphery
+  ansible.builtin.command: docker service update --force --detach=false {{ item }}
+  loop: "{{ komodo_restart_services }}"
+  when: komodo_restart | bool

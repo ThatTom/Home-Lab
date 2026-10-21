@@ -1,0 +1,54 @@
+name: komodo
+
+# Runs the komodo.yml template in Semaphore when the Komodo compose files change, and waits
+# for it so a failed run shows as a failed check here. Needs, in the repo's Actions settings:
+#   secret   SEMAPHORE_TOKEN                 an API token (Semaphore: user menu > API Tokens)
+#   variable SEMAPHORE_PROJECT_ID            from the project's URL, /project/<id>/...
+#   variable SEMAPHORE_KOMODO_TEMPLATE_ID    from the template's URL, /templates/<id>
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - 'docker-compose/komodo/**'
+      - 'ansible/komodo.yml'
+      - 'ansible/roles/komodo/**'
+  workflow_dispatch:
+
+concurrency:
+  group: komodo
+  cancel-in-progress: false
+
+jobs:
+  komodo:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Run the komodo template in Semaphore
+        env:
+          SEMAPHORE_URL: https://semaphore.hogwartsnetwork.co.uk
+          SEMAPHORE_TOKEN: ${{ secrets.SEMAPHORE_TOKEN }}
+          PROJECT_ID: ${{ vars.SEMAPHORE_PROJECT_ID }}
+          TEMPLATE_ID: ${{ vars.SEMAPHORE_KOMODO_TEMPLATE_ID }}
+        run: |
+          api() {
+            curl -fsS -H "Authorization: Bearer $SEMAPHORE_TOKEN" -H "Content-Type: application/json" "$@"
+          }
+          field() {
+            python3 -c "import json, sys; print(json.load(sys.stdin)['$1'])"
+          }
+
+          task_id=$(api -X POST "$SEMAPHORE_URL/api/project/$PROJECT_ID/tasks" \
+            -d "{\"template_id\": $TEMPLATE_ID, \"message\": \"$GITHUB_SHA pushed to main\"}" | field id)
+          echo "Started Semaphore task $task_id: $SEMAPHORE_URL/project/$PROJECT_ID/templates/$TEMPLATE_ID"
+
+          # Up to 10 minutes for the run to finish
+          for _ in $(seq 120); do
+            status=$(api "$SEMAPHORE_URL/api/project/$PROJECT_ID/tasks/$task_id" | field status)
+            case "$status" in
+              success) echo "Task $task_id succeeded"; exit 0 ;;
+              error|stopped) echo "Task $task_id finished with status $status, see its log in Semaphore"; exit 1 ;;
+            esac
+            sleep 5
+          done
+          echo "Task $task_id still $status after 10 minutes"
+          exit 1

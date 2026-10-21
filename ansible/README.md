@@ -53,6 +53,7 @@ Other settings in the inventory:
 | [traefik-config.yml](/ansible/traefik-config.yml) | swarm_managers | Copies the static Traefik routes in [network/traefik-configs](/network/traefik-configs/) to each Traefik node | Automatically, see below |
 | [keepalived.yml](/ansible/keepalived.yml) | swarm_managers | The floating IP that follows a healthy Traefik, and checks exactly one node holds it | After changing the VIP or priorities |
 | [backups.yml](/ansible/backups.yml) | All | Rustic, its B2 config, the database dump script and the daily backup timer | New nodes, and after changing what's backed up |
+| [komodo.yml](/ansible/komodo.yml) | dumbledore | Copies the Komodo Core and Periphery compose files to `~/komodo` and redeploys the stacks that changed. Add `-e komodo_force_deploy=true` to redeploy both (after editing a `.env`), or `-e komodo_restart=true` to restart them | Automatically, see below |
 | [restore-test.yml](/ansible/restore-test.yml) | dumbledore | The monthly restore test timer. Add `-e restore_test_run_now=true` to run it straight away | After changing the restore test |
 | [patch.yml](/ansible/patch.yml) | Workers, then managers, one at a time | Rolling OS updates, see below | On a schedule in Semaphore |
 | [network-read.yml](/ansible/network-read.yml) | Router, switches | Shows each device's state, and prints the router's config as inventory variables | Any time, it changes nothing |
@@ -62,6 +63,8 @@ Other settings in the inventory:
 ### Automatic runs
 
 A [Gitea Actions workflow](/.gitea/workflows/traefik-config.yaml) runs the traefik-config template in Semaphore whenever a push to `main` changes `network/traefik-configs/`, the playbook or its role, and fails if the Semaphore run does.
+
+A [second workflow](/.gitea/workflows/komodo.yaml) does the same for the komodo template when `docker-compose/komodo/`, komodo.yml or its role changes. The 2AM Komodo procedure doesn't deploy Komodo itself.
 
 ### Rolling updates (patch.yml)
 
@@ -105,6 +108,7 @@ A real run arms a rollback before changing anything: the router saves a backup a
 | [traefik_dynamic](/ansible/roles/traefik_dynamic/) | traefik-config.yml | Copies the static routes to `/opt/traefik/dynamic`, which Traefik watches |
 | [keepalived](/ansible/roles/keepalived/) | keepalived.yml | VRRP for the Traefik VIP, following Traefik's ping on each node |
 | [rustic](/ansible/roles/rustic/) | backups.yml | Backups to B2, see the [Disaster Recovery README](/disaster-recovery/README.md#backup-model) |
+| [komodo](/ansible/roles/komodo/) | komodo.yml | The Komodo Core and Periphery stacks. Stops if `core.env` or `periphery.env` is missing from `~/komodo`, it never writes them |
 | [restore_test](/ansible/roles/restore_test/) | restore-test.yml | Restores each node's latest database dumps and checks they're usable |
 | [routeros](/ansible/roles/routeros/) | network-*.yml | Reads, backs up and manages the router over its REST API. Its `routeros_resource` module makes one menu match a list of entries |
 | [tplink_easy_smart](/ansible/roles/tplink_easy_smart/) | network-*.yml | Reads, backs up and sets port settings on the switches through their web UI |

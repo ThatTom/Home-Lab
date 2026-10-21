@@ -1,0 +1,9 @@
+# Copies the Komodo Core and Periphery compose files to dumbledore and redeploys the stacks that changed,
+# see roles/komodo. Add -e komodo_force_deploy=true to redeploy both (after editing a .env file),
+# or -e komodo_restart=true to restart Core and Periphery without a change.
+- name: Deploy Komodo
+  hosts: dumbledore
+  become: true
+  gather_facts: false
+  roles:
+    - komodo

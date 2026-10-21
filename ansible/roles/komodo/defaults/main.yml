@@ -1,0 +1,24 @@
+# The compose files are copied from the repo into komodo_dir on dumbledore, next to the .env files.
+# The .env files aren't in the repo, keep copies in the break-glass kit.
+komodo_compose_src: "{{ playbook_dir }}/../docker-compose/komodo"
+komodo_dir: /home/tomt/komodo
+komodo_owner: tomt
+
+# In deploy order. The stack names must stay the same, the volumes are named after them.
+komodo_stacks:
+  - name: komodo
+    src: core.yaml
+    dest: komodo-core.yml
+    env: core.env
+  - name: komodo-periphery
+    src: periphery.yaml
+    dest: komodo-periphery.yml
+    env: periphery.env
+
+# Redeploy both stacks even if their compose file hasn't changed, e.g. after editing a .env file
+komodo_force_deploy: false
+# Restart Core and Periphery without changing anything
+komodo_restart: false
+komodo_restart_services:
+  - komodo_core
+  - komodo-periphery_periphery
