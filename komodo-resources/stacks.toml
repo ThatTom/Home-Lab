@@ -15,7 +15,6 @@ file_paths = ["gitea.yaml"]
 
 [[stack]]
 name = "gitea-mirror"
-tags = ["automatic-updates"]
 [stack.config]
 swarm = "hogwarts"
 linked_repo = "HogwartsNetwork"
@@ -44,7 +43,6 @@ CLEANUP_DRY_RUN=true
 
 [[stack]]
 name = "gitea-runner"
-tags = ["automatic-updates"]
 [stack.config]
 swarm = "hogwarts"
 linked_repo = "HogwartsNetwork"
@@ -58,7 +56,6 @@ GITEA_RUNNER_REGISTRATION_TOKEN=[[GITEA_RUNNER_REGISTRATION_TOKEN]]
 
 [[stack]]
 name = "grafana"
-tags = ["automatic-updates"]
 [stack.config]
 swarm = "hogwarts"
 linked_repo = "HogwartsNetwork"
@@ -69,7 +66,6 @@ file_paths = ["grafana.yaml"]
 
 [[stack]]
 name = "homepage"
-tags = ["automatic-updates"]
 [stack.config]
 swarm = "hogwarts"
 linked_repo = "HogwartsNetwork"
@@ -90,7 +86,6 @@ HOMEPAGE_OIDC_NAME="Hogwarts SSO"
 
 [[stack]]
 name = "immich"
-tags = ["automatic-updates"]
 [stack.config]
 swarm = "hogwarts"
 linked_repo = "HogwartsNetwork"
@@ -101,7 +96,6 @@ file_paths = ["immich.yaml"]
 
 [[stack]]
 name = "jellyfin"
-tags = ["automatic-updates"]
 [stack.config]
 swarm = "hogwarts"
 linked_repo = "HogwartsNetwork"
@@ -112,7 +106,6 @@ file_paths = ["jellyfin.yaml"]
 
 [[stack]]
 name = "loki"
-tags = ["automatic-updates"]
 [stack.config]
 swarm = "hogwarts"
 linked_repo = "HogwartsNetwork"
@@ -123,7 +116,6 @@ file_paths = ["loki.yaml"]
 
 [[stack]]
 name = "nemoir"
-tags = ["automatic-updates"]
 [stack.config]
 swarm = "hogwarts"
 linked_repo = "HogwartsNetwork"
@@ -156,7 +148,6 @@ GOOGLE_BOOKS_API_KEY=[[NEMOIR_GOOGLE_BOOKS_API_KEY]]
 
 [[stack]]
 name = "ntfy"
-tags = ["automatic-updates"]
 [stack.config]
 swarm = "hogwarts"
 linked_repo = "HogwartsNetwork"
@@ -167,7 +158,6 @@ file_paths = ["ntfy.yaml"]
 
 [[stack]]
 name = "oddjobs"
-tags = ["automatic-updates"]
 [stack.config]
 swarm = "hogwarts"
 linked_repo = "HogwartsNetwork"
@@ -178,7 +168,6 @@ file_paths = ["oddjobs.yaml"]
 
 [[stack]]
 name = "openwebui"
-tags = ["automatic-updates"]
 [stack.config]
 swarm = "hogwarts"
 linked_repo = "HogwartsNetwork"
@@ -189,7 +178,6 @@ file_paths = ["openwebui.yaml"]
 
 [[stack]]
 name = "paperless-ngx"
-tags = ["automatic-updates"]
 [stack.config]
 swarm = "hogwarts"
 linked_repo = "HogwartsNetwork"
@@ -209,7 +197,6 @@ PAPERLESS_OIDC_ISSUER=https://auth.hogwartsnetwork.co.uk/oidc
 
 [[stack]]
 name = "prometheus"
-tags = ["automatic-updates"]
 [stack.config]
 swarm = "hogwarts"
 linked_repo = "HogwartsNetwork"
@@ -220,7 +207,6 @@ file_paths = ["prometheus.yaml"]
 
 [[stack]]
 name = "rackpad"
-tags = ["automatic-updates"]
 [stack.config]
 swarm = "hogwarts"
 destroy_before_deploy = true
@@ -268,7 +254,6 @@ DISCOVERY_MAC_SCAN_MODE=auto
 
 [[stack]]
 name = "radarr"
-tags = ["automatic-updates"]
 [stack.config]
 swarm = "hogwarts"
 linked_repo = "HogwartsNetwork"
@@ -279,7 +264,6 @@ file_paths = ["radarr.yaml"]
 
 [[stack]]
 name = "seerr"
-tags = ["automatic-updates"]
 [stack.config]
 swarm = "hogwarts"
 linked_repo = "HogwartsNetwork"
@@ -290,7 +274,6 @@ file_paths = ["seerr.yaml"]
 
 [[stack]]
 name = "semaphore"
-tags = ["automatic-updates"]
 [stack.config]
 swarm = "hogwarts"
 linked_repo = "HogwartsNetwork"
@@ -311,7 +294,6 @@ SEMAPHORE_OIDC_CLIENT_SECRET=[[SEMAPHORE_OIDC_CLIENT_SECRET]]
 
 [[stack]]
 name = "sonarr"
-tags = ["automatic-updates"]
 [stack.config]
 swarm = "hogwarts"
 linked_repo = "HogwartsNetwork"
@@ -322,7 +304,6 @@ file_paths = ["sonarr.yaml"]
 
 [[stack]]
 name = "spindle"
-tags = ["automatic-updates"]
 [stack.config]
 swarm = "hogwarts"
 linked_repo = "HogwartsNetwork"
@@ -356,7 +337,6 @@ AUTH_TRUST_LOCAL_NETWORK="true"
 
 [[stack]]
 name = "spoolman"
-tags = ["automatic-updates"]
 [stack.config]
 swarm = "hogwarts"
 linked_repo = "HogwartsNetwork"
@@ -367,7 +347,6 @@ file_paths = ["spoolman.yaml"]
 
 [[stack]]
 name = "tankbook"
-tags = ["automatic-updates"]
 [stack.config]
 swarm = "hogwarts"
 destroy_before_deploy = true
@@ -385,7 +364,6 @@ DATABASE_URL=postgresql://${DB_USER}:${DB_PASSWORD}@db/tankbook
 
 [[stack]]
 name = "termix"
-tags = ["automatic-updates"]
 [stack.config]
 swarm = "hogwarts"
 linked_repo = "HogwartsNetwork"
@@ -409,7 +387,6 @@ CF_DNS_API_TOKEN=[[CF_DNS_API_TOKEN]]
 
 [[stack]]
 name = "trek"
-tags = ["automatic-updates"]
 [stack.config]
 swarm = "hogwarts"
 linked_repo = "HogwartsNetwork"
@@ -425,7 +402,6 @@ ALLOWED_ORIGINS=192.168.100.11
 
 [[stack]]
 name = "vaultwarden"
-tags = ["automatic-updates"]
 [stack.config]
 swarm = "hogwarts"
 linked_repo = "HogwartsNetwork"
@@ -439,7 +415,6 @@ DOMAIN=https://password.hogwartsnetwork.co.uk
 
 [[stack]]
 name = "voidauth"
-tags = ["automatic-updates"]
 [stack.config]
 swarm = "hogwarts"
 linked_repo = "HogwartsNetwork"
@@ -453,7 +428,6 @@ STORAGE_KEY=[[VOIDAUTH_STORAGE_KEY]]
 
 [[stack]]
 name = "wiki"
-tags = ["automatic-updates"]
 [stack.config]
 swarm = "hogwarts"
 linked_repo = "HogwartsNetwork"
@@ -469,7 +443,6 @@ LEAFWIKI_ALLOW_INSECURE=true
 
 [[stack]]
 name = "wireguard"
-tags = ["automatic-updates"]
 [stack.config]
 server = "dumbledore"
 linked_repo = "HogwartsNetwork"
