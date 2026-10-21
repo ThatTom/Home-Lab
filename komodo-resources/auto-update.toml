@@ -1,0 +1,220 @@
+# Nightly 02:00 deploy of changed stacks from main
+# Each stack is its own stage so deploys run one at a time; executions within a stage run in parallel
+# and parallel deploys sharing the HogwartsNetwork repo were failing with "getwd: no such file or directory"
+# A failed stage stops the procedure, so stacks after it are skipped until the next run
+# New stacks need a stage adding here
+
+[[procedure]]
+name = "2AM - Auto Update"
+config.schedule = "Run every day at 02:00 am"
+
+[[procedure.config.stage]]
+name = "Repo Update"
+enabled = true
+executions = [
+  { execution.type = "PullRepo", execution.params.repo = "HogwartsNetwork", enabled = true },
+  { execution.type = "PullRepo", execution.params.repo = "HogwartsNetwork-GitHub", enabled = true }
+]
+
+[[procedure.config.stage]]
+name = "gitea-mirror"
+enabled = true
+executions = [
+  { execution.type = "DeployStackIfChanged", execution.params.stack = "gitea-mirror", enabled = true }
+]
+
+[[procedure.config.stage]]
+name = "gitea-runner"
+enabled = true
+executions = [
+  { execution.type = "DeployStackIfChanged", execution.params.stack = "gitea-runner", enabled = true }
+]
+
+[[procedure.config.stage]]
+name = "grafana"
+enabled = true
+executions = [
+  { execution.type = "DeployStackIfChanged", execution.params.stack = "grafana", enabled = true }
+]
+
+[[procedure.config.stage]]
+name = "homepage"
+enabled = true
+executions = [
+  { execution.type = "DeployStackIfChanged", execution.params.stack = "homepage", enabled = true }
+]
+
+[[procedure.config.stage]]
+name = "immich"
+enabled = true
+executions = [
+  { execution.type = "DeployStackIfChanged", execution.params.stack = "immich", enabled = true }
+]
+
+[[procedure.config.stage]]
+name = "jellyfin"
+enabled = true
+executions = [
+  { execution.type = "DeployStackIfChanged", execution.params.stack = "jellyfin", enabled = true }
+]
+
+[[procedure.config.stage]]
+name = "loki"
+enabled = true
+executions = [
+  { execution.type = "DeployStackIfChanged", execution.params.stack = "loki", enabled = true }
+]
+
+[[procedure.config.stage]]
+name = "nemoir"
+enabled = true
+executions = [
+  { execution.type = "DeployStackIfChanged", execution.params.stack = "nemoir", enabled = true }
+]
+
+[[procedure.config.stage]]
+name = "ntfy"
+enabled = true
+executions = [
+  { execution.type = "DeployStackIfChanged", execution.params.stack = "ntfy", enabled = true }
+]
+
+[[procedure.config.stage]]
+name = "oddjobs"
+enabled = true
+executions = [
+  { execution.type = "DeployStackIfChanged", execution.params.stack = "oddjobs", enabled = true }
+]
+
+[[procedure.config.stage]]
+name = "openwebui"
+enabled = true
+executions = [
+  { execution.type = "DeployStackIfChanged", execution.params.stack = "openwebui", enabled = true }
+]
+
+[[procedure.config.stage]]
+name = "paperless-ngx"
+enabled = true
+executions = [
+  { execution.type = "DeployStackIfChanged", execution.params.stack = "paperless-ngx", enabled = true }
+]
+
+[[procedure.config.stage]]
+name = "prometheus"
+enabled = true
+executions = [
+  { execution.type = "DeployStackIfChanged", execution.params.stack = "prometheus", enabled = true }
+]
+
+[[procedure.config.stage]]
+name = "rackpad"
+enabled = true
+executions = [
+  { execution.type = "DeployStackIfChanged", execution.params.stack = "rackpad", enabled = true }
+]
+
+[[procedure.config.stage]]
+name = "radarr"
+enabled = true
+executions = [
+  { execution.type = "DeployStackIfChanged", execution.params.stack = "radarr", enabled = true }
+]
+
+[[procedure.config.stage]]
+name = "seerr"
+enabled = true
+executions = [
+  { execution.type = "DeployStackIfChanged", execution.params.stack = "seerr", enabled = true }
+]
+
+[[procedure.config.stage]]
+name = "semaphore"
+enabled = true
+executions = [
+  { execution.type = "DeployStackIfChanged", execution.params.stack = "semaphore", enabled = true }
+]
+
+[[procedure.config.stage]]
+name = "sonarr"
+enabled = true
+executions = [
+  { execution.type = "DeployStackIfChanged", execution.params.stack = "sonarr", enabled = true }
+]
+
+[[procedure.config.stage]]
+name = "spindle"
+enabled = true
+executions = [
+  { execution.type = "DeployStackIfChanged", execution.params.stack = "spindle", enabled = true }
+]
+
+[[procedure.config.stage]]
+name = "spoolman"
+enabled = true
+executions = [
+  { execution.type = "DeployStackIfChanged", execution.params.stack = "spoolman", enabled = true }
+]
+
+[[procedure.config.stage]]
+name = "tankbook"
+enabled = true
+executions = [
+  { execution.type = "DeployStackIfChanged", execution.params.stack = "tankbook", enabled = true }
+]
+
+[[procedure.config.stage]]
+name = "termix"
+enabled = true
+executions = [
+  { execution.type = "DeployStackIfChanged", execution.params.stack = "termix", enabled = true }
+]
+
+[[procedure.config.stage]]
+name = "trek"
+enabled = true
+executions = [
+  { execution.type = "DeployStackIfChanged", execution.params.stack = "trek", enabled = true }
+]
+
+[[procedure.config.stage]]
+name = "vaultwarden"
+enabled = true
+executions = [
+  { execution.type = "DeployStackIfChanged", execution.params.stack = "vaultwarden", enabled = true }
+]
+
+[[procedure.config.stage]]
+name = "voidauth"
+enabled = true
+executions = [
+  { execution.type = "DeployStackIfChanged", execution.params.stack = "voidauth", enabled = true }
+]
+
+[[procedure.config.stage]]
+name = "wiki"
+enabled = true
+executions = [
+  { execution.type = "DeployStackIfChanged", execution.params.stack = "wiki", enabled = true }
+]
+
+[[procedure.config.stage]]
+name = "wireguard"
+enabled = true
+executions = [
+  { execution.type = "DeployStackIfChanged", execution.params.stack = "wireguard", enabled = true }
+]
+
+[[procedure.config.stage]]
+name = "gitea"
+enabled = true
+executions = [
+  { execution.type = "DeployStackIfChanged", execution.params.stack = "gitea", enabled = true }
+]
+
+[[procedure.config.stage]]
+name = "traefik"
+enabled = true
+executions = [
+  { execution.type = "DeployStackIfChanged", execution.params.stack = "traefik", enabled = true }
+]

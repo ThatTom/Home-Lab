@@ -52,6 +52,10 @@ Files used for the deployment of services within the docker swarm cluster, group
 
 All compose files follow the layout and standards in the [Docker Compose README](/docker-compose/README.md), including pinned image versions rather than `latest`
 
+## [Komodo Resources](/komodo-resources/)
+
+Komodo resource definitions in TOML, such as the [2AM - Auto Update](/komodo-resources/auto-update.toml) procedure that pulls the repos and deploys any stacks that changed on `main`
+
 ## Updates
 
 Image updates are managed by [Renovate](/renovate.json), which runs daily at 03:00 UTC through a [Gitea Actions workflow](/.gitea/workflows/renovate.yaml) and opens a pull request for each new image version
