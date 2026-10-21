@@ -1,0 +1,93 @@
+services:
+  freshrss:
+    image: freshrss/freshrss:1.30.1
+    # Imports configs/freshrss/feeds.opml on every start (feeds it already has are skipped), fixes the
+    # ownership of anything the import wrote as root, then runs the image's usual start command with OIDC on
+    command:
+      - sh
+      - -c
+      - >-
+        php ./cli/import-for-user.php --user "$$FRESHRSS_USERNAME" --filename /config/feeds.opml;
+        ./cli/access-permissions.sh --only-userdirs;
+        ([ -z "$$CRON_MIN" ] || cron) && . /etc/apache2/envvars && exec apache2 -D FOREGROUND -D OIDC_ENABLED
+    environment:
+      TZ: Europe/London
+      CRON_MIN: "*/20"              # refresh feeds every 20 minutes
+      # Must match your VoidAuth username, FreshRSS logs you in as the user named by preferred_username
+      FRESHRSS_USERNAME: ${FRESHRSS_USERNAME}
+      # Only acted on the first time: install, then create the user. Later starts leave both alone.
+      # The image passes these through a shell, so keep $, quotes and spaces out of the API password.
+      FRESHRSS_INSTALL: |-
+        --api-enabled
+        --auth-type http_auth
+        --base-url https://rss.hogwartsnetwork.co.uk
+        --db-type sqlite
+        --default-user ${FRESHRSS_USERNAME}
+        --disable-update
+        --language en
+      FRESHRSS_USER: |-
+        --api-password ${FRESHRSS_API_PASSWORD}
+        --language en
+        --no-default-feeds
+        --user ${FRESHRSS_USERNAME}
+      # Hogwarts SSO. Only the web UI (/i/) needs it, the API (Homepage widget, apps) uses the API password.
+      # mod_auth_openidc is only in the amd64 Debian image, so this can't run on the Pis.
+      OIDC_ENABLED: "1"
+      OIDC_PROVIDER_METADATA_URL: https://auth.hogwartsnetwork.co.uk/oidc/.well-known/openid-configuration
+      OIDC_CLIENT_ID: ${FRESHRSS_OIDC_CLIENT_ID}
+      OIDC_CLIENT_SECRET: ${FRESHRSS_OIDC_CLIENT_SECRET}
+      OIDC_CLIENT_CRYPTO_KEY: ${FRESHRSS_OIDC_CRYPTO_KEY}
+      OIDC_REMOTE_USER_CLAIM: preferred_username
+      OIDC_SCOPES: openid profile
+      OIDC_X_FORWARDED_HEADERS: X-Forwarded-Host X-Forwarded-Port X-Forwarded-Proto
+    volumes:
+      - freshrss-data:/var/www/FreshRSS/data
+      - freshrss-extensions:/var/www/FreshRSS/extensions
+    configs:
+      - source: freshrss-feeds
+        target: /config/feeds.opml
+    networks:
+      - diagon-alley
+    # The image has no curl or wget, but has PHP
+    healthcheck:
+      test: ["CMD", "php", "-r", "exit(@file_get_contents('http://localhost/robots.txt') === false ? 1 : 0);"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+      start_period: 60s
+    deploy:
+      # SQLite in a local volume, so it stays on one node (an amd64 one, for OIDC)
+      replicas: 1
+      placement:
+        constraints:
+          - node.hostname == winky
+      restart_policy:
+        condition: on-failure
+      labels:
+        # Traefik
+        - "traefik.enable=true"
+        - "traefik.swarm.network=diagon-alley"
+        # Router
+        - "traefik.http.routers.freshrss.rule=Host(`rss.hogwartsnetwork.co.uk`)"
+        - "traefik.http.routers.freshrss.entrypoints=websecure"
+        - "traefik.http.routers.freshrss.tls=true"
+        - "traefik.http.routers.freshrss.tls.certresolver=cloudflare"
+        # Service
+        - "traefik.http.services.freshrss.loadbalancer.server.port=80"
+
+volumes:
+  freshrss-data:
+    name: freshrss-data
+
+  freshrss-extensions:
+    name: freshrss-extensions
+
+networks:
+  diagon-alley:
+    external: true
+
+# Configs can't change in place, bump the suffix when feeds.opml changes
+configs:
+  freshrss-feeds:
+    name: freshrss-feeds-v1
+    file: ./configs/freshrss/feeds.opml

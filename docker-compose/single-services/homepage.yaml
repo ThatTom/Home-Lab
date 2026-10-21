@@ -10,6 +10,9 @@ services:
       HOMEPAGE_OIDC_CLIENT_ID: ${HOMEPAGE_OIDC_CLIENT_ID}
       HOMEPAGE_OIDC_CLIENT_SECRET: ${HOMEPAGE_OIDC_CLIENT_SECRET}
       HOMEPAGE_OIDC_NAME: ${HOMEPAGE_OIDC_NAME}
+      # Used by the FreshRSS widget in services.yaml
+      HOMEPAGE_VAR_FRESHRSS_USERNAME: ${FRESHRSS_USERNAME}
+      HOMEPAGE_VAR_FRESHRSS_API_PASSWORD: ${FRESHRSS_API_PASSWORD}
     # Config comes from the repo (configs/homepage), so it can run on any node
     configs:
       - source: homepage-settings
@@ -50,7 +53,7 @@ configs:
     file: ./configs/homepage/settings.yaml
 
   homepage-services:
-    name: homepage-services-v3
+    name: homepage-services-v4
     file: ./configs/homepage/services.yaml
 
   homepage-widgets:

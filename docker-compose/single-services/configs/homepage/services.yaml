@@ -49,6 +49,16 @@
         description: Nemoir reading tracker
         icon: mdi-bookshelf
         siteMonitor: https://books.hogwartsnetwork.co.uk
+    - FreshRSS:
+        href: https://rss.hogwartsnetwork.co.uk
+        description: News feeds
+        icon: sh-freshrss.svg
+        siteMonitor: https://rss.hogwartsnetwork.co.uk
+        widget:
+          type: freshrss
+          url: https://rss.hogwartsnetwork.co.uk
+          username: "{{HOMEPAGE_VAR_FRESHRSS_USERNAME}}"
+          password: "{{HOMEPAGE_VAR_FRESHRSS_API_PASSWORD}}"    # the API password, not the login one
     - Travel:
         href: https://travel.hogwartsnetwork.co.uk
         description: TREK trip planner

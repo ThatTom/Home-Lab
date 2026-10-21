@@ -65,7 +65,7 @@ Services pinned to a node only come back once that node's data is restored.
 | dumbledore | Swarm manager, Traefik VIP holder, Rustic prune, restore test | Traefik (`traefik` label), Komodo Core (Postgres, FerretDB), VoidAuth (SSO), ntfy, Leafwiki, Rackpad, Tankbook |
 | flitwick | Swarm manager, Traefik backup | Traefik (`traefik` label), Nemoir, Open WebUI (`ai` label) |
 | dobby | Worker | Gitea, Gitea Mirror, Immich, Paperless, Vaultwarden, Grafana, Prometheus, Alertmanager, Loki, TREK |
-| winky | Swarm manager | Spoolman, Odd Jobs |
+| winky | Worker | Spoolman, Odd Jobs, FreshRSS |
 | dobby / winky | `media` label | Jellyfin, Radarr, Sonarr, Seerr, Spindle (whichever node they were last on) |
 | Any | | Homepage, Termix, Semaphore (data on gringotts), blackbox_exporter, Gitea runners, node_exporter, cAdvisor, Alloy, Komodo Periphery, socket-proxy |
 

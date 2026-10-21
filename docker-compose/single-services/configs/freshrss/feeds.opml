@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  FreshRSS subscriptions, mounted as a Swarm config (docker-compose/single-services/freshrss.yaml)
+  and imported on every start. Swarm configs can't change in place, so bump the config name's
+  suffix there after editing this file. Feeds removed here aren't removed from FreshRSS, and a
+  feed deleted in FreshRSS comes back on the next start while it's still listed here.
+-->
+<opml version="2.0">
+  <head>
+    <title>Hogwarts Network feeds</title>
+  </head>
+  <body>
+    <outline text="Tech" title="Tech">
+      <!-- Other TLDR newsletters: https://tldr.tech/api/rss/<ai|devops|infosec|founders|data|...> -->
+      <outline type="rss" text="TLDR" title="TLDR" xmlUrl="https://tldr.tech/api/rss/tech" htmlUrl="https://tldr.tech"/>
+    </outline>
+  </body>
+</opml>
