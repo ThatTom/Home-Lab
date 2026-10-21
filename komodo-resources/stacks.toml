@@ -1,0 +1,477 @@
+# Komodo stack definitions
+# Secrets are [[VARIABLE]] references, filled in by Komodo at deploy time from its Variables (marked secret)
+# The values live in the Komodo database, which is backed up by the nightly pg_dumpall
+# Create any new Variable in Komodo before syncing a stack that references it
+
+[[stack]]
+name = "gitea"
+[stack.config]
+swarm = "hogwarts"
+linked_repo = "HogwartsNetwork-GitHub"
+run_directory = "docker-compose/git"
+file_paths = ["gitea.yaml"]
+
+##
+
+[[stack]]
+name = "gitea-mirror"
+tags = ["automatic-updates"]
+[stack.config]
+swarm = "hogwarts"
+linked_repo = "HogwartsNetwork"
+run_directory = "docker-compose/git"
+file_paths = ["gitea-mirror.yaml"]
+environment = """
+BETTER_AUTH_SECRET=[[GITEA_MIRROR_BETTER_AUTH_SECRET]]
+GITHUB_USERNAME=
+GITHUB_TOKEN=
+PRIVATE_REPOSITORIES=
+MIRROR_STARRED=
+MIRROR_ORGANIZATIONS=
+GITEA_USERNAME=ThatT0m
+GITEA_TOKEN=[[GITEA_MIRROR_GITEA_TOKEN]]
+GITEA_ORG_VISIBILITY=default
+SCHEDULE_ENABLED=true
+GITEA_MIRROR_INTERVAL=8h
+AUTO_IMPORT_REPOS=true
+AUTO_MIRROR_REPOS=false
+CLEANUP_DELETE_IF_NOT_IN_GITHUB=false
+CLEANUP_ORPHANED_REPO_ACTION=archive
+CLEANUP_DRY_RUN=true
+"""
+
+##
+
+[[stack]]
+name = "gitea-runner"
+tags = ["automatic-updates"]
+[stack.config]
+swarm = "hogwarts"
+linked_repo = "HogwartsNetwork"
+run_directory = "docker-compose/git"
+file_paths = ["gitea-runner.yaml"]
+environment = """
+GITEA_RUNNER_REGISTRATION_TOKEN=[[GITEA_RUNNER_REGISTRATION_TOKEN]]
+"""
+
+##
+
+[[stack]]
+name = "grafana"
+tags = ["automatic-updates"]
+[stack.config]
+swarm = "hogwarts"
+linked_repo = "HogwartsNetwork"
+run_directory = "docker-compose/monitoring"
+file_paths = ["grafana.yaml"]
+
+##
+
+[[stack]]
+name = "homepage"
+tags = ["automatic-updates"]
+[stack.config]
+swarm = "hogwarts"
+linked_repo = "HogwartsNetwork"
+run_directory = "docker-compose/single-services"
+file_paths = ["homepage.yaml"]
+environment = """
+HOMEPAGE_ALLOWED_HOSTS=dashboard.hogwartsnetwork.co.uk
+HOMEPAGE_AUTH_ENABLED=true
+HOMEPAGE_AUTH_SECRET=[[HOMEPAGE_AUTH_SECRET]]
+HOMEPAGE_EXTERNAL_URL=https://dashboard.hogwartsnetwork.co.uk
+HOMEPAGE_OIDC_ISSUER=https://auth.hogwartsnetwork.co.uk/oidc
+HOMEPAGE_OIDC_CLIENT_ID=-LIT-DVt1iTKyfMX
+HOMEPAGE_OIDC_CLIENT_SECRET=[[HOMEPAGE_OIDC_CLIENT_SECRET]]
+HOMEPAGE_OIDC_NAME="Hogwarts SSO"
+"""
+
+##
+
+[[stack]]
+name = "immich"
+tags = ["automatic-updates"]
+[stack.config]
+swarm = "hogwarts"
+linked_repo = "HogwartsNetwork"
+run_directory = "docker-compose/single-services"
+file_paths = ["immich.yaml"]
+
+##
+
+[[stack]]
+name = "jellyfin"
+tags = ["automatic-updates"]
+[stack.config]
+swarm = "hogwarts"
+linked_repo = "HogwartsNetwork"
+run_directory = "docker-compose/media/consume"
+file_paths = ["jellyfin.yaml"]
+
+##
+
+[[stack]]
+name = "loki"
+tags = ["automatic-updates"]
+[stack.config]
+swarm = "hogwarts"
+linked_repo = "HogwartsNetwork"
+run_directory = "docker-compose/monitoring"
+file_paths = ["loki.yaml"]
+
+##
+
+[[stack]]
+name = "nemoir"
+tags = ["automatic-updates"]
+[stack.config]
+swarm = "hogwarts"
+linked_repo = "HogwartsNetwork"
+run_directory = "docker-compose/single-services"
+file_paths = ["nemoir.yaml"]
+environment = """
+APP_URL=https://books.hogwartsnetwork.co.uk
+TRUST_PROXY=true
+SESSION_DAYS=30
+LOCAL_LOGIN=true
+REGISTRATION=true
+
+# OIDC redirect URI registered with VoidAuth: ${APP_URL}/auth/oidc/callback
+OIDC_ISSUER_URL=https://auth.hogwartsnetwork.co.uk/oidc
+OIDC_CLIENT_ID=vfb_k0ZEp-f8XrDj
+OIDC_CLIENT_SECRET=[[NEMOIR_OIDC_CLIENT_SECRET]]
+OIDC_PROVIDER_NAME=SSO
+OIDC_SCOPES=openid email profile groups
+OIDC_USER_GROUPS=nemoir_user
+OIDC_ADMIN_GROUPS=nemoir_admins
+OIDC_GROUPS_CLAIM=groups
+OIDC_REDIRECT_URI=
+
+# all | openlibrary | google
+LOOKUP_PROVIDER=all
+GOOGLE_BOOKS_API_KEY=[[NEMOIR_GOOGLE_BOOKS_API_KEY]]
+"""
+
+##
+
+[[stack]]
+name = "ntfy"
+tags = ["automatic-updates"]
+[stack.config]
+swarm = "hogwarts"
+linked_repo = "HogwartsNetwork"
+run_directory = "docker-compose/network-services"
+file_paths = ["ntfy.yaml"]
+
+##
+
+[[stack]]
+name = "oddjobs"
+tags = ["automatic-updates"]
+[stack.config]
+swarm = "hogwarts"
+linked_repo = "HogwartsNetwork"
+run_directory = "docker-compose/single-services"
+file_paths = ["oddjobs.yaml"]
+
+##
+
+[[stack]]
+name = "openwebui"
+tags = ["automatic-updates"]
+[stack.config]
+swarm = "hogwarts"
+linked_repo = "HogwartsNetwork"
+run_directory = "docker-compose/ai"
+file_paths = ["openwebui.yaml"]
+
+##
+
+[[stack]]
+name = "paperless-ngx"
+tags = ["automatic-updates"]
+[stack.config]
+swarm = "hogwarts"
+linked_repo = "HogwartsNetwork"
+run_directory = "docker-compose/single-services"
+file_paths = ["paperless.yaml"]
+environment = """
+# See https://docs.paperless-ngx.com/configuration/ for all options
+USERMAP_UID=0
+USERMAP_GID=0
+PAPERLESS_SECRET_KEY=[[PAPERLESS_SECRET_KEY]]
+PAPERLESS_OIDC_CLIENT_ID=mMPG1zNG-XdLK0pn
+PAPERLESS_OIDC_CLIENT_SECRET=[[PAPERLESS_OIDC_CLIENT_SECRET]]
+PAPERLESS_OIDC_ISSUER=https://auth.hogwartsnetwork.co.uk/oidc
+"""
+
+##
+
+[[stack]]
+name = "prometheus"
+tags = ["automatic-updates"]
+[stack.config]
+swarm = "hogwarts"
+linked_repo = "HogwartsNetwork"
+run_directory = "docker-compose/monitoring"
+file_paths = ["prometheus.yaml"]
+
+##
+
+[[stack]]
+name = "rackpad"
+tags = ["automatic-updates"]
+[stack.config]
+swarm = "hogwarts"
+destroy_before_deploy = true
+linked_repo = "HogwartsNetwork"
+run_directory = "docker-compose/single-services"
+file_paths = ["rackpad.yaml"]
+environment = """
+HOST=0.0.0.0
+PORT=3000
+RACKPAD_PORT=3110
+DATABASE_PATH=./rackpad.db
+RACKPAD_SECRET_KEY=
+SNMP_TRAP_ENABLED=1
+SNMP_TRAP_PORT=1162
+SNMP_TRAP_BIND=0.0.0.0
+SNMP_INVENTORY_SYNC=1
+MONITOR_INTERVAL_MS=300000
+DISCOVERY_SCAN_MAX_ACTIVE=2
+DISCOVERY_SCAN_MAX_ACTIVE_PER_LAB=1
+DISCOVERY_SCAN_MAX_QUEUED=32
+NODE_ENV=production
+TRUST_PROXY=0
+TRUSTED_HOSTS=
+TRUSTED_ORIGINS=
+APP_URL=
+OIDC_ENABLED=0
+OIDC_ISSUER_URL=https://auth.hogwartsnetwork.co.uk/oidc
+OIDC_CLIENT_ID=Ox5PRHp3_mQ1MCje
+OIDC_CLIENT_SECRET=[[RACKPAD_OIDC_CLIENT_SECRET]]
+OIDC_REDIRECT_URI=https://rackpad.hogwartsnetwork.co.uk/api/auth/oidc/callback
+OIDC_LABEL=OIDC
+OIDC_DEFAULT_ROLE=viewer
+OIDC_DEBUG=0
+OIDC_ADMIN_USERS=
+OIDC_EDITOR_USERS=
+OIDC_VIEWER_USERS=
+OIDC_ADMIN_GROUPS=
+OIDC_EDITOR_GROUPS=
+OIDC_VIEWER_GROUPS=
+OUI_AUTO_UPDATE=1
+DISCOVERY_MAC_SCAN_MODE=auto
+"""
+
+##
+
+[[stack]]
+name = "radarr"
+tags = ["automatic-updates"]
+[stack.config]
+swarm = "hogwarts"
+linked_repo = "HogwartsNetwork"
+run_directory = "docker-compose/media/management"
+file_paths = ["radarr.yaml"]
+
+##
+
+[[stack]]
+name = "seerr"
+tags = ["automatic-updates"]
+[stack.config]
+swarm = "hogwarts"
+linked_repo = "HogwartsNetwork"
+run_directory = "docker-compose/media/management"
+file_paths = ["seerr.yaml"]
+
+##
+
+[[stack]]
+name = "semaphore"
+tags = ["automatic-updates"]
+[stack.config]
+swarm = "hogwarts"
+linked_repo = "HogwartsNetwork"
+run_directory = "docker-compose/single-services"
+file_paths = ["semaphore.yaml"]
+environment = """
+SEMAPHORE_ADMIN=admin
+SEMAPHORE_ADMIN_PASSWORD=[[SEMAPHORE_ADMIN_PASSWORD]]
+SEMAPHORE_ADMIN_NAME=Admin
+SEMAPHORE_ADMIN_EMAIL=admin@hogwartsnetwork.co.uk
+
+SEMAPHORE_OIDC_ISSUER=https://auth.hogwartsnetwork.co.uk/oidc
+SEMAPHORE_OIDC_CLIENT_ID=sAJjNdNXSqtStgDE
+SEMAPHORE_OIDC_CLIENT_SECRET=[[SEMAPHORE_OIDC_CLIENT_SECRET]]
+"""
+
+##
+
+[[stack]]
+name = "sonarr"
+tags = ["automatic-updates"]
+[stack.config]
+swarm = "hogwarts"
+linked_repo = "HogwartsNetwork"
+run_directory = "docker-compose/media/management"
+file_paths = ["sonarr.yaml"]
+
+##
+
+[[stack]]
+name = "spindle"
+tags = ["automatic-updates"]
+[stack.config]
+swarm = "hogwarts"
+linked_repo = "HogwartsNetwork"
+run_directory = "docker-compose/media/management"
+file_paths = ["spindle.yaml"]
+environment = """
+SONARR_URL=http://sonarr:8989
+RADARR_URL=http://radarr:7878
+SONARR_API_KEY=[[SONARR_API_KEY]]
+RADARR_API_KEY=[[RADARR_API_KEY]]
+
+# Leave blank to use the first root folder and quality profile configured in Sonarr/Radarr
+SONARR_ROOT_FOLDER=
+SONARR_QUALITY_PROFILE_ID=
+RADARR_ROOT_FOLDER=
+RADARR_QUALITY_PROFILE_ID=
+
+SYNC_INTERVAL_SECONDS=60
+LIBRARY_CACHE_TTL_MS=90000
+
+# Blank uses the free UPCitemdb trial endpoint (~100 lookups/day)
+UPCITEMDB_API_KEY=
+TMDB_API_KEY=[[SPINDLE_TMDB_API_KEY]]
+
+# Requests from private network addresses skip the login while AUTH_TRUST_LOCAL_NETWORK is true
+AUTH_PASSWORD=[[SPINDLE_AUTH_PASSWORD]]
+AUTH_TRUST_LOCAL_NETWORK="true"
+"""
+
+##
+
+[[stack]]
+name = "spoolman"
+tags = ["automatic-updates"]
+[stack.config]
+swarm = "hogwarts"
+linked_repo = "HogwartsNetwork"
+run_directory = "docker-compose/single-services"
+file_paths = ["spoolman.yaml"]
+
+##
+
+[[stack]]
+name = "tankbook"
+tags = ["automatic-updates"]
+[stack.config]
+swarm = "hogwarts"
+destroy_before_deploy = true
+linked_repo = "HogwartsNetwork"
+run_directory = "docker-compose/single-services"
+file_paths = ["tankbook.yaml"]
+environment = """
+# Used by both the database container and the app's DATABASE_URL
+DB_USER=tankbook-user
+DB_PASSWORD=[[TANKBOOK_DB_PASSWORD]]
+DATABASE_URL=postgresql://${DB_USER}:${DB_PASSWORD}@db/tankbook
+"""
+
+##
+
+[[stack]]
+name = "termix"
+tags = ["automatic-updates"]
+[stack.config]
+swarm = "hogwarts"
+linked_repo = "HogwartsNetwork"
+run_directory = "docker-compose/network-services"
+file_paths = ["termix.yaml"]
+
+##
+
+[[stack]]
+name = "traefik"
+[stack.config]
+swarm = "hogwarts"
+linked_repo = "HogwartsNetwork-GitHub"
+run_directory = "docker-compose/network-services"
+file_paths = ["traefik.yaml"]
+environment = """
+CF_DNS_API_TOKEN=[[CF_DNS_API_TOKEN]]
+"""
+
+##
+
+[[stack]]
+name = "trek"
+tags = ["automatic-updates"]
+[stack.config]
+swarm = "hogwarts"
+linked_repo = "HogwartsNetwork"
+run_directory = "docker-compose/single-services"
+file_paths = ["trek.yaml"]
+environment = """
+ENCRYPTION_KEY=[[TREK_ENCRYPTION_KEY]]
+TZ=Europe/London
+ALLOWED_ORIGINS=192.168.100.11
+"""
+
+##
+
+[[stack]]
+name = "vaultwarden"
+tags = ["automatic-updates"]
+[stack.config]
+swarm = "hogwarts"
+linked_repo = "HogwartsNetwork"
+run_directory = "docker-compose/single-services"
+file_paths = ["vaultwarden.yaml"]
+environment = """
+DOMAIN=https://password.hogwartsnetwork.co.uk
+"""
+
+##
+
+[[stack]]
+name = "voidauth"
+tags = ["automatic-updates"]
+[stack.config]
+swarm = "hogwarts"
+linked_repo = "HogwartsNetwork"
+run_directory = "docker-compose/network-services"
+file_paths = ["voidauth.yaml"]
+environment = """
+STORAGE_KEY=[[VOIDAUTH_STORAGE_KEY]]
+"""
+
+##
+
+[[stack]]
+name = "wiki"
+tags = ["automatic-updates"]
+[stack.config]
+swarm = "hogwarts"
+linked_repo = "HogwartsNetwork"
+run_directory = "docker-compose/single-services"
+file_paths = ["leafwiki.yaml"]
+environment = """
+LEAFWIKI_JWT_SECRET=[[LEAFWIKI_JWT_SECRET]]
+LEAFWIKI_ADMIN_PASSWORD=[[LEAFWIKI_ADMIN_PASSWORD]]
+LEAFWIKI_ALLOW_INSECURE=true
+"""
+
+##
+
+[[stack]]
+name = "wireguard"
+tags = ["automatic-updates"]
+[stack.config]
+server = "dumbledore"
+linked_repo = "HogwartsNetwork"
+run_directory = "docker-compose/network-services"
+file_paths = ["wireguard.yaml"]
