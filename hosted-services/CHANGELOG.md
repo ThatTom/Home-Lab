@@ -35,7 +35,7 @@ Generated from the image versions in the [docker compose files](/docker-compose/
 | [traefik](/docker-compose/network-services/traefik.yaml) | traefik | network-services | `traefik` | v3.7 |
 | [voidauth](/docker-compose/network-services/voidauth.yaml) | voidauth | network-services | `voidauth/voidauth` | 1.16.0 |
 | [wireguard](/docker-compose/network-services/wireguard.yaml) | wgdashboard | network-services | `ghcr.io/wgdashboard/wgdashboard` | v4.3.3 |
-| [freshrss](/docker-compose/single-services/freshrss.yaml) | freshrss | single-services | `freshrss/freshrss` | 1.30.1 |
+| [freshrss](/docker-compose/single-services/freshrss.yaml) | freshrss | single-services | `freshrss/freshrss` | 1.30.4 |
 | [homepage](/docker-compose/single-services/homepage.yaml) | homepage | single-services | `ghcr.io/gethomepage/homepage` | v2.6.0 |
 | [immich](/docker-compose/single-services/immich.yaml) | immich-server | single-services | `ghcr.io/immich-app/immich-server` | v3.3.5 |
 | [immich](/docker-compose/single-services/immich.yaml) | immich-machine-learning | single-services | `ghcr.io/immich-app/immich-machine-learning` | v3.3.5 |
