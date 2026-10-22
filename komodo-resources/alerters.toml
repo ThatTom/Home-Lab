@@ -1,0 +1,56 @@
+# Komodo alerts posted to the homelab-alerts ntfy topic
+# New stacks need adding to resources here
+
+[[alerter]]
+name = "Hogwarts NTFY"
+[alerter.config]
+enabled = true
+endpoint.type = "Ntfy"
+endpoint.params.url = "https://ntfy.hogwartsnetwork.co.uk/homelab-alerts"
+alert_types = [
+  "ServerUnreachable",
+  "SwarmUnhealthy",
+  "ContainerStateChange",
+  "StackStateChange"
+]
+resources = [
+  { type = "Server", id = "dobby" },
+  { type = "Server", id = "dumbledore" },
+  { type = "Server", id = "flitwick" },
+  { type = "Server", id = "winky" },
+  { type = "Swarm", id = "hogwarts" },
+  { type = "Stack", id = "freshrss" },
+  { type = "Stack", id = "gitea" },
+  { type = "Stack", id = "gitea-mirror" },
+  { type = "Stack", id = "gitea-runner" },
+  { type = "Stack", id = "grafana" },
+  { type = "Stack", id = "homepage" },
+  { type = "Stack", id = "immich" },
+  { type = "Stack", id = "jellyfin" },
+  { type = "Stack", id = "joplin" },
+  { type = "Stack", id = "loki" },
+  { type = "Stack", id = "nemoir" },
+  { type = "Stack", id = "ntfy" },
+  { type = "Stack", id = "oddjobs" },
+  { type = "Stack", id = "openwebui" },
+  { type = "Stack", id = "paperless-ngx" },
+  { type = "Stack", id = "prometheus" },
+  { type = "Stack", id = "rackpad" },
+  { type = "Stack", id = "radarr" },
+  { type = "Stack", id = "seerr" },
+  { type = "Stack", id = "semaphore" },
+  { type = "Stack", id = "sonarr" },
+  { type = "Stack", id = "spindle" },
+  { type = "Stack", id = "spoolman" },
+  { type = "Stack", id = "tankbook" },
+  { type = "Stack", id = "termix" },
+  { type = "Stack", id = "traefik" },
+  { type = "Stack", id = "trek" },
+  { type = "Stack", id = "vaultwarden" },
+  { type = "Stack", id = "voidauth" },
+  { type = "Stack", id = "wiki" },
+  { type = "Stack", id = "wireguard" },
+  { type = "Repo", id = "HogwartsNetwork" },
+  { type = "Repo", id = "HogwartsNetwork-GitHub" },
+  { type = "ResourceSync", id = "Hogwarts Syncs" }
+]
