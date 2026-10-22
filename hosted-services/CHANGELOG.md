@@ -37,8 +37,8 @@ Generated from the image versions in the [docker compose files](/docker-compose/
 | [wireguard](/docker-compose/network-services/wireguard.yaml) | wgdashboard | network-services | `ghcr.io/wgdashboard/wgdashboard` | v4.3.3 |
 | [freshrss](/docker-compose/single-services/freshrss.yaml) | freshrss | single-services | `freshrss/freshrss` | 1.30.1 |
 | [homepage](/docker-compose/single-services/homepage.yaml) | homepage | single-services | `ghcr.io/gethomepage/homepage` | v2.6.0 |
-| [immich](/docker-compose/single-services/immich.yaml) | immich-server | single-services | `ghcr.io/immich-app/immich-server` | v3.3.4 |
-| [immich](/docker-compose/single-services/immich.yaml) | immich-machine-learning | single-services | `ghcr.io/immich-app/immich-machine-learning` | v3.3.4 |
+| [immich](/docker-compose/single-services/immich.yaml) | immich-server | single-services | `ghcr.io/immich-app/immich-server` | v3.3.5 |
+| [immich](/docker-compose/single-services/immich.yaml) | immich-machine-learning | single-services | `ghcr.io/immich-app/immich-machine-learning` | v3.3.5 |
 | [immich](/docker-compose/single-services/immich.yaml) | redis | single-services | `docker.io/valkey/valkey` | 9 + digest |
 | [immich](/docker-compose/single-services/immich.yaml) | database | single-services | `ghcr.io/immich-app/postgres` | 14-vectorchord0.4.3-pgvectors0.2.0 + digest |
 | [joplin](/docker-compose/single-services/joplin.yaml) | db | single-services | `postgres` | 16-alpine |
