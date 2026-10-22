@@ -41,6 +41,8 @@ Generated from the image versions in the [docker compose files](/docker-compose/
 | [immich](/docker-compose/single-services/immich.yaml) | immich-machine-learning | single-services | `ghcr.io/immich-app/immich-machine-learning` | v3.3.4 |
 | [immich](/docker-compose/single-services/immich.yaml) | redis | single-services | `docker.io/valkey/valkey` | 9 + digest |
 | [immich](/docker-compose/single-services/immich.yaml) | database | single-services | `ghcr.io/immich-app/postgres` | 14-vectorchord0.4.3-pgvectors0.2.0 + digest |
+| [joplin](/docker-compose/single-services/joplin.yaml) | db | single-services | `postgres` | 16-alpine |
+| [joplin](/docker-compose/single-services/joplin.yaml) | app | single-services | `joplin/server` | 3.7.2 |
 | [leafwiki](/docker-compose/single-services/leafwiki.yaml) | leafwiki | single-services | `ghcr.io/perber/leafwiki` | v0.14.1 |
 | [meshhub](/docker-compose/single-services/meshhub.yaml) | meshhub | single-services | `git.hogwartsnetwork.co.uk/hogwartsimages/meshhub` | latest (or `MESHHUB_TAG`) |
 | [nemoir](/docker-compose/single-services/nemoir.yaml) | nemoir | single-services | `git.hogwartsnetwork.co.uk/hogwartsimages/nemoir` | sha-5944619 |
