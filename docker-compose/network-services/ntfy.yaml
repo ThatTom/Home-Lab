@@ -9,7 +9,7 @@ services:
       NTFY_AUTH_FILE: "/var/lib/ntfy/auth.db"
       NTFY_ENABLE_LOGIN: "true"
       NTFY_CACHE_FILE: "/var/cache/ntfy/cache.db"
-      NTFY_UPSTREAM_BASE_URL: "https://ntfy.hogwartsnetwork.co.uk"
+      NTFY_UPSTREAM_BASE_URL: "https://ntfy.sh"
       # Purelymail, forwards a message to an email address when it's published with an Email header.
       # ntfy can only send with STARTTLS, so it uses the STARTTLS port.
       NTFY_SMTP_SENDER_ADDR: "${SMTP_HOST}:${SMTP_STARTTLS_PORT}"
