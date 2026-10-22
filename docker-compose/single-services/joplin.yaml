@@ -41,9 +41,10 @@ services:
     networks:
       - diagon-alley
       - joplin-internal
-    # The image has no curl or wget, but has Node
+    # The image has no curl or wget, but has Node. Joplin rejects requests whose Host doesn't match
+    # APP_BASE_URL, so the check sends the public one (fetch can't set Host, the http module can).
     healthcheck:
-      test: ["CMD", "node", "-e", "fetch('http://localhost:22300/api/ping').then(r => process.exit(r.ok ? 0 : 1)).catch(() => process.exit(1))"]
+      test: ["CMD", "node", "-e", "require('http').get({ host: 'localhost', port: 22300, path: '/api/ping', headers: { Host: 'notes.hogwartsnetwork.co.uk' } }, r => process.exit(r.statusCode === 200 ? 0 : 1)).on('error', () => process.exit(1))"]
       interval: 30s
       timeout: 10s
       retries: 3
