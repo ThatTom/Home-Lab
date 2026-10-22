@@ -18,7 +18,7 @@ Generated from the image versions in the [docker compose files](/docker-compose/
 | [periphery](/docker-compose/komodo/periphery.yaml) | periphery | komodo | `ghcr.io/moghtech/komodo-periphery` | 2 (or `COMPOSE_KOMODO_IMAGE_TAG`) |
 | [jellyfin](/docker-compose/media/consume/jellyfin.yaml) | jellyfin | media/consume | `ghcr.io/jellyfin/jellyfin` | 10.11.11 |
 | [radarr](/docker-compose/media/management/radarr.yaml) | radarr | media/management | `ghcr.io/hotio/radarr` | release-6.3.0.10514 |
-| [seerr](/docker-compose/media/management/seerr.yaml) | seerr | media/management | `ghcr.io/seerr-team/seerr` | v3.5.0 |
+| [seerr](/docker-compose/media/management/seerr.yaml) | seerr | media/management | `ghcr.io/seerr-team/seerr` | v3.5.1 |
 | [sonarr](/docker-compose/media/management/sonarr.yaml) | sonarr | media/management | `ghcr.io/hotio/sonarr` | release-4.0.19.2979 |
 | [spindle](/docker-compose/media/management/spindle.yaml) | spindle | media/management | `ghcr.io/thattom/spindle` | 2804e1f |
 | [grafana](/docker-compose/monitoring/grafana.yaml) | grafana | monitoring | `grafana/grafana-enterprise` | 13.2.3 |
@@ -31,7 +31,7 @@ Generated from the image versions in the [docker compose files](/docker-compose/
 | [prometheus](/docker-compose/monitoring/prometheus.yaml) | cadvisor | monitoring | `ghcr.io/google/cadvisor` | v0.60.6 |
 | [ntfy](/docker-compose/network-services/ntfy.yaml) | ntfy | network-services | `binwiederhier/ntfy` | v2.30.0 |
 | [socket-proxy](/docker-compose/network-services/socket-proxy.yaml) | socket-proxy | network-services | `tecnativa/docker-socket-proxy` | latest |
-| [termix](/docker-compose/network-services/termix.yaml) | termix | network-services | `ghcr.io/lukegus/termix` | 26.10.3 |
+| [termix](/docker-compose/network-services/termix.yaml) | termix | network-services | `ghcr.io/lukegus/termix` | 26.10.4 |
 | [traefik](/docker-compose/network-services/traefik.yaml) | traefik | network-services | `traefik` | v3.7 |
 | [voidauth](/docker-compose/network-services/voidauth.yaml) | voidauth | network-services | `voidauth/voidauth` | 1.16.0 |
 | [wireguard](/docker-compose/network-services/wireguard.yaml) | wgdashboard | network-services | `ghcr.io/wgdashboard/wgdashboard` | v4.3.3 |
