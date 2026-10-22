@@ -105,6 +105,19 @@ file_paths = ["jellyfin.yaml"]
 ##
 
 [[stack]]
+name = "joplin"
+[stack.config]
+swarm = "hogwarts"
+linked_repo = "HogwartsNetwork"
+run_directory = "docker-compose/single-services"
+file_paths = ["joplin.yaml"]
+environment = """
+JOPLIN_DB_PASSWORD=[[JOPLIN_DB_PASSWORD]]
+"""
+
+##
+
+[[stack]]
 name = "loki"
 [stack.config]
 swarm = "hogwarts"

@@ -1,0 +1,75 @@
+services:
+  db:
+    image: postgres:16-alpine
+    environment:
+      POSTGRES_DB: joplin
+      POSTGRES_USER: joplin
+      POSTGRES_PASSWORD: ${JOPLIN_DB_PASSWORD}
+    volumes:
+      - joplin-db:/var/lib/postgresql/data
+    networks:
+      - joplin-internal
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U joplin -d joplin"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+      start_period: 30s
+    deploy:
+      # Data in a local volume, so it stays on one node
+      replicas: 1
+      placement:
+        constraints:
+          - node.hostname == winky
+      restart_policy:
+        condition: on-failure
+
+  app:
+    image: joplin/server:3.7.2
+    depends_on:
+      - db
+    environment:
+      APP_BASE_URL: https://notes.hogwartsnetwork.co.uk
+      APP_PORT: 22300
+      # Notes are stored in Postgres, so the app itself keeps no data
+      DB_CLIENT: pg
+      POSTGRES_HOST: db
+      POSTGRES_PORT: 5432
+      POSTGRES_DATABASE: joplin
+      POSTGRES_USER: joplin
+      POSTGRES_PASSWORD: ${JOPLIN_DB_PASSWORD}
+    networks:
+      - diagon-alley
+      - joplin-internal
+    # The image has no curl or wget, but has Node
+    healthcheck:
+      test: ["CMD", "node", "-e", "fetch('http://localhost:22300/api/ping').then(r => process.exit(r.ok ? 0 : 1)).catch(() => process.exit(1))"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 60s
+    deploy:
+      replicas: 1
+      restart_policy:
+        condition: on-failure
+      labels:
+        # Traefik
+        - "traefik.enable=true"
+        - "traefik.swarm.network=diagon-alley"
+        # Router
+        - "traefik.http.routers.joplin.rule=Host(`notes.hogwartsnetwork.co.uk`)"
+        - "traefik.http.routers.joplin.entrypoints=websecure"
+        - "traefik.http.routers.joplin.tls=true"
+        - "traefik.http.routers.joplin.tls.certresolver=cloudflare"
+        # Service
+        - "traefik.http.services.joplin.loadbalancer.server.port=22300"
+
+volumes:
+  joplin-db:
+    name: joplin-db
+
+networks:
+  diagon-alley:
+    external: true
+
+  joplin-internal:
