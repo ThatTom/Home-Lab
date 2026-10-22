@@ -4,6 +4,27 @@
 # Create any new Variable in Komodo before syncing a stack that references it
 
 [[stack]]
+name = "freshrss"
+[stack.config]
+swarm = "hogwarts"
+linked_repo = "HogwartsNetwork"
+run_directory = "docker-compose/single-services"
+file_paths = ["freshrss.yaml"]
+environment = """
+# Shared with the homepage stack for the FreshRSS widget
+FRESHRSS_USERNAME=[[FRESHRSS_USERNAME]]
+FRESHRSS_API_PASSWORD=[[FRESHRSS_API_PASSWORD]]
+
+# OIDC redirect URI registered with VoidAuth: https://rss.hogwartsnetwork.co.uk/i/oidc/
+FRESHRSS_OIDC_ISSUER=https://auth.hogwartsnetwork.co.uk/oidc
+FRESHRSS_OIDC_CLIENT_ID=qopvK5hDoX2bjEue
+FRESHRSS_OIDC_CLIENT_SECRET=[[FRESHRSS_OIDC_CLIENT_SECRET]]
+FRESHRSS_OIDC_CRYPTO_KEY=[[FRESHRSS_OIDC_CRYPTO_KEY]]
+"""
+
+##
+
+[[stack]]
 name = "gitea"
 [stack.config]
 swarm = "hogwarts"
@@ -80,6 +101,10 @@ HOMEPAGE_OIDC_ISSUER=https://auth.hogwartsnetwork.co.uk/oidc
 HOMEPAGE_OIDC_CLIENT_ID=-LIT-DVt1iTKyfMX
 HOMEPAGE_OIDC_CLIENT_SECRET=[[HOMEPAGE_OIDC_CLIENT_SECRET]]
 HOMEPAGE_OIDC_NAME="Hogwarts SSO"
+
+# FreshRSS widget, shared with the freshrss stack
+FRESHRSS_USERNAME=[[FRESHRSS_USERNAME]]
+FRESHRSS_API_PASSWORD=[[FRESHRSS_API_PASSWORD]]
 """
 
 ##

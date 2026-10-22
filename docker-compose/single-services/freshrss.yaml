@@ -33,7 +33,7 @@ services:
       # Hogwarts SSO. Only the web UI (/i/) needs it, the API (Homepage widget, apps) uses the API password.
       # mod_auth_openidc is only in the amd64 Debian image, so this can't run on the Pis.
       OIDC_ENABLED: "1"
-      OIDC_PROVIDER_METADATA_URL: https://auth.hogwartsnetwork.co.uk/oidc/.well-known/openid-configuration
+      OIDC_PROVIDER_METADATA_URL: ${FRESHRSS_OIDC_ISSUER}/.well-known/openid-configuration
       OIDC_CLIENT_ID: ${FRESHRSS_OIDC_CLIENT_ID}
       OIDC_CLIENT_SECRET: ${FRESHRSS_OIDC_CLIENT_SECRET}
       OIDC_CLIENT_CRYPTO_KEY: ${FRESHRSS_OIDC_CRYPTO_KEY}
