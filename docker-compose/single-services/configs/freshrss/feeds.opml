@@ -13,6 +13,14 @@
     <outline text="Tech" title="Tech">
       <!-- Other TLDR newsletters: https://tldr.tech/api/rss/<ai|devops|infosec|founders|data|...> -->
       <outline type="rss" text="TLDR" title="TLDR" xmlUrl="https://tldr.tech/api/rss/tech" htmlUrl="https://tldr.tech"/>
+      <outline type="rss" text="Ars Technica" title="Ars Technica" xmlUrl="https://feeds.arstechnica.com/arstechnica/index" htmlUrl="https://arstechnica.com"/>
+    </outline>
+    <outline text="Security" title="Security">
+      <outline type="rss" text="TLDR InfoSec" title="TLDR InfoSec" xmlUrl="https://tldr.tech/api/rss/infosec" htmlUrl="https://tldr.tech/infosec"/>
+      <outline type="rss" text="NCSC" title="NCSC" xmlUrl="https://www.ncsc.gov.uk/api/1/services/v1/all-rss-feed.xml" htmlUrl="https://www.ncsc.gov.uk"/>
+    </outline>
+    <outline text="Homelab" title="Homelab">
+      <outline type="rss" text="selfh.st" title="selfh.st" xmlUrl="https://selfh.st/rss/" htmlUrl="https://selfh.st"/>
     </outline>
   </body>
 </opml>

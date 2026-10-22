@@ -89,5 +89,5 @@ networks:
 # Configs can't change in place, bump the suffix when feeds.opml changes
 configs:
   freshrss-feeds:
-    name: freshrss-feeds-v1
+    name: freshrss-feeds-v2
     file: ./configs/freshrss/feeds.opml
