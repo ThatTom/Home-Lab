@@ -113,6 +113,8 @@ run_directory = "docker-compose/single-services"
 file_paths = ["joplin.yaml"]
 environment = """
 JOPLIN_DB_PASSWORD=[[JOPLIN_DB_PASSWORD]]
+SMTP_USERNAME=[[SMTP_USERNAME]]
+SMTP_PASSWORD=[[SMTP_PASSWORD]]
 """
 
 ##

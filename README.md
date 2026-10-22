@@ -17,6 +17,19 @@ Hosted services within the Hogwarts Network/Homelab, changelog version tracking 
 | dobby | Lenovo Micro PC | |
 | winky | Lenovo Micro PC | |
 
+## Email
+
+Outgoing email from services is sent through [Purelymail](https://purelymail.com), the email provider for the Hogwarts Network
+
+| Setting | Value |
+| --- | --- |
+| SMTP host | `smtp.purelymail.com` |
+| Port / security | `465` with SSL/TLS, or `587` with STARTTLS for services that only support that |
+| Username | The full email address |
+| Password | The account password, or an app password if the account has two factor authentication |
+
+The login is held in the Komodo Variables `SMTP_USERNAME` and `SMTP_PASSWORD`, shared by every stack that sends email (currently Joplin)
+
 ## [3D Models](/3d-models/)
 
 Printable parts for the 10 inch rack the nodes sit in, and the mounts for the kit inside it
