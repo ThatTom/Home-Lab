@@ -28,7 +28,12 @@ Outgoing email from services is sent through [Purelymail](https://purelymail.com
 | Username | The full email address |
 | Password | The account password, or an app password if the account has two factor authentication |
 
-The login is held in the Komodo Variables `SMTP_USERNAME` and `SMTP_PASSWORD`, shared by every stack that sends email (currently Joplin)
+Stacks that send email share these Komodo Variables (currently Joplin, Vaultwarden, VoidAuth and ntfy):
+
+| Variable | Kept in |
+| --- | --- |
+| `SMTP_HOST`, `SMTP_PORT` (465), `SMTP_STARTTLS_PORT` (587, for ntfy) | [komodo-resources/variables.toml](/komodo-resources/variables.toml), applied by the Resource Sync |
+| `SMTP_USERNAME`, `SMTP_PASSWORD` | Komodo only, as secrets |
 
 ## [3D Models](/3d-models/)
 
@@ -67,7 +72,7 @@ All compose files follow the layout and standards in the [Docker Compose README]
 
 ## [Komodo Resources](/komodo-resources/)
 
-Komodo resource definitions in TOML, such as the [2AM - Auto Update](/komodo-resources/auto-update.toml) procedure that re-clones the repos and deploys any stacks that changed on `main`
+Komodo resource definitions in TOML: the [stacks](/komodo-resources/stacks.toml), the shared non-secret [variables](/komodo-resources/variables.toml), and the [2AM - Auto Update](/komodo-resources/auto-update.toml) procedure that re-clones the repos and deploys any stacks that changed on `main`
 
 ## Updates
 

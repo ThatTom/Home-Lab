@@ -40,9 +40,9 @@ services:
       POSTGRES_PASSWORD: ${JOPLIN_DB_PASSWORD}
       # Purelymail, sending as the account it logs in with
       MAILER_ENABLED: "true"
-      MAILER_HOST: smtp.purelymail.com
-      MAILER_PORT: 465
-      MAILER_SECURITY: tls
+      MAILER_HOST: ${SMTP_HOST}
+      MAILER_PORT: ${SMTP_PORT}
+      MAILER_SECURITY: tls          # SMTP_PORT is implicit TLS
       MAILER_AUTH_USER: ${SMTP_USERNAME}
       MAILER_AUTH_PASSWORD: ${SMTP_PASSWORD}
       MAILER_NOREPLY_NAME: Joplin

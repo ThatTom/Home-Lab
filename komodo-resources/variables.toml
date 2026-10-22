@@ -1,0 +1,21 @@
+# Komodo Variables shared by the stacks, referenced as [[NAME]] in stacks.toml
+# Only non-secret values belong here. Secrets (SMTP_USERNAME, SMTP_PASSWORD...) are created in Komodo by hand,
+# so keep "Delete unmatched resources" off on the Resource Sync or it would remove them
+
+# Purelymail, see "Email" in the root README. 465 is implicit TLS, so each app's security setting
+# must be its TLS/SSL option (not STARTTLS) while this port is used.
+[[variable]]
+name = "SMTP_HOST"
+value = "smtp.purelymail.com"
+description = "Outgoing mail server (Purelymail)"
+
+[[variable]]
+name = "SMTP_PORT"
+value = "465"
+description = "Outgoing mail port, implicit TLS"
+
+# For apps that can only do STARTTLS (ntfy)
+[[variable]]
+name = "SMTP_STARTTLS_PORT"
+value = "587"
+description = "Outgoing mail port, STARTTLS"

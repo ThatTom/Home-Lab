@@ -113,6 +113,8 @@ run_directory = "docker-compose/single-services"
 file_paths = ["joplin.yaml"]
 environment = """
 JOPLIN_DB_PASSWORD=[[JOPLIN_DB_PASSWORD]]
+SMTP_HOST=[[SMTP_HOST]]
+SMTP_PORT=[[SMTP_PORT]]
 SMTP_USERNAME=[[SMTP_USERNAME]]
 SMTP_PASSWORD=[[SMTP_PASSWORD]]
 """
@@ -168,6 +170,12 @@ swarm = "hogwarts"
 linked_repo = "HogwartsNetwork"
 run_directory = "docker-compose/network-services"
 file_paths = ["ntfy.yaml"]
+environment = """
+SMTP_HOST=[[SMTP_HOST]]
+SMTP_STARTTLS_PORT=[[SMTP_STARTTLS_PORT]]
+SMTP_USERNAME=[[SMTP_USERNAME]]
+SMTP_PASSWORD=[[SMTP_PASSWORD]]
+"""
 
 ##
 
@@ -424,6 +432,10 @@ run_directory = "docker-compose/single-services"
 file_paths = ["vaultwarden.yaml"]
 environment = """
 DOMAIN=https://password.hogwartsnetwork.co.uk
+SMTP_HOST=[[SMTP_HOST]]
+SMTP_PORT=[[SMTP_PORT]]
+SMTP_USERNAME=[[SMTP_USERNAME]]
+SMTP_PASSWORD=[[SMTP_PASSWORD]]
 """
 
 ##
@@ -437,6 +449,10 @@ run_directory = "docker-compose/network-services"
 file_paths = ["voidauth.yaml"]
 environment = """
 STORAGE_KEY=[[VOIDAUTH_STORAGE_KEY]]
+SMTP_HOST=[[SMTP_HOST]]
+SMTP_PORT=[[SMTP_PORT]]
+SMTP_USERNAME=[[SMTP_USERNAME]]
+SMTP_PASSWORD=[[SMTP_PASSWORD]]
 """
 
 ##

@@ -7,6 +7,14 @@ services:
       APP_URL: https://auth.hogwartsnetwork.co.uk # required, ex. https://auth.example.com
       STORAGE_KEY: ${STORAGE_KEY} # required
       DB_ADAPTER: sqlite
+      # Purelymail, for password resets, invitations, email verification and admin notifications.
+      # Setting SMTP_HOST also turns on EMAIL_VERIFICATION. The From name is APP_TITLE.
+      SMTP_HOST: ${SMTP_HOST}
+      SMTP_PORT: ${SMTP_PORT}
+      SMTP_SECURE: "true" # SMTP_PORT is implicit TLS
+      SMTP_USER: ${SMTP_USERNAME}
+      SMTP_PASS: ${SMTP_PASSWORD}
+      SMTP_FROM: ${SMTP_USERNAME}
     #ports:
     #  - "3000:3000" # may not be needed, depending on reverse-proxy setup
     #  - "3890:3890" # only needed if LDAP Server is enabled
