@@ -1,6 +1,6 @@
 services:
   ntfy:
-    image: binwiederhier/ntfy:v2.30.0
+    image: binwiederhier/ntfy:v2.31.0
     init: true # needed, if healthcheck is used. Prevents zombie processes
     command: serve
     environment:
