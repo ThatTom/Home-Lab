@@ -1,6 +1,6 @@
 services:
   leafwiki:
-    image: ghcr.io/perber/leafwiki:v0.14.1
+    image: ghcr.io/perber/leafwiki:v0.14.2
     environment:
       LEAFWIKI_JWT_SECRET: ${LEAFWIKI_JWT_SECRET}
       LEAFWIKI_ADMIN_PASSWORD: ${LEAFWIKI_ADMIN_PASSWORD}
