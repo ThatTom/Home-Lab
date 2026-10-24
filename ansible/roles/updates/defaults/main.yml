@@ -1,4 +1,8 @@
 # unattended-upgrades installs security updates daily, everything else and every reboot is left to patch.yml
+# Moved from Debian's 06:00 so it runs after Sunday's 04:00 patch.yml has let go of apt's lock
+updates_upgrade_time: "*-*-* 05:30:00"
+updates_upgrade_random_delay: 10min
+
 # Packages unattended-upgrades never touches, so a Docker upgrade only happens on a drained node
 updates_package_blacklist:
   - docker-ce

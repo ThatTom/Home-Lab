@@ -30,7 +30,7 @@ rustic_exclude_if_present:
   - CACHEDIR.TAG
 
 # Schedule and retention
-rustic_backup_time: "*-*-* 02:00:00"
+rustic_backup_time: "*-*-* 01:00:00"
 rustic_backup_random_delay: 15min
 rustic_keep_daily: 7
 rustic_keep_weekly: 4
@@ -38,7 +38,7 @@ rustic_keep_monthly: 6
 
 # One node prunes the shared repository weekly, after the nightly backups have finished
 rustic_prune_host: dumbledore
-rustic_prune_time: "Sun *-*-* 05:00:00"
+rustic_prune_time: "Sun *-*-* 02:00:00"
 
 # Only the prune host gets the prune units
 rustic_units: >-

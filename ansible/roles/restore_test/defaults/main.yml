@@ -1,6 +1,6 @@
 # Monthly check that the backups restore, see templates/restore-test.sh.j2.
 # Runs on one node, which needs the rustic role (backups.yml) for the repository config.
-restore_test_time: "Sat *-*-01..07 06:00:00"    # first Saturday of the month
+restore_test_time: "Sat *-*-01..07 05:00:00"    # first Saturday of the month
 restore_test_dir: /var/tmp/rustic-restore-test
 
 # Each node's latest snapshot of the database dumps is restored and checked

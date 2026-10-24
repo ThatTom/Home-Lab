@@ -16,9 +16,9 @@ Everything needed to rebuild the lab falls into one of three places:
 
 Set up by [ansible/backups.yml](/ansible/backups.yml) and the [rustic role](/ansible/roles/rustic/).
 
-- **Schedule** - every node backs up daily at 02:00, plus up to 15 minutes of random delay
+- **Schedule** - every node backs up daily at 01:00, plus up to 15 minutes of random delay
 - **Destination** - one shared, encrypted Rustic repository in a Backblaze B2 bucket. Every snapshot records the hostname it came from, so each node's backups can be picked out with `--filter-host <node>`
-- **Retention** - 7 daily, 4 weekly and 6 monthly snapshots per node. dumbledore prunes the repository every Sunday at 05:00
+- **Retention** - 7 daily, 4 weekly and 6 monthly snapshots per node. dumbledore prunes the repository every Sunday at 02:00
 - **Included**
   - `/var/lib/docker/volumes` on the node's local disk
   - `/var/backups/rustic`, written just before each backup:

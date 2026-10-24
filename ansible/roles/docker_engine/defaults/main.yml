@@ -26,6 +26,6 @@ docker_skip_controller: true
 
 # Weekly clean up of images, build cache and stopped containers older than docker_prune_until.
 # Volumes are never pruned.
-docker_prune_time: "Sat *-*-* 04:00:00"
+docker_prune_time: "Sat *-*-* 03:30:00"
 docker_prune_random_delay: 30min
 docker_prune_until: 168h
