@@ -29,7 +29,7 @@ Generated from the image versions in the [docker compose files](/docker-compose/
 | [prometheus](/docker-compose/monitoring/prometheus.yaml) | blackbox-exporter | monitoring | `prom/blackbox-exporter` | v0.29.0 |
 | [prometheus](/docker-compose/monitoring/prometheus.yaml) | node-exporter | monitoring | `prom/node-exporter` | v1.12.1 |
 | [prometheus](/docker-compose/monitoring/prometheus.yaml) | cadvisor | monitoring | `ghcr.io/google/cadvisor` | v0.60.6 |
-| [ntfy](/docker-compose/network-services/ntfy.yaml) | ntfy | network-services | `binwiederhier/ntfy` | v2.31.0 |
+| [ntfy](/docker-compose/network-services/ntfy.yaml) | ntfy | network-services | `binwiederhier/ntfy` | v2.31.1 |
 | [socket-proxy](/docker-compose/network-services/socket-proxy.yaml) | socket-proxy | network-services | `tecnativa/docker-socket-proxy` | latest |
 | [termix](/docker-compose/network-services/termix.yaml) | termix | network-services | `ghcr.io/lukegus/termix` | 26.10.5 |
 | [traefik](/docker-compose/network-services/traefik.yaml) | traefik | network-services | `traefik` | v3.7 |
