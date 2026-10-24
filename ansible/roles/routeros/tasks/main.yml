@@ -8,6 +8,16 @@
       in the template's Semaphore Variable Group.
   run_once: true
 
+- name: Check the ntfy token is set
+  ansible.builtin.assert:
+    that:
+      - routeros_ntfy_token | length > 0
+    fail_msg: >-
+      Add ntfy_alert_token as an environment variable secret
+      in the template's Semaphore Variable Group.
+  run_once: true
+  when: routeros_update_check | bool
+
 - name: Read the router
   ansible.builtin.include_tasks: read.yml
   when: routeros_read | bool
@@ -19,3 +29,7 @@
 - name: Apply the desired config
   ansible.builtin.include_tasks: apply.yml
   when: routeros_apply | bool
+
+- name: Check for RouterOS and firmware upgrades
+  ansible.builtin.include_tasks: update_check.yml
+  when: routeros_update_check | bool

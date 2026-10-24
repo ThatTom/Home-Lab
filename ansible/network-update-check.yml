@@ -1,0 +1,10 @@
+# Alerts on ntfy while a newer RouterOS or RouterBOARD firmware is waiting to be installed on the router.
+# Run on a schedule in Semaphore. It only checks, the upgrade itself is done by hand.
+- name: Check the router for upgrades
+  hosts: routeros
+  gather_facts: false
+  roles:
+    - role: routeros
+      vars:
+        routeros_read: false
+        routeros_update_check: true

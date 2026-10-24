@@ -10,6 +10,12 @@ routeros_validate_certs: false
 routeros_read: true
 routeros_backup: false
 routeros_apply: false
+routeros_update_check: false
+
+# Where network-update-check.yml posts upgrades that are waiting, with the token Alertmanager uses
+# (Semaphore environment secret ntfy_alert_token)
+routeros_ntfy_url: https://ntfy.hogwartsnetwork.co.uk/homelab-alerts
+routeros_ntfy_token: "{{ lookup('ansible.builtin.env', 'ntfy_alert_token') }}"
 
 # Backups are kept on this node under the Rustic dump folder, so they're in the nightly encrypted backup to B2
 network_backup_host: dumbledore

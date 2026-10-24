@@ -1,0 +1,65 @@
+# Asks the router whether a newer RouterOS is out on its update channel, and whether the RouterBOARD firmware
+# is behind the installed RouterOS. Anything waiting is posted to ntfy, so it alerts on every run until upgraded.
+- name: Check for a RouterOS update
+  ansible.builtin.uri:
+    url: "{{ routeros_url }}/rest/system/package/update/check-for-updates"
+    method: POST
+    body: {}
+    body_format: json
+    user: "{{ routeros_username }}"
+    password: "{{ routeros_password }}"
+    force_basic_auth: true
+    validate_certs: "{{ routeros_validate_certs }}"
+    timeout: 60
+  check_mode: false   # only checks, so it also runs in a dry run
+
+- name: Read the RouterOS versions and firmware
+  ansible.builtin.uri:
+    url: "{{ routeros_url }}/rest/{{ item }}"
+    user: "{{ routeros_username }}"
+    password: "{{ routeros_password }}"
+    force_basic_auth: true
+    validate_certs: "{{ routeros_validate_certs }}"
+    return_content: true
+  loop:
+    - system/package/update
+    - system/routerboard
+  register: routeros_update_status
+  check_mode: false   # read-only, so it also runs in a dry run
+
+- name: Check the router could reach MikroTik's update server
+  ansible.builtin.assert:
+    that:
+      - routeros_update_status.results[0].json['latest-version'] is defined
+    fail_msg: "The router couldn't check for updates: {{ routeros_update_status.results[0].json.status | default('no status') }}"
+    quiet: true
+
+- name: Work out what's waiting to be upgraded
+  ansible.builtin.set_fact:
+    routeros_pending_upgrades: >-
+      {{ ([('RouterOS ' ~ package['latest-version'] ~ ' is out on the ' ~ package.channel ~ ' channel (installed '
+             ~ package['installed-version'] ~ ')')]
+           if package['latest-version'] != package['installed-version'] else [])
+         + ([('RouterBOARD firmware ' ~ board['upgrade-firmware'] ~ ' is ready to install (running '
+             ~ board['current-firmware'] ~ '), run /system routerboard upgrade then reboot')]
+           if board['upgrade-firmware'] != board['current-firmware'] else []) }}
+  vars:
+    package: "{{ routeros_update_status.results[0].json }}"
+    board: "{{ routeros_update_status.results[1].json }}"
+
+- name: Post the waiting upgrades to ntfy
+  ansible.builtin.uri:
+    url: "{{ routeros_ntfy_url }}"
+    method: POST
+    headers:
+      Authorization: "Bearer {{ routeros_ntfy_token }}"
+      Title: "{{ inventory_hostname }}: upgrade waiting"
+      Tags: arrow_up
+      Click: https://mikrotik.com/download/changelogs
+    body: '{{ routeros_pending_upgrades | join("\n") }}'
+  when: routeros_pending_upgrades | length > 0
+  no_log: true
+
+- name: Show the result
+  ansible.builtin.debug:
+    msg: "{{ routeros_pending_upgrades if routeros_pending_upgrades | length > 0 else 'RouterOS and the RouterBOARD firmware are up to date' }}"

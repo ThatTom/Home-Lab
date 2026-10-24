@@ -19,7 +19,7 @@ Secrets are never stored in the repo. They're read from environment variables, w
 | `harry_password` | bootstrap.yml | The bootstrap user's password, only needed on a fresh node |
 | `rustic_password` | backups.yml | The Rustic repository password |
 | `b2_key_id`, `b2_key`, `b2_bucket`, `b2_bucket_id` | backups.yml | The Backblaze B2 bucket the backups go to |
-| `ntfy_alert_token` | swarm.yml | Swarm secret Alertmanager posts alerts to ntfy with |
+| `ntfy_alert_token` | swarm.yml, network-update-check.yml | Swarm secret Alertmanager posts alerts to ntfy with, also used to post router upgrade alerts |
 | `healthchecks_ping_url` | swarm.yml | Swarm secret Alertmanager sends its Watchdog heartbeat to |
 | `routeros_username`, `routeros_password` | network-*.yml | The router's REST API account |
 | `tplink_username`, `tplink_password` | network-*.yml | The switches' web UI login |
@@ -59,6 +59,7 @@ Other settings in the inventory:
 | [network-read.yml](/ansible/network-read.yml) | Router, switches | Shows each device's state, and prints the router's config as inventory variables | Any time, it changes nothing |
 | [network-backup.yml](/ansible/network-backup.yml) | Router, switches | Saves the router's export and the switches' configs to dumbledore | On a schedule, and after changes made by hand |
 | [network-apply.yml](/ansible/network-apply.yml) | Router, switches | Backs up, then makes the router match [group_vars/routeros.yml](/ansible/inventory/group_vars/routeros.yml) and the switches' ports match `tplink_ports`, see below | Dry run first, then for real |
+| [network-update-check.yml](/ansible/network-update-check.yml) | Router | Posts to the `homelab-alerts` ntfy topic while a newer RouterOS (on the router's update channel) or RouterBOARD firmware is waiting to be installed. Changes nothing | On a schedule in Semaphore |
 
 ### Automatic runs
 
