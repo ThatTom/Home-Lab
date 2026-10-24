@@ -148,7 +148,7 @@ configs:
     file: ./configs/alert-rules.yml
 
   alertmanager:
-    name: alertmanager-config-v2
+    name: alertmanager-config-v3
     file: ./configs/alertmanager.yml
 
   blackbox:

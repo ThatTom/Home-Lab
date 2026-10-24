@@ -15,7 +15,16 @@ route:
       group_interval: 1m
       repeat_interval: 1m
 
+    # Not fully set up yet, so their probes stay on the dashboard without alerting.
+    # Remove once floo, portkey and the keepalived VIP are finished.
+    - matchers:
+        - instance =~ "10\\.10\\.10\\.[23]:80|10\\.10\\.20\\.2:443"
+      receiver: muted
+
 receivers:
+  - name: muted
+
+
   - name: ntfy
     webhook_configs:
       # ntfy's built-in alertmanager template turns the webhook into a readable notification
