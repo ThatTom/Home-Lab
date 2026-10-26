@@ -1,6 +1,6 @@
 services:
   server:
-    image: gitea/gitea:28.1
+    image: gitea/gitea:28.2
     environment:
       # Webhooks only reach public hosts by default, this lets the PR webhook post to ntfy over diagon-alley
       GITEA__webhook__ALLOWED_HOST_LIST: "ntfy"
