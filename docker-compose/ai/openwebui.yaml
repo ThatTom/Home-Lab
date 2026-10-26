@@ -1,6 +1,6 @@
 services:
   open-webui:
-    image: ghcr.io/open-webui/open-webui:v0.12.3
+    image: ghcr.io/open-webui/open-webui:v0.12.4
     environment:
       # Store the OAuth/SSO settings in the database so they can be edited in the Admin Panel
       ENABLE_OAUTH_PERSISTENT_CONFIG: "true"
