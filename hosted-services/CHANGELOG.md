@@ -8,7 +8,7 @@ Generated from the image versions in the [docker compose files](/docker-compose/
 | --- | --- | --- | --- | --- |
 | [ollama](/docker-compose/ai/ollama.yaml) | ollama | ai | `ollama/ollama` | 0.35.0 |
 | [openwebui](/docker-compose/ai/openwebui.yaml) | open-webui | ai | `ghcr.io/open-webui/open-webui` | v0.12.4 |
-| [gitea-mirror](/docker-compose/git/gitea-mirror.yaml) | gitea-mirror | git | `ghcr.io/raylabshq/gitea-mirror` | v3.45.0 |
+| [gitea-mirror](/docker-compose/git/gitea-mirror.yaml) | gitea-mirror | git | `ghcr.io/raylabshq/gitea-mirror` | v3.46.0 |
 | [gitea-runner](/docker-compose/git/gitea-runner.yaml) | gitea-runner-pi | git | `gitea/runner` | 5.2.0 |
 | [gitea-runner](/docker-compose/git/gitea-runner.yaml) | gitea-runner-lenovo | git | `gitea/runner` | 5.2.0 |
 | [gitea](/docker-compose/git/gitea.yaml) | server | git | `gitea/gitea` | 28.2 |
