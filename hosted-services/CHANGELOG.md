@@ -52,7 +52,7 @@ Generated from the image versions in the [docker compose files](/docker-compose/
 | [paperless](/docker-compose/single-services/paperless.yaml) | gotenberg | single-services | `docker.io/gotenberg/gotenberg` | 8.38 |
 | [paperless](/docker-compose/single-services/paperless.yaml) | tika | single-services | `docker.io/apache/tika` | 3.3.1.0 |
 | [rackpad](/docker-compose/single-services/rackpad.yaml) | rackpad | single-services | `ghcr.io/kobii-git/rackpad` | 1.8.5 |
-| [semaphore](/docker-compose/single-services/semaphore.yaml) | semaphore | single-services | `semaphoreui/semaphore` | v2.19.16 |
+| [semaphore](/docker-compose/single-services/semaphore.yaml) | semaphore | single-services | `semaphoreui/semaphore` | v2.19.17 |
 | [spoolman](/docker-compose/single-services/spoolman.yaml) | spoolman | single-services | `ghcr.io/donkie/spoolman` | 0.27.0 |
 | [tankbook](/docker-compose/single-services/tankbook.yaml) | db | single-services | `postgres` | 16-alpine |
 | [tankbook](/docker-compose/single-services/tankbook.yaml) | app | single-services | `ghcr.io/tankbook/tankbook-app` | 1.0.1 |
