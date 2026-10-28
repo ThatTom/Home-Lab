@@ -1,6 +1,6 @@
 services:
   semaphore:
-    image: semaphoreui/semaphore:v2.19.16
+    image: semaphoreui/semaphore:v2.19.17
     environment:
       SEMAPHORE_DB_DIALECT: sqlite
       SEMAPHORE_ADMIN: ${SEMAPHORE_ADMIN}
