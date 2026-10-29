@@ -20,7 +20,7 @@ services:
 
   # One per node, reads the host's journal and its containers' logs through the Docker socket
   alloy:
-    image: grafana/alloy:v1.21.0
+    image: grafana/alloy:v1.21.1
     command:
       - "run"
       - "--server.http.listen-addr=0.0.0.0:12345"
