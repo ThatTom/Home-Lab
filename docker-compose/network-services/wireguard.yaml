@@ -1,6 +1,6 @@
 services:
   wgdashboard:
-    image: ghcr.io/wgdashboard/wgdashboard:v4.3.3
+    image: ghcr.io/wgdashboard/wgdashboard:v4.3.4
     container_name: wgdashboard
     cap_add:
       - NET_ADMIN
