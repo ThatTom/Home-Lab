@@ -24,6 +24,9 @@ docker_daemon_settings:
 docker_controller_container: '(^|_)semaphore\.'
 docker_skip_controller: true
 
+# Docker waits for NTP at boot. If time sync hasn't finished after this long, Docker starts anyway.
+docker_time_sync_timeout: 5min
+
 # Weekly clean up of images, build cache and stopped containers older than docker_prune_until.
 # Volumes are never pruned.
 docker_prune_time: "Sat *-*-* 03:30:00"

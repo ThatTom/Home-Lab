@@ -111,6 +111,63 @@
   delay: 10
   changed_when: false
 
+# A node with a flat CMOS battery boots with its clock in 2015 until NTP corrects it, and Docker
+# started against the wrong date doesn't rejoin the swarm. Hold Docker until time sync has finished
+- name: Check which time sync service is installed
+  ansible.builtin.package_facts:
+
+- name: Work out which wait unit goes with it
+  ansible.builtin.set_fact:
+    docker_time_wait_unit: "{{ 'chrony-wait.service' if 'chrony' in ansible_facts.packages else 'systemd-time-wait-sync.service' }}"
+
+- name: Enable the time sync wait unit
+  ansible.builtin.systemd:
+    name: "{{ docker_time_wait_unit }}"
+    enabled: true
+
+- name: Create the time sync wait unit's drop-in directory
+  ansible.builtin.file:
+    path: /etc/systemd/system/{{ docker_time_wait_unit }}.d
+    state: directory
+    owner: root
+    group: root
+    mode: "0755"
+
+# systemd-time-wait-sync waits forever by default, so an unreachable NTP server would keep Docker down
+- name: Cap how long boot waits for time sync
+  ansible.builtin.copy:
+    content: |
+      # Managed by Ansible (roles/docker_engine)
+      [Service]
+      TimeoutStartSec={{ docker_time_sync_timeout }}
+    dest: /etc/systemd/system/{{ docker_time_wait_unit }}.d/timeout.conf
+    owner: root
+    group: root
+    mode: "0644"
+  notify: Reload systemd
+
+- name: Create Docker's drop-in directory
+  ansible.builtin.file:
+    path: /etc/systemd/system/docker.service.d
+    state: directory
+    owner: root
+    group: root
+    mode: "0755"
+
+# Only changes the boot order, so Docker doesn't need restarting
+- name: Start Docker after time sync
+  ansible.builtin.copy:
+    content: |
+      # Managed by Ansible (roles/docker_engine)
+      [Unit]
+      Wants=time-sync.target
+      After=time-sync.target
+    dest: /etc/systemd/system/docker.service.d/time-sync.conf
+    owner: root
+    group: root
+    mode: "0644"
+  notify: Reload systemd
+
 - name: Deploy the clean up units
   ansible.builtin.template:
     src: "{{ item }}.j2"
