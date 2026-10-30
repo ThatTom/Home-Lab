@@ -2,7 +2,7 @@
   "$schema": "https://docs.renovatebot.com/renovate-schema.json",
   "extends": ["config:recommended"],
   "enabledManagers": ["docker-compose"],
-  "timezone": "Europe/London",
+  "timezone": "UTC",
   "docker-compose": {
     "managerFilePatterns": ["/^docker-compose/.+\\.ya?ml$/"]
   },

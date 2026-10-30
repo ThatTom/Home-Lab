@@ -2,7 +2,7 @@ services:
   gitea-mirror:
     image: ghcr.io/raylabshq/gitea-mirror:v3.49.0
     environment:
-      TZ: Europe/London
+      TZ: UTC
       NODE_ENV: production
       DATABASE_URL: file:data/gitea-mirror.db
       HOST: 0.0.0.0

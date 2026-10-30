@@ -3,7 +3,7 @@
   "title": "HomeLab Logs",
   "description": "Container and host logs from every node, collected by Alloy into Loki.",
   "tags": ["homelab", "logs"],
-  "timezone": "browser",
+  "timezone": "utc",
   "editable": true,
   "graphTooltip": 1,
   "time": { "from": "now-1h", "to": "now" },

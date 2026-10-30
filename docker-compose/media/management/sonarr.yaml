@@ -5,7 +5,7 @@ services:
       PUID: 0
       PGID: 0
       UMASK: "002"
-      TZ: Europe/London
+      TZ: UTC
       WEBUI_PORTS: 8989/tcp
     volumes:
       - sonarr-config:/config

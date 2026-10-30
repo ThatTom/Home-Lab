@@ -11,7 +11,7 @@ services:
         ./cli/access-permissions.sh --only-userdirs;
         ([ -z "$$CRON_MIN" ] || cron) && . /etc/apache2/envvars && exec apache2 -D FOREGROUND -D OIDC_ENABLED
     environment:
-      TZ: Europe/London
+      TZ: UTC
       CRON_MIN: "*/20"              # refresh feeds every 20 minutes
       # Must match your VoidAuth username, FreshRSS logs you in as the user named by preferred_username
       FRESHRSS_USERNAME: ${FRESHRSS_USERNAME}

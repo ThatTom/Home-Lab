@@ -4,7 +4,7 @@ services:
     init: true
     environment:
       LOG_LEVEL: debug
-      TZ: Europe/London
+      TZ: UTC
       PORT: 5055 #optional
     volumes:
       # Uses the docker volumes configured in the volumes section below to persist Seerr configuration data

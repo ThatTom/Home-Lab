@@ -8,6 +8,7 @@
 [[procedure]]
 name = "2AM - Auto Update"
 config.schedule = "Run every day at 03:00 am"
+config.schedule_timezone = "UTC"
 
 [[procedure.config.stage]]
 name = "Repo Update"

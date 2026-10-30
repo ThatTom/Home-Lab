@@ -442,7 +442,7 @@ run_directory = "docker-compose/single-services"
 file_paths = ["trek.yaml"]
 environment = """
 ENCRYPTION_KEY=[[TREK_ENCRYPTION_KEY]]
-TZ=Europe/London
+TZ=UTC
 ALLOWED_ORIGINS=192.168.100.11
 """
 

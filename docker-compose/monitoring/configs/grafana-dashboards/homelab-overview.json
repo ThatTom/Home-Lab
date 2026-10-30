@@ -3,7 +3,7 @@
   "title": "HomeLab Overview",
   "description": "Services, network devices, nodes and backups at a glance.",
   "tags": ["homelab"],
-  "timezone": "browser",
+  "timezone": "utc",
   "editable": true,
   "graphTooltip": 1,
   "time": { "from": "now-24h", "to": "now" },

@@ -2,7 +2,7 @@ services:
   termix:
     image: ghcr.io/lukegus/termix:26.10.6
     environment:
-      TZ: Europe/London
+      TZ: UTC
     volumes:
       - termix-data:/app/data:nocopy
     networks:

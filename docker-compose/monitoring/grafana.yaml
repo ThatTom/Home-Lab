@@ -3,6 +3,8 @@ services:
     image: grafana/grafana-enterprise:13.2.3
     #ports:
     #  - "3010:3000"
+    environment:
+      GF_DATE_FORMATS_DEFAULT_TIMEZONE: utc
     volumes:
       - grafana-storage:/var/lib/grafana
     configs:
@@ -64,9 +66,9 @@ configs:
 
   # Dashboards are mounted one config each, into the folder the provider above watches
   grafana-dashboard-overview:
-    name: grafana-dashboard-overview-v5
+    name: grafana-dashboard-overview-v6
     file: ./configs/grafana-dashboards/homelab-overview.json
 
   grafana-dashboard-logs:
-    name: grafana-dashboard-logs-v1
+    name: grafana-dashboard-logs-v2
     file: ./configs/grafana-dashboards/logs.json

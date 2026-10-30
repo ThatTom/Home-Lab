@@ -17,7 +17,7 @@ services:
       NODE_ENV: production
       PORT: 3000
       ENCRYPTION_KEY: ${ENCRYPTION_KEY:-}
-      TZ: Europe/London
+      TZ: UTC
       LOG_LEVEL: ${LOG_LEVEL:-info}
       # Reverse proxy / public URL
       ALLOWED_ORIGINS: https://travel.hogwartsnetwork.co.uk

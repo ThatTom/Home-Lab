@@ -16,7 +16,7 @@ services:
       NTFY_SMTP_SENDER_USER: ${SMTP_USERNAME}
       NTFY_SMTP_SENDER_PASS: ${SMTP_PASSWORD}
       NTFY_SMTP_SENDER_FROM: ${SMTP_USERNAME}
-      TZ: "Europe/London"
+      TZ: UTC
     volumes:
       - ntfy-lib:/var/lib/ntfy
       - ntfy-cache:/var/cache/ntfy

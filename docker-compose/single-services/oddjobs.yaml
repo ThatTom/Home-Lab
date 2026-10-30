@@ -5,7 +5,7 @@ services:
       # Must match the URL you open the app on, otherwise form submissions are rejected.
       # e.g. https://odd-jobs.your-tailnet.ts.net or http://192.168.1.50:3000
       ORIGIN: https://jobs.hogwartsnetwork.co.uk
-      TZ: Europe/London
+      TZ: UTC
       PUBLIC_CURRENCY: GBP
       PUBLIC_LOCALE: en-GB
     volumes:

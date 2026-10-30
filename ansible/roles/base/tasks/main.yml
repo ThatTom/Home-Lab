@@ -76,6 +76,10 @@
     enabled: true
     state: started
 
+- name: Set the timezone
+  community.general.timezone:
+    name: "{{ base_timezone }}"
+
 - name: Create the journald drop-in directory
   ansible.builtin.file:
     path: /etc/systemd/journald.conf.d
