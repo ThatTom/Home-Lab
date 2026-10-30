@@ -1,6 +1,6 @@
 services:
   rackpad:
-    image: ghcr.io/kobii-git/rackpad:1.8.5
+    image: ghcr.io/kobii-git/rackpad:1.8.6
     env_file: .env
     user: "10001:985"
     environment:
