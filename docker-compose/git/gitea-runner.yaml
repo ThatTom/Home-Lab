@@ -1,6 +1,6 @@
 services:
   gitea-runner-pi:
-    image: gitea/runner:5.2.0
+    image: gitea/runner:5.2.2
     environment:
       GITEA_INSTANCE_URL: https://git.hogwartsnetwork.co.uk
       GITEA_RUNNER_NAME: "{{.Node.Hostname}}"
@@ -17,7 +17,7 @@ services:
         condition: on-failure
 
   gitea-runner-lenovo:
-    image: gitea/runner:5.2.0
+    image: gitea/runner:5.2.2
     environment:
       GITEA_INSTANCE_URL: https://git.hogwartsnetwork.co.uk
       GITEA_RUNNER_NAME: "{{.Node.Hostname}}"
