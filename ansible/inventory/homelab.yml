@@ -29,7 +29,7 @@ all:
             dobby:
               ansible_host: 10.10.20.20
               swarm_node_labels:
-                media: "yes"              # Jellyfin and the media management stack
+                media: "yes"              # The media management stack
             winky:
               ansible_host: 10.10.20.21
               swarm_node_labels:

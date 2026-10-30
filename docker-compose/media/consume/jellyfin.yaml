@@ -17,7 +17,8 @@ services:
       replicas: 1
       placement:
         constraints:
-          - node.labels.media == yes
+          # Config is on a local volume, so stay on dobby until the workers have Ceph
+          - node.hostname == dobby
       restart_policy:
         condition: on-failure
       labels:
