@@ -8,7 +8,7 @@ Generated from the image versions in the [docker compose files](/docker-compose/
 | --- | --- | --- | --- | --- |
 | [ollama](/docker-compose/ai/ollama.yaml) | ollama | ai | `ollama/ollama` | 0.35.0 |
 | [openwebui](/docker-compose/ai/openwebui.yaml) | open-webui | ai | `ghcr.io/open-webui/open-webui` | v0.12.4 |
-| [gitea-mirror](/docker-compose/git/gitea-mirror.yaml) | gitea-mirror | git | `ghcr.io/raylabshq/gitea-mirror` | v3.46.0 |
+| [gitea-mirror](/docker-compose/git/gitea-mirror.yaml) | gitea-mirror | git | `ghcr.io/raylabshq/gitea-mirror` | v3.49.0 |
 | [gitea-runner](/docker-compose/git/gitea-runner.yaml) | gitea-runner-pi | git | `gitea/runner` | 5.2.0 |
 | [gitea-runner](/docker-compose/git/gitea-runner.yaml) | gitea-runner-lenovo | git | `gitea/runner` | 5.2.0 |
 | [gitea](/docker-compose/git/gitea.yaml) | server | git | `gitea/gitea` | 28.2 |
@@ -48,7 +48,7 @@ Generated from the image versions in the [docker compose files](/docker-compose/
 | [nemoir](/docker-compose/single-services/nemoir.yaml) | nemoir | single-services | `git.hogwartsnetwork.co.uk/hogwartsimages/nemoir` | sha-5944619 |
 | [oddjobs](/docker-compose/single-services/oddjobs.yaml) | odd-jobs | single-services | `git.hogwartsnetwork.co.uk/hogwartsimages/odd-jobs` | 19.10.26 |
 | [paperless](/docker-compose/single-services/paperless.yaml) | broker | single-services | `docker.io/valkey/valkey` | 9-alpine |
-| [paperless](/docker-compose/single-services/paperless.yaml) | webserver | single-services | `ghcr.io/paperless-ngx/paperless-ngx` | 3.3.4 |
+| [paperless](/docker-compose/single-services/paperless.yaml) | webserver | single-services | `ghcr.io/paperless-ngx/paperless-ngx` | 3.4.0 |
 | [paperless](/docker-compose/single-services/paperless.yaml) | gotenberg | single-services | `docker.io/gotenberg/gotenberg` | 8.38 |
 | [paperless](/docker-compose/single-services/paperless.yaml) | tika | single-services | `docker.io/apache/tika` | 3.3.3.0 |
 | [rackpad](/docker-compose/single-services/rackpad.yaml) | rackpad | single-services | `ghcr.io/kobii-git/rackpad` | 1.8.5 |
