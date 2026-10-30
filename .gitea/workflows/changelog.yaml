@@ -1,14 +1,9 @@
 name: changelog
 
 # Regenerates hosted-services/CHANGELOG.md from the compose files and commits it when it changes.
-# Commits pushed with the workflow's own token don't start workflows, so this can't loop.
 on:
-  push:
-    branches:
-      - main
-    paths:
-      - 'docker-compose/**'
-      - '.gitea/scripts/generate-changelog.sh'
+  schedule:
+    - cron: '0 12 * * *'    # 12:00 UTC daily
   workflow_dispatch:
 
 concurrency:

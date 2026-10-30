@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 # Prints hosted-services/CHANGELOG.md: one row per service, built from the image lines in docker-compose/.
-# Run by .gitea/workflows/changelog.yaml on every push to main, or by hand:
+# Run by .gitea/workflows/changelog.yaml daily at 12:00 UTC, or by hand:
 #   .gitea/scripts/generate-changelog.sh > hosted-services/CHANGELOG.md
 set -euo pipefail
 cd "$(dirname "$0")/../.."

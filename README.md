@@ -82,15 +82,15 @@ Image updates are managed by [Renovate](/renovate.json), which runs daily at 00:
 - Major version updates require approval on the dependency dashboard first
 - Immich and Vaultwarden updates are labelled `careful`
 
-Updates are then deployed following the release process in the [Docker Compose README](/docker-compose/README.md#update-deployment). The [changelog](/hosted-services/CHANGELOG.md) of live versions is regenerated from the compose files by a [Gitea Actions workflow](/.gitea/workflows/changelog.yaml) on every push to `main`
+Updates are then deployed following the release process in the [Docker Compose README](/docker-compose/README.md#update-deployment). The [changelog](/hosted-services/CHANGELOG.md) of live versions is regenerated from the compose files by a [Gitea Actions workflow](/.gitea/workflows/changelog.yaml) daily at 12:00 UTC
 
 ## Scheduled Tasks
 
-Everything runs between 00:00 and 06:00, in order: back up, then deploy, then update and reboot. Times are UK local time unless marked UTC
+Everything that can affect services runs between 00:00 and 06:00, in order: back up, then deploy, then update and reboot. The changelog runs at midday as it doesn't touch any services. All times are UTC
 
 | Task | When | Runs from |
 | --- | --- | --- |
-| [Renovate](/.gitea/workflows/renovate.yaml) | Daily 00:00 UTC | Gitea Actions |
+| [Renovate](/.gitea/workflows/renovate.yaml) | Daily 00:00 | Gitea Actions |
 | [Rustic backup](/disaster-recovery/README.md) | Daily 01:00, plus up to 15 minutes | systemd timer on every node |
 | [2AM - Auto Update](/komodo-resources/auto-update.toml) | Daily 03:00 | Komodo procedure |
 | Daily Host Update | Monday to Saturday 04:00 | Semaphore |
@@ -99,3 +99,4 @@ Everything runs between 00:00 and 06:00, in order: back up, then deploy, then up
 | [Restore test](/ansible/restore-test.yml) | First Saturday of the month, 05:00 | systemd timer on dumbledore |
 | [Rustic prune](/disaster-recovery/README.md) | Sunday 02:00 | systemd timer on dumbledore |
 | [Weekly Host Update](/ansible/patch.yml) | Sunday 04:00, in place of the daily run | Semaphore |
+| [Changelog](/.gitea/workflows/changelog.yaml) | Daily 12:00 | Gitea Actions |

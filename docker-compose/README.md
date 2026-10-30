@@ -9,7 +9,7 @@ services:
   service-name:
     image: prom/prometheus:v3.5.0
     environment:
-      TZ: Europe/London
+      TZ: UTC
       SOME_FLAG: "true"
       SOME_SECRET: ${SOME_SECRET}
     ports:
@@ -94,7 +94,7 @@ Where possible individual services should be combined into a stack instead of us
 
 ## Update Deployment
 
-Image versions are pinned in the compose files, and [Renovate](/renovate.json) opens a pull request in Gitea for each new version once it's at least 7 days old. The compose file in `main` is the record of what should be running, and the [changelog](/hosted-services/CHANGELOG.md) is regenerated from it on every push.
+Image versions are pinned in the compose files, and [Renovate](/renovate.json) opens a pull request in Gitea for each new version once it's at least 7 days old. The compose file in `main` is the record of what should be running, and the [changelog](/hosted-services/CHANGELOG.md) is regenerated from it daily at 12:00 UTC.
 
 ### Standard update
 
