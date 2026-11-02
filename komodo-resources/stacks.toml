@@ -4,6 +4,20 @@
 # Create any new Variable in Komodo before syncing a stack that references it
 
 [[stack]]
+name = "cinephage"
+[stack.config]
+swarm = "hogwarts"
+linked_repo = "HogwartsNetwork"
+run_directory = "docker-compose/media/management"
+file_paths = ["cinephage.yaml"]
+environment = """
+# Generate with: openssl rand -base64 32 (back it up, losing it loses every stored API key)
+BETTER_AUTH_SECRET=[[CINEPHAGE_BETTER_AUTH_SECRET]]
+"""
+
+##
+
+[[stack]]
 name = "freshrss"
 [stack.config]
 swarm = "hogwarts"

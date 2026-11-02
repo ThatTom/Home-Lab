@@ -19,6 +19,13 @@ executions = [
 ]
 
 [[procedure.config.stage]]
+name = "cinephage"
+enabled = true
+executions = [
+  { execution.type = "DeployStackIfChanged", execution.params.stack = "cinephage", enabled = true }
+]
+
+[[procedure.config.stage]]
 name = "gitea-mirror"
 enabled = true
 executions = [

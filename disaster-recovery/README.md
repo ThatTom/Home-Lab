@@ -66,7 +66,7 @@ Services pinned to a node only come back once that node's data is restored.
 | flitwick | Swarm manager, Traefik backup | Traefik (`traefik` label), Nemoir, Open WebUI (`ai` label) |
 | dobby | Worker | Gitea, Gitea Mirror, Immich, Jellyfin, Paperless, Vaultwarden, Grafana, Prometheus, Alertmanager, Loki, TREK |
 | winky | Worker | Spoolman, Odd Jobs, FreshRSS |
-| dobby / winky | `media` label | Radarr, Sonarr, Seerr, Spindle (whichever node they were last on) |
+| dobby / winky | `media` label | Radarr, Sonarr, Seerr, Spindle, Cinephage (whichever node they were last on) |
 | Any | | Homepage, Termix, Semaphore (data on gringotts), blackbox_exporter, Gitea runners, node_exporter, cAdvisor, Alloy, Komodo Periphery, socket-proxy |
 
 Knock-on effects to plan for:

@@ -92,7 +92,7 @@ Management IP for leaky-cauldron is `10.10.10.1`.
 |Network|Subnet|Use|
 |:--:|:--:|:--:|
 |proxy|10.200.1.0/24|Services routed through Traefik|
-|media|10.200.2.0/24|Jellyfin, Sonarr, Radarr, Seerr|
+|media|10.200.2.0/24|Jellyfin, Sonarr, Radarr, Seerr, Cinephage|
 |backend|10.200.3.0/24|Internal-only databases|
 |komodo|10.200.4.0/24|Komodo Core to Periphery|
 |ingress|10.0.0.0/24|Swarm default|

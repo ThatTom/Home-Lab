@@ -27,6 +27,11 @@
         description: Physical media collection
         icon: mdi-disc
         siteMonitor: https://spindle.hogwartsnetwork.co.uk
+    - Cinephage:
+        href: https://cinephage.hogwartsnetwork.co.uk
+        description: Films and shows in one manager
+        icon: mdi-movie-open
+        siteMonitor: https://cinephage.hogwartsnetwork.co.uk
     - Immich:
         href: https://immich.hogwartsnetwork.co.uk
         description: Photos and videos

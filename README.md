@@ -63,7 +63,7 @@ Files used for the deployment of services within the docker swarm cluster, group
 | [ai](/docker-compose/ai/) | Ollama and Open WebUI |
 | [git](/docker-compose/git/) | Gitea and the Gitea Actions runner |
 | [komodo](/docker-compose/komodo/) | Komodo Core and Periphery for container management |
-| [media](/docker-compose/media/) | Jellyfin (`consume`) and the Radarr/Sonarr/Seerr/Spindle stack (`management`) |
+| [media](/docker-compose/media/) | Jellyfin (`consume`) and the Radarr/Sonarr/Seerr/Spindle/Cinephage stack (`management`) |
 | [monitoring](/docker-compose/monitoring/) | Grafana, Prometheus and Loki |
 | [network-services](/docker-compose/network-services/) | Traefik, VoidAuth, ntfy, Termix, WGDashboard and static Traefik routes |
 | [single-services](/docker-compose/single-services/) | Standalone applications such as Vaultwarden, Immich and Paperless-ngx |

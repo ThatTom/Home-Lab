@@ -104,6 +104,7 @@ scrape_configs:
           - https://radarr.hogwartsnetwork.co.uk
           - https://sonarr.hogwartsnetwork.co.uk
           - https://spindle.hogwartsnetwork.co.uk
+          - https://cinephage.hogwartsnetwork.co.uk
           - https://immich.hogwartsnetwork.co.uk
           - https://documents.hogwartsnetwork.co.uk
           - https://wiki.hogwartsnetwork.co.uk

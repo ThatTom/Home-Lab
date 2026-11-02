@@ -1,0 +1,68 @@
+services:
+  cinephage:
+    image: ghcr.io/cinephage/cinephage:1.0.0
+    init: true
+    environment:
+      PUID: 0
+      PGID: 0
+      TZ: UTC
+      ORIGIN: https://cinephage.hogwartsnetwork.co.uk
+      BETTER_AUTH_URL: https://cinephage.hogwartsnetwork.co.uk
+      # Signs sessions and encrypts stored API keys; changing it makes them unrecoverable
+      BETTER_AUTH_SECRET: ${BETTER_AUTH_SECRET}
+    volumes:
+      - cinephage-config:/config
+      - movies:/movies
+      - shows:/shows
+      # Headless Firefox (captcha solving) needs more than the 64MB default /dev/shm;
+      # shm_size is ignored by swarm, so mount a tmpfs instead
+      - type: tmpfs
+        target: /dev/shm
+        tmpfs:
+          size: 268435456    # 256MB
+    networks:
+      - media
+      - diagon-alley
+    healthcheck:
+      test: ["CMD", "node", "-e", "fetch('http://127.0.0.1:3000/api/health').then((r)=>process.exit(r.ok?0:1)).catch(()=>process.exit(1))"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 10m    # first start downloads the Camoufox browser
+    deploy:
+      replicas: 1
+      placement:
+        constraints:
+          - node.labels.media == yes
+      restart_policy:
+        condition: on-failure
+      labels:
+        # Traefik
+        - "traefik.enable=true"
+        - "traefik.swarm.network=diagon-alley"
+        # Router
+        - "traefik.http.routers.cinephage.rule=Host(`cinephage.hogwartsnetwork.co.uk`)"
+        - "traefik.http.routers.cinephage.entrypoints=websecure"
+        - "traefik.http.routers.cinephage.tls=true"
+        - "traefik.http.routers.cinephage.tls.certresolver=cloudflare"
+        # Service
+        - "traefik.http.services.cinephage.loadbalancer.server.port=3000"
+
+volumes:
+  cinephage-config:
+    name: cinephage-config
+
+  movies:
+    name: media-movies
+    external: true    # NFS share, created on every node by ansible/swarm.yml
+
+  shows:
+    name: media-shows
+    external: true    # NFS share, created on every node by ansible/swarm.yml
+
+networks:
+  media:
+    external: true
+
+  diagon-alley:
+    external: true

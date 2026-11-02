@@ -53,7 +53,7 @@ configs:
     file: ./configs/homepage/settings.yaml
 
   homepage-services:
-    name: homepage-services-v4
+    name: homepage-services-v5
     file: ./configs/homepage/services.yaml
 
   homepage-widgets:
