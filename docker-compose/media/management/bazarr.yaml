@@ -1,0 +1,60 @@
+services:
+  bazarr:
+    image: ghcr.io/hotio/bazarr:release-v1.6.2
+    environment:
+      PUID: 0
+      PGID: 0
+      UMASK: "002"
+      TZ: UTC
+      WEBUI_PORTS: 6767/tcp
+    volumes:
+      - bazarr-config:/config
+      # Same paths as Radarr/Sonarr so Bazarr can find their files without path mappings
+      - movies:/movies
+      - shows:/shows
+    networks:
+      - media
+      - diagon-alley
+    healthcheck:
+      test: ["CMD", "curl", "-fsS", "-o", "/dev/null", "http://localhost:6767/"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 60s
+    deploy:
+      replicas: 1
+      placement:
+        constraints:
+          - node.labels.media == yes
+      restart_policy:
+        condition: on-failure
+      labels:
+        # Traefik
+        - "traefik.enable=true"
+        - "traefik.swarm.network=diagon-alley"
+        # Router
+        - "traefik.http.routers.bazarr.rule=Host(`bazarr.hogwartsnetwork.co.uk`)"
+        - "traefik.http.routers.bazarr.entrypoints=websecure"
+        - "traefik.http.routers.bazarr.tls=true"
+        - "traefik.http.routers.bazarr.tls.certresolver=cloudflare"
+        # Service
+        - "traefik.http.services.bazarr.loadbalancer.server.port=6767"
+
+volumes:
+  bazarr-config:
+    name: bazarr-config
+
+  movies:
+    name: media-movies
+    external: true    # NFS share, created on every node by ansible/swarm.yml
+
+  shows:
+    name: media-shows
+    external: true    # NFS share, created on every node by ansible/swarm.yml
+
+networks:
+  media:
+    external: true
+
+  diagon-alley:
+    external: true

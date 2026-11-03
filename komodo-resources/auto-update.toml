@@ -19,6 +19,13 @@ executions = [
 ]
 
 [[procedure.config.stage]]
+name = "bazarr"
+enabled = true
+executions = [
+  { execution.type = "DeployStackIfChanged", execution.params.stack = "bazarr", enabled = true }
+]
+
+[[procedure.config.stage]]
 name = "cinephage"
 enabled = true
 executions = [
@@ -177,6 +184,13 @@ name = "tankbook"
 enabled = true
 executions = [
   { execution.type = "DeployStackIfChanged", execution.params.stack = "tankbook", enabled = true }
+]
+
+[[procedure.config.stage]]
+name = "tdarr"
+enabled = true
+executions = [
+  { execution.type = "DeployStackIfChanged", execution.params.stack = "tdarr", enabled = true }
 ]
 
 [[procedure.config.stage]]

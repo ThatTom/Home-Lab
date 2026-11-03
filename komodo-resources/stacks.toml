@@ -4,6 +4,16 @@
 # Create any new Variable in Komodo before syncing a stack that references it
 
 [[stack]]
+name = "bazarr"
+[stack.config]
+swarm = "hogwarts"
+linked_repo = "HogwartsNetwork"
+run_directory = "docker-compose/media/management"
+file_paths = ["bazarr.yaml"]
+
+##
+
+[[stack]]
 name = "cinephage"
 [stack.config]
 swarm = "hogwarts"
@@ -421,6 +431,16 @@ DB_USER=tankbook-user
 DB_PASSWORD=[[TANKBOOK_DB_PASSWORD]]
 DATABASE_URL=postgresql://${DB_USER}:${DB_PASSWORD}@db/tankbook
 """
+
+##
+
+[[stack]]
+name = "tdarr"
+[stack.config]
+swarm = "hogwarts"
+linked_repo = "HogwartsNetwork"
+run_directory = "docker-compose/media/management"
+file_paths = ["tdarr.yaml"]
 
 ##
 

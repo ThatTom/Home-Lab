@@ -1,0 +1,81 @@
+services:
+  tdarr:
+    image: ghcr.io/haveagitgat/tdarr:3.06.00
+    environment:
+      PUID: 0
+      PGID: 0
+      UMASK_SET: "002"
+      TZ: UTC
+      serverIP: 0.0.0.0
+      serverPort: 8266
+      webUIPort: 8265
+      # Server only, transcoding is left to separate Tdarr nodes
+      internalNode: "false"
+      inContainer: "true"
+      ffmpegVersion: 7
+    volumes:
+      - tdarr-server:/app/server
+      - tdarr-configs:/app/configs
+      - tdarr-logs:/app/logs
+      - movies:/movies
+      - shows:/shows
+    networks:
+      - media
+      - diagon-alley
+    healthcheck:
+      test: ["CMD", "curl", "-fsS", "-o", "/dev/null", "http://localhost:8265/api/v2/status"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 60s
+    deploy:
+      replicas: 1
+      placement:
+        constraints:
+          - node.labels.media == yes
+      restart_policy:
+        condition: on-failure
+      labels:
+        # Traefik
+        - "traefik.enable=true"
+        - "traefik.swarm.network=diagon-alley"
+        # Router - web UI
+        - "traefik.http.routers.tdarr.rule=Host(`tdarr.hogwartsnetwork.co.uk`)"
+        - "traefik.http.routers.tdarr.entrypoints=websecure"
+        - "traefik.http.routers.tdarr.tls=true"
+        - "traefik.http.routers.tdarr.tls.certresolver=cloudflare"
+        - "traefik.http.routers.tdarr.service=tdarr"
+        # Router - server port that remote nodes connect to
+        - "traefik.http.routers.tdarr-server.rule=Host(`tdarr-server.hogwartsnetwork.co.uk`)"
+        - "traefik.http.routers.tdarr-server.entrypoints=websecure"
+        - "traefik.http.routers.tdarr-server.tls=true"
+        - "traefik.http.routers.tdarr-server.tls.certresolver=cloudflare"
+        - "traefik.http.routers.tdarr-server.service=tdarr-server"
+        # Services
+        - "traefik.http.services.tdarr.loadbalancer.server.port=8265"
+        - "traefik.http.services.tdarr-server.loadbalancer.server.port=8266"
+
+volumes:
+  tdarr-server:
+    name: tdarr-server
+
+  tdarr-configs:
+    name: tdarr-configs
+
+  tdarr-logs:
+    name: tdarr-logs
+
+  movies:
+    name: media-movies
+    external: true    # NFS share, created on every node by ansible/swarm.yml
+
+  shows:
+    name: media-shows
+    external: true    # NFS share, created on every node by ansible/swarm.yml
+
+networks:
+  media:
+    external: true
+
+  diagon-alley:
+    external: true
