@@ -17,6 +17,7 @@ Generated from the image versions in the [docker compose files](/docker-compose/
 | [core](/docker-compose/komodo/core.yaml) | core | komodo | `ghcr.io/moghtech/komodo-core` | 2 (or `COMPOSE_KOMODO_IMAGE_TAG`) |
 | [periphery](/docker-compose/komodo/periphery.yaml) | periphery | komodo | `ghcr.io/moghtech/komodo-periphery` | 2 (or `COMPOSE_KOMODO_IMAGE_TAG`) |
 | [jellyfin](/docker-compose/media/consume/jellyfin.yaml) | jellyfin | media/consume | `ghcr.io/jellyfin/jellyfin` | 10.11.11 |
+| [cinephage](/docker-compose/media/management/cinephage.yaml) | cinephage | media/management | `ghcr.io/cinephage/cinephage` | 1.0.0 |
 | [radarr](/docker-compose/media/management/radarr.yaml) | radarr | media/management | `ghcr.io/hotio/radarr` | release-6.3.0.10514 |
 | [seerr](/docker-compose/media/management/seerr.yaml) | seerr | media/management | `ghcr.io/seerr-team/seerr` | v3.5.1 |
 | [sonarr](/docker-compose/media/management/sonarr.yaml) | sonarr | media/management | `ghcr.io/hotio/sonarr` | release-4.0.19.2979 |
