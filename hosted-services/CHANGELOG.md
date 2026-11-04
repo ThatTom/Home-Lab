@@ -17,11 +17,13 @@ Generated from the image versions in the [docker compose files](/docker-compose/
 | [core](/docker-compose/komodo/core.yaml) | core | komodo | `ghcr.io/moghtech/komodo-core` | 2 (or `COMPOSE_KOMODO_IMAGE_TAG`) |
 | [periphery](/docker-compose/komodo/periphery.yaml) | periphery | komodo | `ghcr.io/moghtech/komodo-periphery` | 2 (or `COMPOSE_KOMODO_IMAGE_TAG`) |
 | [jellyfin](/docker-compose/media/consume/jellyfin.yaml) | jellyfin | media/consume | `ghcr.io/jellyfin/jellyfin` | 10.11.11 |
+| [bazarr](/docker-compose/media/management/bazarr.yaml) | bazarr | media/management | `ghcr.io/hotio/bazarr` | release-v1.6.2 |
 | [cinephage](/docker-compose/media/management/cinephage.yaml) | cinephage | media/management | `ghcr.io/cinephage/cinephage` | 1.0.0 |
 | [radarr](/docker-compose/media/management/radarr.yaml) | radarr | media/management | `ghcr.io/hotio/radarr` | release-6.3.0.10514 |
 | [seerr](/docker-compose/media/management/seerr.yaml) | seerr | media/management | `ghcr.io/seerr-team/seerr` | v3.5.1 |
 | [sonarr](/docker-compose/media/management/sonarr.yaml) | sonarr | media/management | `ghcr.io/hotio/sonarr` | release-4.0.19.2979 |
 | [spindle](/docker-compose/media/management/spindle.yaml) | spindle | media/management | `ghcr.io/thattom/spindle` | 2804e1f |
+| [tdarr](/docker-compose/media/management/tdarr.yaml) | tdarr | media/management | `ghcr.io/haveagitgat/tdarr` | 3.06.00 |
 | [grafana](/docker-compose/monitoring/grafana.yaml) | grafana | monitoring | `grafana/grafana-enterprise` | 13.2.3 |
 | [loki](/docker-compose/monitoring/loki.yaml) | loki | monitoring | `grafana/loki` | 3.7.8 |
 | [loki](/docker-compose/monitoring/loki.yaml) | alloy | monitoring | `grafana/alloy` | v1.21.2 |
