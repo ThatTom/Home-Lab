@@ -3,7 +3,7 @@ services:
     # Built and pushed by .gitea/workflows/docker-build.yml. Pin to a version
     # (e.g. :1.2.0) or commit (e.g. :sha-abc1234) rather than :latest.
     image: git.hogwartsnetwork.co.uk/hogwartsimages/nemoir:sha-5944619
-    env_file: .env
+    env_file: nemoir.env
     volumes:
       # SQLite database + cached cover images live here - back this up.
       # To use a host folder instead (e.g. ./data:/data), make it writable by

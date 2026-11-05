@@ -25,7 +25,7 @@ services:
       - broker
       - gotenberg
       - tika
-    env_file: .env
+    env_file: paperless-ngx.env
     environment:
       PAPERLESS_CONSUMER_DELETE_DUPLICATES: "true"
       PAPERLESS_CONSUMER_RECURSIVE: "true"
