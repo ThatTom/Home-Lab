@@ -7,10 +7,10 @@ Generated from the image versions in the [docker compose files](/docker-compose/
 | Stack | Service | Category | Image | Version |
 | --- | --- | --- | --- | --- |
 | [ollama](/docker-compose/ai/ollama.yaml) | ollama | ai | `ollama/ollama` | 0.35.0 |
-| [openwebui](/docker-compose/ai/openwebui.yaml) | open-webui | ai | `ghcr.io/open-webui/open-webui` | v0.12.5 |
-| [gitea-mirror](/docker-compose/git/gitea-mirror.yaml) | gitea-mirror | git | `ghcr.io/raylabshq/gitea-mirror` | v3.50.0 |
-| [gitea-runner](/docker-compose/git/gitea-runner.yaml) | gitea-runner-pi | git | `gitea/runner` | 5.2.2 |
-| [gitea-runner](/docker-compose/git/gitea-runner.yaml) | gitea-runner-lenovo | git | `gitea/runner` | 5.2.2 |
+| [openwebui](/docker-compose/ai/openwebui.yaml) | open-webui | ai | `ghcr.io/open-webui/open-webui` | v0.13.0 |
+| [gitea-mirror](/docker-compose/git/gitea-mirror.yaml) | gitea-mirror | git | `ghcr.io/raylabshq/gitea-mirror` | v3.51.1 |
+| [gitea-runner](/docker-compose/git/gitea-runner.yaml) | gitea-runner-pi | git | `gitea/runner` | 5.2.4 |
+| [gitea-runner](/docker-compose/git/gitea-runner.yaml) | gitea-runner-lenovo | git | `gitea/runner` | 5.2.4 |
 | [gitea](/docker-compose/git/gitea.yaml) | server | git | `gitea/gitea` | 28.2 |
 | [core](/docker-compose/komodo/core.yaml) | postgres | komodo | `ghcr.io/ferretdb/postgres-documentdb` | latest (untagged) |
 | [core](/docker-compose/komodo/core.yaml) | ferretdb | komodo | `ghcr.io/ferretdb/ferretdb` | latest (untagged) |
@@ -26,7 +26,7 @@ Generated from the image versions in the [docker compose files](/docker-compose/
 | [tdarr](/docker-compose/media/management/tdarr.yaml) | tdarr | media/management | `ghcr.io/haveagitgat/tdarr` | 3.06.00 |
 | [grafana](/docker-compose/monitoring/grafana.yaml) | grafana | monitoring | `grafana/grafana-enterprise` | 13.2.3 |
 | [loki](/docker-compose/monitoring/loki.yaml) | loki | monitoring | `grafana/loki` | 3.7.8 |
-| [loki](/docker-compose/monitoring/loki.yaml) | alloy | monitoring | `grafana/alloy` | v1.21.2 |
+| [loki](/docker-compose/monitoring/loki.yaml) | alloy | monitoring | `grafana/alloy` | v1.21.3 |
 | [prometheus](/docker-compose/monitoring/prometheus.yaml) | prometheus | monitoring | `prom/prometheus` | v3.15.1 |
 | [prometheus](/docker-compose/monitoring/prometheus.yaml) | alertmanager | monitoring | `prom/alertmanager` | v0.34.1 |
 | [prometheus](/docker-compose/monitoring/prometheus.yaml) | blackbox-exporter | monitoring | `prom/blackbox-exporter` | v0.29.1 |
@@ -34,9 +34,9 @@ Generated from the image versions in the [docker compose files](/docker-compose/
 | [prometheus](/docker-compose/monitoring/prometheus.yaml) | cadvisor | monitoring | `ghcr.io/google/cadvisor` | v0.60.6 |
 | [ntfy](/docker-compose/network-services/ntfy.yaml) | ntfy | network-services | `binwiederhier/ntfy` | v2.34.0 |
 | [socket-proxy](/docker-compose/network-services/socket-proxy.yaml) | socket-proxy | network-services | `tecnativa/docker-socket-proxy` | latest |
-| [termix](/docker-compose/network-services/termix.yaml) | termix | network-services | `ghcr.io/lukegus/termix` | 26.10.6 |
+| [termix](/docker-compose/network-services/termix.yaml) | termix | network-services | `ghcr.io/lukegus/termix` | 26.11.0 |
 | [traefik](/docker-compose/network-services/traefik.yaml) | traefik | network-services | `traefik` | v3.7 |
-| [voidauth](/docker-compose/network-services/voidauth.yaml) | voidauth | network-services | `voidauth/voidauth` | 1.17.0 |
+| [voidauth](/docker-compose/network-services/voidauth.yaml) | voidauth | network-services | `voidauth/voidauth` | 1.17.1 |
 | [wireguard](/docker-compose/network-services/wireguard.yaml) | wgdashboard | network-services | `ghcr.io/wgdashboard/wgdashboard` | v4.3.4 |
 | [freshrss](/docker-compose/single-services/freshrss.yaml) | freshrss | single-services | `freshrss/freshrss` | 1.30.4 |
 | [homepage](/docker-compose/single-services/homepage.yaml) | homepage | single-services | `ghcr.io/gethomepage/homepage` | v2.7.0 |
@@ -48,11 +48,11 @@ Generated from the image versions in the [docker compose files](/docker-compose/
 | [joplin](/docker-compose/single-services/joplin.yaml) | app | single-services | `joplin/server` | 3.7.3 |
 | [leafwiki](/docker-compose/single-services/leafwiki.yaml) | leafwiki | single-services | `ghcr.io/perber/leafwiki` | v0.14.2 |
 | [meshhub](/docker-compose/single-services/meshhub.yaml) | meshhub | single-services | `git.hogwartsnetwork.co.uk/hogwartsimages/meshhub` | latest (or `MESHHUB_TAG`) |
-| [nemoir](/docker-compose/single-services/nemoir.yaml) | nemoir | single-services | `git.hogwartsnetwork.co.uk/hogwartsimages/nemoir` | sha-5944619 |
+| [nemoir](/docker-compose/single-services/nemoir.yaml) | nemoir | single-services | `git.hogwartsnetwork.co.uk/hogwartsimages/nemoir` | latest |
 | [oddjobs](/docker-compose/single-services/oddjobs.yaml) | odd-jobs | single-services | `git.hogwartsnetwork.co.uk/hogwartsimages/odd-jobs` | 19.10.26 |
 | [paperless](/docker-compose/single-services/paperless.yaml) | broker | single-services | `docker.io/valkey/valkey` | 9-alpine |
-| [paperless](/docker-compose/single-services/paperless.yaml) | webserver | single-services | `ghcr.io/paperless-ngx/paperless-ngx` | 3.4.1 |
-| [paperless](/docker-compose/single-services/paperless.yaml) | gotenberg | single-services | `docker.io/gotenberg/gotenberg` | 8.38 |
+| [paperless](/docker-compose/single-services/paperless.yaml) | webserver | single-services | `ghcr.io/paperless-ngx/paperless-ngx` | 3.4.2 |
+| [paperless](/docker-compose/single-services/paperless.yaml) | gotenberg | single-services | `docker.io/gotenberg/gotenberg` | 8.39 |
 | [paperless](/docker-compose/single-services/paperless.yaml) | tika | single-services | `docker.io/apache/tika` | 3.3.3.0 |
 | [rackpad](/docker-compose/single-services/rackpad.yaml) | rackpad | single-services | `ghcr.io/kobii-git/rackpad` | 1.8.6 |
 | [semaphore](/docker-compose/single-services/semaphore.yaml) | semaphore | single-services | `semaphoreui/semaphore` | v2.19.17 |
