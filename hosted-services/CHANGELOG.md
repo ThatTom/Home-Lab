@@ -8,7 +8,7 @@ Generated from the image versions in the [docker compose files](/docker-compose/
 | --- | --- | --- | --- | --- |
 | [ollama](/docker-compose/ai/ollama.yaml) | ollama | ai | `ollama/ollama` | 0.35.0 |
 | [openwebui](/docker-compose/ai/openwebui.yaml) | open-webui | ai | `ghcr.io/open-webui/open-webui` | v0.13.0 |
-| [gitea-mirror](/docker-compose/git/gitea-mirror.yaml) | gitea-mirror | git | `ghcr.io/raylabshq/gitea-mirror` | v3.51.1 |
+| [gitea-mirror](/docker-compose/git/gitea-mirror.yaml) | gitea-mirror | git | `ghcr.io/raylabshq/gitea-mirror` | v3.51.3 |
 | [gitea-runner](/docker-compose/git/gitea-runner.yaml) | gitea-runner-pi | git | `gitea/runner` | 5.2.4 |
 | [gitea-runner](/docker-compose/git/gitea-runner.yaml) | gitea-runner-lenovo | git | `gitea/runner` | 5.2.4 |
 | [gitea](/docker-compose/git/gitea.yaml) | server | git | `gitea/gitea` | 28.2 |
@@ -28,11 +28,11 @@ Generated from the image versions in the [docker compose files](/docker-compose/
 | [loki](/docker-compose/monitoring/loki.yaml) | loki | monitoring | `grafana/loki` | 3.7.8 |
 | [loki](/docker-compose/monitoring/loki.yaml) | alloy | monitoring | `grafana/alloy` | v1.21.3 |
 | [prometheus](/docker-compose/monitoring/prometheus.yaml) | prometheus | monitoring | `prom/prometheus` | v3.15.1 |
-| [prometheus](/docker-compose/monitoring/prometheus.yaml) | alertmanager | monitoring | `prom/alertmanager` | v0.34.1 |
+| [prometheus](/docker-compose/monitoring/prometheus.yaml) | alertmanager | monitoring | `prom/alertmanager` | v0.34.2 |
 | [prometheus](/docker-compose/monitoring/prometheus.yaml) | blackbox-exporter | monitoring | `prom/blackbox-exporter` | v0.29.1 |
 | [prometheus](/docker-compose/monitoring/prometheus.yaml) | node-exporter | monitoring | `prom/node-exporter` | v1.12.1 |
 | [prometheus](/docker-compose/monitoring/prometheus.yaml) | cadvisor | monitoring | `ghcr.io/google/cadvisor` | v0.60.6 |
-| [ntfy](/docker-compose/network-services/ntfy.yaml) | ntfy | network-services | `binwiederhier/ntfy` | v2.34.0 |
+| [ntfy](/docker-compose/network-services/ntfy.yaml) | ntfy | network-services | `binwiederhier/ntfy` | v2.35.0 |
 | [socket-proxy](/docker-compose/network-services/socket-proxy.yaml) | socket-proxy | network-services | `tecnativa/docker-socket-proxy` | latest |
 | [termix](/docker-compose/network-services/termix.yaml) | termix | network-services | `ghcr.io/lukegus/termix` | 26.11.0 |
 | [traefik](/docker-compose/network-services/traefik.yaml) | traefik | network-services | `traefik` | v3.7 |
@@ -40,8 +40,8 @@ Generated from the image versions in the [docker compose files](/docker-compose/
 | [wireguard](/docker-compose/network-services/wireguard.yaml) | wgdashboard | network-services | `ghcr.io/wgdashboard/wgdashboard` | v4.3.4 |
 | [freshrss](/docker-compose/single-services/freshrss.yaml) | freshrss | single-services | `freshrss/freshrss` | 1.30.4 |
 | [homepage](/docker-compose/single-services/homepage.yaml) | homepage | single-services | `ghcr.io/gethomepage/homepage` | v2.7.0 |
-| [immich](/docker-compose/single-services/immich.yaml) | immich-server | single-services | `ghcr.io/immich-app/immich-server` | v3.3.5 |
-| [immich](/docker-compose/single-services/immich.yaml) | immich-machine-learning | single-services | `ghcr.io/immich-app/immich-machine-learning` | v3.3.5 |
+| [immich](/docker-compose/single-services/immich.yaml) | immich-server | single-services | `ghcr.io/immich-app/immich-server` | v3.3.6 |
+| [immich](/docker-compose/single-services/immich.yaml) | immich-machine-learning | single-services | `ghcr.io/immich-app/immich-machine-learning` | v3.3.6 |
 | [immich](/docker-compose/single-services/immich.yaml) | redis | single-services | `docker.io/valkey/valkey` | 9 + digest |
 | [immich](/docker-compose/single-services/immich.yaml) | database | single-services | `ghcr.io/immich-app/postgres` | 14-vectorchord0.4.3-pgvectors0.2.0 + digest |
 | [joplin](/docker-compose/single-services/joplin.yaml) | db | single-services | `postgres` | 16-alpine |
@@ -59,5 +59,5 @@ Generated from the image versions in the [docker compose files](/docker-compose/
 | [spoolman](/docker-compose/single-services/spoolman.yaml) | spoolman | single-services | `ghcr.io/donkie/spoolman` | 0.27.1 |
 | [tankbook](/docker-compose/single-services/tankbook.yaml) | db | single-services | `postgres` | 16-alpine |
 | [tankbook](/docker-compose/single-services/tankbook.yaml) | app | single-services | `ghcr.io/tankbook/tankbook-app` | 1.0.1 |
-| [trek](/docker-compose/single-services/trek.yaml) | app | single-services | `mauriceboe/trek` | 4.3.4 |
+| [trek](/docker-compose/single-services/trek.yaml) | app | single-services | `mauriceboe/trek` | 5.0.1 |
 | [vaultwarden](/docker-compose/single-services/vaultwarden.yaml) | vaultwarden | single-services | `vaultwarden/server` | 1.37.4 |
