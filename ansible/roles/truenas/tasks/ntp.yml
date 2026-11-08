@@ -1,0 +1,29 @@
+- name: Read the NTP servers
+  ansible.builtin.command:
+    argv: [midclt, call, system.ntpserver.query]
+  register: truenas_ntp
+  check_mode: false
+  changed_when: false
+
+- name: Work out what needs changing
+  ansible.builtin.set_fact:
+    truenas_ntp_add: "{{ truenas_ntp_servers | difference(truenas_ntp.stdout | from_json | map(attribute='address')) }}"
+    truenas_ntp_remove: "{{ truenas_ntp.stdout | from_json | rejectattr('address', 'in', truenas_ntp_servers) }}"
+
+- name: Show the NTP changes
+  ansible.builtin.debug:
+    msg: "Add: {{ truenas_ntp_add }}, remove: {{ truenas_ntp_remove | map(attribute='address') }}"
+  when: truenas_ntp_add or truenas_ntp_remove
+
+# Added first so there's never a moment with no server configured
+- name: Add NTP servers
+  ansible.builtin.command:
+    argv: [midclt, call, system.ntpserver.create, "{{ {'address': item} | to_json }}"]
+  loop: "{{ truenas_ntp_add }}"
+
+- name: Remove NTP servers that aren't listed
+  ansible.builtin.command:
+    argv: [midclt, call, system.ntpserver.delete, "{{ item.id }}"]
+  loop: "{{ truenas_ntp_remove }}"
+  loop_control:
+    label: "{{ item.address }}"

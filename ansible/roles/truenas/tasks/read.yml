@@ -1,0 +1,17 @@
+- name: Gather the TrueNAS facts
+  arensb.truenas.truenas_facts:
+
+- name: Read the config from the middleware
+  ansible.builtin.command:
+    argv: [midclt, call, "{{ item }}"]
+  loop: "{{ truenas_read_calls }}"
+  register: truenas_config
+  check_mode: false
+  changed_when: false
+
+- name: Show the config
+  ansible.builtin.debug:
+    msg: "{{ item.item }}: {{ item.stdout | from_json | to_nice_yaml }}"
+  loop: "{{ truenas_config.results }}"
+  loop_control:
+    label: "{{ item.item }}"

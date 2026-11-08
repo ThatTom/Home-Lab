@@ -1,0 +1,10 @@
+# Makes gringotts match inventory/group_vars/truenas.yml. Only settings set there are touched.
+# Run it as a dry run first (Semaphore: Dry Run, or --check --diff) to see the changes, which touches nothing.
+- name: Apply the NAS settings
+  hosts: truenas
+  gather_facts: false
+  roles:
+    - role: truenas
+      vars:
+        truenas_read: false
+        truenas_apply: true

@@ -34,6 +34,11 @@ all:
               ansible_host: 10.10.20.21
               swarm_node_labels:
                 media: "yes"
+    # The NAS on the Servers VLAN (20), only used by the truenas-*.yml playbooks
+    truenas:
+      hosts:
+        gringotts:
+          ansible_host: 10.10.20.30
     # Router and switches on the Management VLAN (10). There's nothing to log in to: every task is an
     # HTTPS / HTTP call made from the Ansible controller, see roles/routeros and roles/tplink_easy_smart.
     network:

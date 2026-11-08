@@ -1,0 +1,6 @@
+# Reads gringotts and changes nothing. Prints the settings to copy from into inventory/group_vars/truenas.yml.
+- name: Read the NAS
+  hosts: truenas
+  gather_facts: false
+  roles:
+    - truenas

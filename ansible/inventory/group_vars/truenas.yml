@@ -1,0 +1,5 @@
+# midclt needs root, so everything on gringotts runs with sudo
+ansible_become: true
+
+# See roles/truenas. A setting is only touched once it's set here
+truenas_timezone: UTC

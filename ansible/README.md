@@ -32,6 +32,7 @@ Secrets are never stored in the repo. They're read from environment variables, w
 | `swarm_workers` | dobby, winky | Ubuntu nodes, which use `sudo.ws` because Ansible doesn't recognise sudo-rs's password prompt |
 | `swarm` | All four nodes | What every node-wide playbook runs on |
 | `network` (`routeros`, `tplink_switches`) | leaky-cauldron; floo, portkey | Only the network-*.yml playbooks. Nothing logs in to these, every task is an HTTP call from the controller |
+| `truenas` | gringotts | Only the truenas-*.yml playbooks, see [TrueNAS](#truenas-truenas-yml) |
 
 winky is also a Swarm manager, so the cluster keeps quorum with any one manager down, but it stays out of `swarm_managers` since it doesn't run Traefik or hold the VIP.
 
@@ -60,6 +61,8 @@ Other settings in the inventory:
 | [network-backup.yml](/ansible/network-backup.yml) | Router, switches | Saves the router's export and the switches' configs to dumbledore | On a schedule, and after changes made by hand |
 | [network-apply.yml](/ansible/network-apply.yml) | Router, switches | Backs up, then makes the router match [group_vars/routeros.yml](/ansible/inventory/group_vars/routeros.yml) and the switches' ports match `tplink_ports`, see below | Dry run first, then for real |
 | [network-update-check.yml](/ansible/network-update-check.yml) | Router | Posts to the `homelab-alerts` ntfy topic while a newer RouterOS (on the router's update channel) or RouterBOARD firmware is waiting to be installed. Changes nothing | On a schedule in Semaphore |
+| [truenas-read.yml](/ansible/truenas-read.yml) | gringotts | Shows the NAS's general settings, NTP servers, NFS shares, cron jobs, snapshot and scrub tasks | Any time, it changes nothing |
+| [truenas-apply.yml](/ansible/truenas-apply.yml) | gringotts | Makes the NAS match [group_vars/truenas.yml](/ansible/inventory/group_vars/truenas.yml), see below | Dry run first, then for real |
 
 ### Automatic runs
 
@@ -95,6 +98,22 @@ A real run arms a rollback before changing anything: the router saves a backup a
 - The `www-ssl` service enabled with a certificate (`/ip service`), which the REST API uses
 - Firewall rules letting the swarm nodes (Semaphore runs on any of them) reach the router's HTTPS (input chain) and the switches' web UI on port 80 (forward chain to `10.10.10.0/24`), placed before the rules that drop other traffic to the Management VLAN
 
+### TrueNAS (truenas-*.yml)
+
+gringotts is managed by [roles/truenas](/ansible/roles/truenas/), which logs in over SSH and talks to the TrueNAS middleware with `midclt`, or the [arensb.truenas](https://arensb.github.io/truenas/) collection where it has a module. TrueNAS 26 removes the REST API, so the role doesn't use it. Both playbooks are run by hand and aren't part of site.yml.
+
+Like the router, a setting is only touched once it's set in [group_vars/truenas.yml](/ansible/inventory/group_vars/truenas.yml). Today that's `truenas_timezone` and `truenas_ntp_servers`. NFS shares, datasets and cron jobs are still changed in the TrueNAS UI. To start managing a setting:
+
+1. Run **truenas-read.yml** and copy its current value into `group_vars/truenas.yml`
+2. Run **truenas-apply.yml** as a dry run, it should report no changes
+3. From then on, change it by editing the file. A dry run shows exactly what will change
+
+**Before the first run** gringotts needs an `ansible` user, made in the TrueNAS UI (Credentials > Users), with:
+
+- The public key from [roles/base/files/ssh-keys/ansible](/ansible/roles/base/files/ssh-keys/ansible/) as its authorized key
+- Bash as its shell, and **Allow all sudo commands with no password** ticked
+- The SSH service running (System > Services)
+
 ## Roles
 
 | Role | Used by | Notes |
@@ -113,6 +132,7 @@ A real run arms a rollback before changing anything: the router saves a backup a
 | [restore_test](/ansible/roles/restore_test/) | restore-test.yml | Restores each node's latest database dumps and checks they're usable |
 | [routeros](/ansible/roles/routeros/) | network-*.yml | Reads, backs up and manages the router over its REST API. Its `routeros_resource` module makes one menu match a list of entries |
 | [tplink_easy_smart](/ansible/roles/tplink_easy_smart/) | network-*.yml | Reads, backs up and sets port settings on the switches through their web UI |
+| [truenas](/ansible/roles/truenas/) | truenas-*.yml | Reads the NAS's config and applies the settings in `group_vars/truenas.yml`, leaving everything else alone |
 
 ## Metrics and Alerts
 

@@ -1,0 +1,19 @@
+# Which parts of the role run, the truenas-*.yml playbooks turn these on and off
+truenas_read: true
+truenas_apply: false
+
+# Printed by truenas-read.yml. Each is a read-only middleware call
+truenas_read_calls:
+  - system.info
+  - system.general.config
+  - system.ntpserver.query
+  - sharing.nfs.query
+  - cronjob.query
+  - pool.snapshottask.query
+  - pool.scrub.query
+
+# Each setting is only touched once it's set, the real values live in inventory/group_vars/truenas.yml
+truenas_timezone: ""
+
+# Set this to a list of addresses to manage the NTP servers. Anything not listed is removed
+# truenas_ntp_servers: []

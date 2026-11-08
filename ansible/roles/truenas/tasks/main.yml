@@ -1,0 +1,7 @@
+- name: Read the NAS
+  ansible.builtin.include_tasks: read.yml
+  when: truenas_read
+
+- name: Apply the NAS settings
+  ansible.builtin.include_tasks: apply.yml
+  when: truenas_apply

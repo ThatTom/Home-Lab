@@ -1,0 +1,27 @@
+# The arensb.truenas collection has no module for these settings, so they're set through midclt.
+# command tasks are skipped in check mode, so each change is printed first for the dry run to show it
+- name: Read the general settings
+  ansible.builtin.command:
+    argv: [midclt, call, system.general.config]
+  register: truenas_general
+  check_mode: false
+  changed_when: false
+  when: truenas_timezone | length > 0
+
+- name: Show the timezone change
+  ansible.builtin.debug:
+    msg: "Timezone: {{ (truenas_general.stdout | from_json).timezone }} -> {{ truenas_timezone }}"
+  when:
+    - truenas_timezone | length > 0
+    - (truenas_general.stdout | from_json).timezone != truenas_timezone
+
+- name: Set the timezone
+  ansible.builtin.command:
+    argv: [midclt, call, system.general.update, "{{ {'timezone': truenas_timezone} | to_json }}"]
+  when:
+    - truenas_timezone | length > 0
+    - (truenas_general.stdout | from_json).timezone != truenas_timezone
+
+- name: Manage the NTP servers
+  ansible.builtin.include_tasks: ntp.yml
+  when: truenas_ntp_servers is defined
