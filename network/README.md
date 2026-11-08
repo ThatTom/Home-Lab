@@ -5,7 +5,7 @@
 The network is split into VLANs on `10.10.0.0/16`. The VLAN ID matches the third octet, so `10.10.20.x` is always VLAN 20.
 
 - Router - leaky-cauldron (MikroTik hEX S), bridge `HGLan`
-- Switches - floo and portkey (8-port access switches, port 8 is the tagged uplink to the router)
+- Switches - floo and portkey (8-port access switches, port 8 is the tagged uplink to the router), apparate (desk switch)
 - WAN - PPPoE
 
 Within each /24:
@@ -49,6 +49,7 @@ Within each /24:
 |leaky-cauldron|Router|All|10.10.x.1|
 |floo|Access switch|10 Management|10.10.10.2|
 |portkey|Access switch|10 Management|10.10.10.3|
+|apparate|Desk switch|10 Management|10.10.10.4|
 |traefik|Floating IP (keepalived, dumbledore / flitwick)|20 Servers|10.10.20.2|
 |dumbledore|Swarm manager|20 Servers|10.10.20.10|
 |flitwick|Swarm manager|20 Servers|10.10.20.11|

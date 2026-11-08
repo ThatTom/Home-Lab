@@ -156,6 +156,11 @@
         description: Access switch
         icon: sh-tp-link.svg
         ping: 10.10.10.3
+    - apparate:
+        href: http://10.10.10.4
+        description: Desk switch
+        icon: sh-tp-link.svg
+        ping: 10.10.10.4
 
 - Servers:
     - dumbledore:

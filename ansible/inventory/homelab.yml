@@ -56,3 +56,5 @@ all:
               tplink_host: 10.10.10.2
             portkey:
               tplink_host: 10.10.10.3
+            apparate:
+              tplink_host: 10.10.10.4

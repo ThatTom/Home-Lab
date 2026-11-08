@@ -31,7 +31,7 @@ Secrets are never stored in the repo. They're read from environment variables, w
 | `swarm_managers` | dumbledore, flitwick | Traefik's dynamic config and the keepalived VIP (`10.10.20.2`), on top of everything else |
 | `swarm_workers` | dobby, winky | Ubuntu nodes, which use `sudo.ws` because Ansible doesn't recognise sudo-rs's password prompt |
 | `swarm` | All four nodes | What every node-wide playbook runs on |
-| `network` (`routeros`, `tplink_switches`) | leaky-cauldron; floo, portkey | Only the network-*.yml playbooks. Nothing logs in to these, every task is an HTTP call from the controller |
+| `network` (`routeros`, `tplink_switches`) | leaky-cauldron; floo, portkey, apparate | Only the network-*.yml playbooks. Nothing logs in to these, every task is an HTTP call from the controller |
 | `truenas` | gringotts | Only the truenas-*.yml playbooks, see [TrueNAS](#truenas-truenas-yml) |
 
 winky is also a Swarm manager, so the cluster keeps quorum with any one manager down, but it stays out of `swarm_managers` since it doesn't run Traefik or hold the VIP.

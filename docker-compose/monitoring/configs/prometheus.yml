@@ -153,5 +153,6 @@ scrape_configs:
           - 10.10.10.1:80               # leaky-cauldron
           - 10.10.10.2:80               # floo
           - 10.10.10.3:80               # portkey
+          - 10.10.10.4:80               # apparate
           - 10.10.20.30:80              # gringotts
     relabel_configs: *blackbox_relabel
