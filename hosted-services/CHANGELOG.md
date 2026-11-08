@@ -8,14 +8,14 @@ Generated from the image versions in the [docker compose files](/docker-compose/
 | --- | --- | --- | --- | --- |
 | [ollama](/docker-compose/ai/ollama.yaml) | ollama | ai | `ollama/ollama` | 0.35.0 |
 | [openwebui](/docker-compose/ai/openwebui.yaml) | open-webui | ai | `ghcr.io/open-webui/open-webui` | v0.13.0 |
-| [gitea-mirror](/docker-compose/git/gitea-mirror.yaml) | gitea-mirror | git | `ghcr.io/raylabshq/gitea-mirror` | v3.51.3 |
+| [gitea-mirror](/docker-compose/git/gitea-mirror.yaml) | gitea-mirror | git | `ghcr.io/raylabshq/gitea-mirror` | v3.51.5 |
 | [gitea-runner](/docker-compose/git/gitea-runner.yaml) | gitea-runner-pi | git | `gitea/runner` | 5.2.4 |
 | [gitea-runner](/docker-compose/git/gitea-runner.yaml) | gitea-runner-lenovo | git | `gitea/runner` | 5.2.4 |
 | [gitea](/docker-compose/git/gitea.yaml) | server | git | `gitea/gitea` | 28.2 |
-| [core](/docker-compose/komodo/core.yaml) | postgres | komodo | `ghcr.io/ferretdb/postgres-documentdb` | latest (untagged) |
-| [core](/docker-compose/komodo/core.yaml) | ferretdb | komodo | `ghcr.io/ferretdb/ferretdb` | latest (untagged) |
-| [core](/docker-compose/komodo/core.yaml) | core | komodo | `ghcr.io/moghtech/komodo-core` | 2 (or `COMPOSE_KOMODO_IMAGE_TAG`) |
-| [periphery](/docker-compose/komodo/periphery.yaml) | periphery | komodo | `ghcr.io/moghtech/komodo-periphery` | 2 (or `COMPOSE_KOMODO_IMAGE_TAG`) |
+| [core](/docker-compose/komodo/core.yaml) | postgres | komodo | `ghcr.io/ferretdb/postgres-documentdb` | 17-0.107.0-ferretdb-2.7.0 |
+| [core](/docker-compose/komodo/core.yaml) | ferretdb | komodo | `ghcr.io/ferretdb/ferretdb` | 2.7.0 |
+| [core](/docker-compose/komodo/core.yaml) | core | komodo | `ghcr.io/moghtech/komodo-core` | 2.3.4 |
+| [periphery](/docker-compose/komodo/periphery.yaml) | periphery | komodo | `ghcr.io/moghtech/komodo-periphery` | 2.3.4 |
 | [jellyfin](/docker-compose/media/consume/jellyfin.yaml) | jellyfin | media/consume | `ghcr.io/jellyfin/jellyfin` | 10.11.11 |
 | [bazarr](/docker-compose/media/management/bazarr.yaml) | bazarr | media/management | `ghcr.io/hotio/bazarr` | release-v1.6.2 |
 | [cinephage](/docker-compose/media/management/cinephage.yaml) | cinephage | media/management | `ghcr.io/cinephage/cinephage` | 1.0.0 |
@@ -32,7 +32,7 @@ Generated from the image versions in the [docker compose files](/docker-compose/
 | [prometheus](/docker-compose/monitoring/prometheus.yaml) | blackbox-exporter | monitoring | `prom/blackbox-exporter` | v0.29.1 |
 | [prometheus](/docker-compose/monitoring/prometheus.yaml) | node-exporter | monitoring | `prom/node-exporter` | v1.12.1 |
 | [prometheus](/docker-compose/monitoring/prometheus.yaml) | cadvisor | monitoring | `ghcr.io/google/cadvisor` | v0.60.6 |
-| [ntfy](/docker-compose/network-services/ntfy.yaml) | ntfy | network-services | `binwiederhier/ntfy` | v2.35.0 |
+| [ntfy](/docker-compose/network-services/ntfy.yaml) | ntfy | network-services | `binwiederhier/ntfy` | v2.36.0 |
 | [socket-proxy](/docker-compose/network-services/socket-proxy.yaml) | socket-proxy | network-services | `tecnativa/docker-socket-proxy` | latest |
 | [termix](/docker-compose/network-services/termix.yaml) | termix | network-services | `ghcr.io/lukegus/termix` | 26.11.0 |
 | [traefik](/docker-compose/network-services/traefik.yaml) | traefik | network-services | `traefik` | v3.7 |
@@ -54,10 +54,10 @@ Generated from the image versions in the [docker compose files](/docker-compose/
 | [paperless](/docker-compose/single-services/paperless.yaml) | webserver | single-services | `ghcr.io/paperless-ngx/paperless-ngx` | 3.4.2 |
 | [paperless](/docker-compose/single-services/paperless.yaml) | gotenberg | single-services | `docker.io/gotenberg/gotenberg` | 8.39 |
 | [paperless](/docker-compose/single-services/paperless.yaml) | tika | single-services | `docker.io/apache/tika` | 3.3.3.0 |
-| [rackpad](/docker-compose/single-services/rackpad.yaml) | rackpad | single-services | `ghcr.io/kobii-git/rackpad` | 1.8.6 |
+| [rackpad](/docker-compose/single-services/rackpad.yaml) | rackpad | single-services | `ghcr.io/kobii-git/rackpad` | 1.8.7 |
 | [semaphore](/docker-compose/single-services/semaphore.yaml) | semaphore | single-services | `semaphoreui/semaphore` | v2.19.17 |
 | [spoolman](/docker-compose/single-services/spoolman.yaml) | spoolman | single-services | `ghcr.io/donkie/spoolman` | 0.27.1 |
 | [tankbook](/docker-compose/single-services/tankbook.yaml) | db | single-services | `postgres` | 16-alpine |
 | [tankbook](/docker-compose/single-services/tankbook.yaml) | app | single-services | `ghcr.io/tankbook/tankbook-app` | 1.0.1 |
-| [trek](/docker-compose/single-services/trek.yaml) | app | single-services | `mauriceboe/trek` | 5.0.1 |
+| [trek](/docker-compose/single-services/trek.yaml) | app | single-services | `mauriceboe/trek` | 5.1.0 |
 | [vaultwarden](/docker-compose/single-services/vaultwarden.yaml) | vaultwarden | single-services | `vaultwarden/server` | 1.37.4 |
