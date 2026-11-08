@@ -18,7 +18,6 @@ Generated from the image versions in the [docker compose files](/docker-compose/
 | [periphery](/docker-compose/komodo/periphery.yaml) | periphery | komodo | `ghcr.io/moghtech/komodo-periphery` | 2.3.4 |
 | [jellyfin](/docker-compose/media/consume/jellyfin.yaml) | jellyfin | media/consume | `ghcr.io/jellyfin/jellyfin` | 10.11.11 |
 | [bazarr](/docker-compose/media/management/bazarr.yaml) | bazarr | media/management | `ghcr.io/hotio/bazarr` | release-v1.6.2 |
-| [cinephage](/docker-compose/media/management/cinephage.yaml) | cinephage | media/management | `ghcr.io/cinephage/cinephage` | 1.0.0 |
 | [radarr](/docker-compose/media/management/radarr.yaml) | radarr | media/management | `ghcr.io/hotio/radarr` | release-6.3.0.10514 |
 | [seerr](/docker-compose/media/management/seerr.yaml) | seerr | media/management | `ghcr.io/seerr-team/seerr` | v3.5.1 |
 | [sonarr](/docker-compose/media/management/sonarr.yaml) | sonarr | media/management | `ghcr.io/hotio/sonarr` | release-4.0.19.2979 |
@@ -38,7 +37,6 @@ Generated from the image versions in the [docker compose files](/docker-compose/
 | [traefik](/docker-compose/network-services/traefik.yaml) | traefik | network-services | `traefik` | v3.7 |
 | [voidauth](/docker-compose/network-services/voidauth.yaml) | voidauth | network-services | `voidauth/voidauth` | 1.17.1 |
 | [wireguard](/docker-compose/network-services/wireguard.yaml) | wgdashboard | network-services | `ghcr.io/wgdashboard/wgdashboard` | v4.3.4 |
-| [freshrss](/docker-compose/single-services/freshrss.yaml) | freshrss | single-services | `freshrss/freshrss` | 1.30.4 |
 | [homepage](/docker-compose/single-services/homepage.yaml) | homepage | single-services | `ghcr.io/gethomepage/homepage` | v2.7.0 |
 | [immich](/docker-compose/single-services/immich.yaml) | immich-server | single-services | `ghcr.io/immich-app/immich-server` | v3.3.6 |
 | [immich](/docker-compose/single-services/immich.yaml) | immich-machine-learning | single-services | `ghcr.io/immich-app/immich-machine-learning` | v3.3.6 |
@@ -46,7 +44,6 @@ Generated from the image versions in the [docker compose files](/docker-compose/
 | [immich](/docker-compose/single-services/immich.yaml) | database | single-services | `ghcr.io/immich-app/postgres` | 14-vectorchord0.4.3-pgvectors0.2.0 + digest |
 | [joplin](/docker-compose/single-services/joplin.yaml) | db | single-services | `postgres` | 16-alpine |
 | [joplin](/docker-compose/single-services/joplin.yaml) | app | single-services | `joplin/server` | 3.7.3 |
-| [leafwiki](/docker-compose/single-services/leafwiki.yaml) | leafwiki | single-services | `ghcr.io/perber/leafwiki` | v0.14.2 |
 | [meshhub](/docker-compose/single-services/meshhub.yaml) | meshhub | single-services | `git.hogwartsnetwork.co.uk/hogwartsimages/meshhub` | latest (or `MESHHUB_TAG`) |
 | [nemoir](/docker-compose/single-services/nemoir.yaml) | nemoir | single-services | `git.hogwartsnetwork.co.uk/hogwartsimages/nemoir` | latest |
 | [oddjobs](/docker-compose/single-services/oddjobs.yaml) | odd-jobs | single-services | `git.hogwartsnetwork.co.uk/hogwartsimages/odd-jobs` | 19.10.26 |

@@ -26,13 +26,6 @@ executions = [
 ]
 
 [[procedure.config.stage]]
-name = "cinephage"
-enabled = true
-executions = [
-  { execution.type = "DeployStackIfChanged", execution.params.stack = "cinephage", enabled = true }
-]
-
-[[procedure.config.stage]]
 name = "gitea-mirror"
 enabled = true
 executions = [
@@ -219,13 +212,6 @@ name = "voidauth"
 enabled = true
 executions = [
   { execution.type = "DeployStackIfChanged", execution.params.stack = "voidauth", enabled = true }
-]
-
-[[procedure.config.stage]]
-name = "wiki"
-enabled = true
-executions = [
-  { execution.type = "DeployStackIfChanged", execution.params.stack = "wiki", enabled = true }
 ]
 
 [[procedure.config.stage]]

@@ -27,11 +27,6 @@
         description: Physical media collection
         icon: mdi-disc
         siteMonitor: https://spindle.hogwartsnetwork.co.uk
-    - Cinephage:
-        href: https://cinephage.hogwartsnetwork.co.uk
-        description: Films and shows in one manager
-        icon: mdi-movie-open
-        siteMonitor: https://cinephage.hogwartsnetwork.co.uk
     - Immich:
         href: https://immich.hogwartsnetwork.co.uk
         description: Photos and videos
@@ -44,26 +39,11 @@
         description: Scanned documents
         icon: sh-paperless-ngx.svg
         siteMonitor: https://documents.hogwartsnetwork.co.uk
-    - Wiki:
-        href: https://wiki.hogwartsnetwork.co.uk
-        description: LeafWiki notes
-        icon: sh-leafwiki.svg
-        siteMonitor: https://wiki.hogwartsnetwork.co.uk
     - Books:
         href: https://books.hogwartsnetwork.co.uk
         description: Nemoir reading tracker
         icon: mdi-bookshelf
         siteMonitor: https://books.hogwartsnetwork.co.uk
-    - FreshRSS:
-        href: https://rss.hogwartsnetwork.co.uk
-        description: News feeds
-        icon: sh-freshrss.svg
-        siteMonitor: https://rss.hogwartsnetwork.co.uk
-        widget:
-          type: freshrss
-          url: https://rss.hogwartsnetwork.co.uk
-          username: "{{HOMEPAGE_VAR_FRESHRSS_USERNAME}}"
-          password: "{{HOMEPAGE_VAR_FRESHRSS_API_PASSWORD}}"    # the API password, not the login one
     - Travel:
         href: https://travel.hogwartsnetwork.co.uk
         description: TREK trip planner

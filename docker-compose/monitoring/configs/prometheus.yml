@@ -104,10 +104,8 @@ scrape_configs:
           - https://radarr.hogwartsnetwork.co.uk
           - https://sonarr.hogwartsnetwork.co.uk
           - https://spindle.hogwartsnetwork.co.uk
-          - https://cinephage.hogwartsnetwork.co.uk
           - https://immich.hogwartsnetwork.co.uk
           - https://documents.hogwartsnetwork.co.uk
-          - https://wiki.hogwartsnetwork.co.uk
           - https://books.hogwartsnetwork.co.uk
           - https://travel.hogwartsnetwork.co.uk
           - https://tankbook.hogwartsnetwork.co.uk
@@ -127,7 +125,6 @@ scrape_configs:
           - https://ntfy.hogwartsnetwork.co.uk
           - https://terminal.hogwartsnetwork.co.uk
           - https://rackpad.hogwartsnetwork.co.uk
-          - https://rss.hogwartsnetwork.co.uk
           - https://dashboard.hogwartsnetwork.co.uk
       # keepalived health checks, a failure means that manager can't take the Traefik VIP.
       # node names them on the dashboard, instance is still the URL.

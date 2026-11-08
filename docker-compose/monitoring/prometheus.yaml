@@ -140,7 +140,7 @@ networks:
 
 configs:
   prometheus:
-    name: prometheus-config-v9
+    name: prometheus-config-v10
     file: ./configs/prometheus.yml
 
   alert-rules:

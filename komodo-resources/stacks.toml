@@ -14,43 +14,6 @@ file_paths = ["bazarr.yaml"]
 ##
 
 [[stack]]
-name = "cinephage"
-[stack.config]
-swarm = "hogwarts"
-linked_repo = "HogwartsNetwork"
-run_directory = "docker-compose/media/management"
-file_paths = ["cinephage.yaml"]
-env_file_path = "cinephage.env"
-environment = """
-# Generate with: openssl rand -base64 32 (back it up, losing it loses every stored API key)
-BETTER_AUTH_SECRET=[[CINEPHAGE_BETTER_AUTH_SECRET]]
-"""
-
-##
-
-[[stack]]
-name = "freshrss"
-[stack.config]
-swarm = "hogwarts"
-linked_repo = "HogwartsNetwork"
-run_directory = "docker-compose/single-services"
-file_paths = ["freshrss.yaml"]
-env_file_path = "freshrss.env"
-environment = """
-# Shared with the homepage stack for the FreshRSS widget
-FRESHRSS_USERNAME=[[FRESHRSS_USERNAME]]
-FRESHRSS_API_PASSWORD=[[FRESHRSS_API_PASSWORD]]
-
-# OIDC redirect URI registered with VoidAuth: https://rss.hogwartsnetwork.co.uk/i/oidc/
-FRESHRSS_OIDC_ISSUER=https://auth.hogwartsnetwork.co.uk/oidc
-FRESHRSS_OIDC_CLIENT_ID=qopvK5hDoX2bjEue
-FRESHRSS_OIDC_CLIENT_SECRET=[[FRESHRSS_OIDC_CLIENT_SECRET]]
-FRESHRSS_OIDC_CRYPTO_KEY=[[FRESHRSS_OIDC_CRYPTO_KEY]]
-"""
-
-##
-
-[[stack]]
 name = "gitea"
 [stack.config]
 swarm = "hogwarts"
@@ -130,10 +93,6 @@ HOMEPAGE_OIDC_ISSUER=https://auth.hogwartsnetwork.co.uk/oidc
 HOMEPAGE_OIDC_CLIENT_ID=-LIT-DVt1iTKyfMX
 HOMEPAGE_OIDC_CLIENT_SECRET=[[HOMEPAGE_OIDC_CLIENT_SECRET]]
 HOMEPAGE_OIDC_NAME="Hogwarts SSO"
-
-# FreshRSS widget, shared with the freshrss stack
-FRESHRSS_USERNAME=[[FRESHRSS_USERNAME]]
-FRESHRSS_API_PASSWORD=[[FRESHRSS_API_PASSWORD]]
 """
 
 ##
@@ -529,22 +488,6 @@ SMTP_HOST=[[SMTP_HOST]]
 SMTP_PORT=[[SMTP_PORT]]
 SMTP_USERNAME=[[SMTP_USERNAME]]
 SMTP_PASSWORD=[[SMTP_PASSWORD]]
-"""
-
-##
-
-[[stack]]
-name = "wiki"
-[stack.config]
-swarm = "hogwarts"
-linked_repo = "HogwartsNetwork"
-run_directory = "docker-compose/single-services"
-file_paths = ["leafwiki.yaml"]
-env_file_path = "wiki.env"
-environment = """
-LEAFWIKI_JWT_SECRET=[[LEAFWIKI_JWT_SECRET]]
-LEAFWIKI_ADMIN_PASSWORD=[[LEAFWIKI_ADMIN_PASSWORD]]
-LEAFWIKI_ALLOW_INSECURE=true
 """
 
 ##
