@@ -15,7 +15,7 @@
 services:
   postgres:
     # 🚨 Pin to a specific version. Updates can be breaking.
-    image: ghcr.io/ferretdb/postgres-documentdb
+    image: ghcr.io/ferretdb/postgres-documentdb:17-0.107.0-ferretdb-2.7.0
     environment:
       POSTGRES_USER: ${KOMODO_DATABASE_USERNAME}
       POSTGRES_PASSWORD: ${KOMODO_DATABASE_PASSWORD}
@@ -43,7 +43,7 @@ services:
 
   ferretdb:
     # 🚨 Pin to a specific version. Updates can be breaking.
-    image: ghcr.io/ferretdb/ferretdb
+    image: ghcr.io/ferretdb/ferretdb:2.7.0
     environment:
       FERRETDB_POSTGRESQL_URL: postgres://${KOMODO_DATABASE_USERNAME}:${KOMODO_DATABASE_PASSWORD}@postgres:5432/postgres
     volumes:
@@ -63,7 +63,7 @@ services:
         - "komodo.skip="
 
   core:
-    image: ghcr.io/moghtech/komodo-core:${COMPOSE_KOMODO_IMAGE_TAG:-2}
+    image: ghcr.io/moghtech/komodo-core:2.3.4
     init: true
     env_file: ./core.env
     environment:
