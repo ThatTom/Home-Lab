@@ -33,8 +33,9 @@ services:
       - media        # same network as sonarr/radarr — never exposed externally
       - diagon-alley  # only network traefik touches
     healthcheck:
-      # /api/health skips the login gate
-      test: ["CMD", "curl", "-fsS", "-o", "/dev/null", "http://localhost:3000/api/health"]
+      # /api/health skips the login gate. Node's fetch, since the image has no curl.
+      # 127.0.0.1 not localhost: Node resolves localhost to ::1 first.
+      test: ["CMD", "node", "-e", "fetch('http://127.0.0.1:3000/api/health').then(r => process.exit(r.ok ? 0 : 1)).catch(() => process.exit(1))"]
       interval: 30s
       timeout: 10s
       retries: 3
