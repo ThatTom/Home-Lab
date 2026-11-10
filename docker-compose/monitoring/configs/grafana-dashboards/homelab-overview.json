@@ -80,11 +80,12 @@
       "id": 4,
       "type": "stat",
       "title": "Firing alerts",
+      "description": "Alerts firing now, leaving out the Watchdog heartbeat, which always fires.",
       "gridPos": { "x": 12, "y": 0, "w": 4, "h": 4 },
       "datasource": { "type": "prometheus", "uid": "prometheus" },
       "targets": [
         { "refId": "A", "datasource": { "type": "prometheus", "uid": "prometheus" }, "instant": true, "range": false,
-          "expr": "count(ALERTS{alertstate=\"firing\"}) or vector(0)" }
+          "expr": "count(ALERTS{alertstate=\"firing\", alertname!=\"Watchdog\"}) or vector(0)" }
       ],
       "fieldConfig": {
         "defaults": {
