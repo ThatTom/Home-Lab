@@ -47,7 +47,7 @@ Other settings in the inventory:
 | Playbook | Runs on | What it does | When |
 | --- | --- | --- | --- |
 | [site.yml](/ansible/site.yml) | All | Everything below except patch.yml, in order | Rebuilding a node, or to check every node matches the repo |
-| [bootstrap.yml](/ansible/bootstrap.yml) | All | Creates the `tomt` and `ansible` users and their keys, turns off password SSH, keeps time sync running and caps the journal size, then disables the `harry` bootstrap user | New nodes, and after changing users, keys or the base role |
+| [bootstrap.yml](/ansible/bootstrap.yml) | All | Creates the `tomt` and `ansible` users and their keys, turns off password SSH, keeps time sync running, keeps the journal on disk across reboots and caps its size, then disables the `harry` bootstrap user | New nodes, and after changing users, keys or the base role |
 | [docker.yml](/ansible/docker.yml) | All, one at a time | Installs Docker on nodes without it, merges log rotation into `daemon.json` and sets up a weekly prune of old images, build cache and stopped containers | New nodes, and after changing the Docker settings |
 | [updates.yml](/ansible/updates.yml) | All | Daily unattended security updates (never rebooting or upgrading Docker) and the reboot-required metric | New nodes |
 | [swarm.yml](/ansible/swarm.yml) | Managers, then all | Overlay networks, node labels, Swarm secrets, and the NFS volumes on every node | After changing any of those in the inventory |
@@ -118,7 +118,7 @@ Like the router, a setting is only touched once it's set in [group_vars/truenas.
 
 | Role | Used by | Notes |
 | --- | --- | --- |
-| [base](/ansible/roles/base/) | bootstrap.yml | Users, SSH keys, sudo, sshd settings, time sync and the journal size limit. Refuses to run if a user has no public key, to avoid a lockout |
+| [base](/ansible/roles/base/) | bootstrap.yml | Users, SSH keys, sudo, sshd settings, time sync, and a persistent journal with a size limit. Refuses to run if a user has no public key, to avoid a lockout |
 | [retire_users](/ansible/roles/retire_users/) | bootstrap.yml | Disables the bootstrap user once the `ansible` login is proven to work |
 | [docker_engine](/ansible/roles/docker_engine/) | docker.yml | Docker install, `daemon.json` settings (merged, so settings added by hand are kept) and the prune timer |
 | [updates](/ansible/roles/updates/) | updates.yml, patch.yml | unattended-upgrades and the `node_reboot_required` metric |

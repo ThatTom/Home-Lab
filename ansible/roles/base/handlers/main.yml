@@ -7,3 +7,8 @@
   ansible.builtin.systemd:
     name: systemd-journald
     state: restarted
+
+# Moves the current boot's logs from memory to /var/log/journal, runs after the restart above
+- name: Flush the journal to disk
+  ansible.builtin.command: journalctl --flush
+  changed_when: true

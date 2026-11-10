@@ -88,14 +88,25 @@
     group: root
     mode: "0755"
 
-- name: Cap the size of the systemd journal
+# Keep the journal on disk so it survives reboots, and cap its size. Raspberry Pi OS ships
+# 40-rpi-volatile-storage.conf to keep it in memory, so this file is numbered to be read after it.
+- name: Keep the systemd journal on disk and cap its size
   ansible.builtin.copy:
     content: |
       # Managed by Ansible (roles/base)
       [Journal]
+      Storage=persistent
       SystemMaxUse={{ base_journal_max_use }}
-    dest: /etc/systemd/journald.conf.d/10-homelab.conf
+    dest: /etc/systemd/journald.conf.d/90-homelab.conf
     owner: root
     group: root
     mode: "0644"
+  notify:
+    - Restart journald
+    - Flush the journal to disk
+
+- name: Remove the old journald drop-in, replaced by 90-homelab.conf
+  ansible.builtin.file:
+    path: /etc/systemd/journald.conf.d/10-homelab.conf
+    state: absent
   notify: Restart journald
