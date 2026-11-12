@@ -1,6 +1,6 @@
 services:
   gitea-mirror:
-    image: ghcr.io/raylabshq/gitea-mirror:v3.51.5
+    image: ghcr.io/raylabshq/gitea-mirror:v3.51.7
     environment:
       TZ: UTC
       NODE_ENV: production
