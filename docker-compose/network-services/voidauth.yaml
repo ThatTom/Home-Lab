@@ -1,6 +1,6 @@
 services:
   voidauth:
-    image: voidauth/voidauth:1.17.1
+    image: voidauth/voidauth:1.18.0
     environment:
       # Required environment variables
       # See https://voidauth.app/#/Getting-Started?id=environment-variables for a list of possible environment variables
