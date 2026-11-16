@@ -23,12 +23,12 @@ Within each /24:
 |1|Default|192.168.100.0/24|192.168.100.1|Legacy flat network, retired once migration is complete|
 |10|Management|10.10.10.0/24|10.10.10.1|Router and switch management|
 |20|Servers|10.10.20.0/24|10.10.20.1|Swarm nodes, NAS, Home Assistant|
-|30|Trusted|10.10.30.0/24|10.10.30.1|Personal laptops, phones, desktops|
-|40|IoT|10.10.40.0/24|10.10.40.1|Smart devices, printer|
-|50|Media|10.10.50.0/24|10.10.50.1|TVs, streaming devices, speakers|
-|60|Guest|10.10.60.0/24|10.10.60.1|Visitors, internet only|
+|30 (Hogwarts)|Trusted|10.10.30.0/24|10.10.30.1|Personal laptops, phones, desktops|
+|40 (Owlery)|IoT|10.10.40.0/24|10.10.40.1|Smart devices, printer|
+|50 (Pensieve)|Media|10.10.50.0/24|10.10.50.1|TVs, streaming devices, speakers|
+|60 (Hogsmeade)|Guest|10.10.60.0/24|10.10.60.1|Visitors, internet only|
 |70|Ceph|10.10.70.0/24|None|Ceph cluster traffic, not routed|
-|80|Work|10.10.80.0/24|10.10.80.1|Work laptop and phone, internet only|
+|80 (Ministry)|Work|10.10.80.0/24|10.10.80.1|Work laptop and phone, internet only|
 |99|WireGuard|10.10.99.0/24|10.10.99.1|Remote access VPN clients|
 
 > If the work VPN overlaps `10.10.0.0/16`, move Work to `192.168.80.0/24`.
@@ -50,6 +50,7 @@ Within each /24:
 |floo|Access switch|10 Management|10.10.10.2|
 |portkey|Access switch|10 Management|10.10.10.3|
 |apparate|Desk switch|10 Management|10.10.10.4|
+|ap-1|WiFi access point (ASUS RT-AC85P, OpenWrt)|10 Management|10.10.10.5|
 |traefik|Floating IP (keepalived, dumbledore / flitwick)|20 Servers|10.10.20.2|
 |dumbledore|Swarm manager|20 Servers|10.10.20.10|
 |flitwick|Swarm manager|20 Servers|10.10.20.11|
