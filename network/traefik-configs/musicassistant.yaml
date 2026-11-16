@@ -1,0 +1,16 @@
+http:
+  routers:
+    musicassistant:
+      rule: "Host(`musicassistant.hogwartsnetwork.co.uk`)"
+      entryPoints:
+        - websecure
+      service: musicassistant
+      tls:
+        certResolver: cloudflare
+
+  services:
+    musicassistant:
+      loadBalancer:
+        servers:
+          # Music Assistant runs as a Home Assistant add-on on burrow, web UI on 8095
+          - url: "http://10.10.20.40:8095"
