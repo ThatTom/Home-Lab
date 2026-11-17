@@ -27,10 +27,10 @@ Generated from the image versions in the [docker compose files](/docker-compose/
 | [loki](/docker-compose/monitoring/loki.yaml) | loki | monitoring | `grafana/loki` | 3.7.8 |
 | [loki](/docker-compose/monitoring/loki.yaml) | alloy | monitoring | `grafana/alloy` | v1.21.3 |
 | [prometheus](/docker-compose/monitoring/prometheus.yaml) | prometheus | monitoring | `prom/prometheus` | v3.16.0 |
-| [prometheus](/docker-compose/monitoring/prometheus.yaml) | alertmanager | monitoring | `prom/alertmanager` | v0.34.2 |
+| [prometheus](/docker-compose/monitoring/prometheus.yaml) | alertmanager | monitoring | `prom/alertmanager` | v0.35.0 |
 | [prometheus](/docker-compose/monitoring/prometheus.yaml) | blackbox-exporter | monitoring | `prom/blackbox-exporter` | v0.29.1 |
 | [prometheus](/docker-compose/monitoring/prometheus.yaml) | node-exporter | monitoring | `prom/node-exporter` | v1.12.1 |
-| [prometheus](/docker-compose/monitoring/prometheus.yaml) | cadvisor | monitoring | `ghcr.io/google/cadvisor` | v0.60.6 |
+| [prometheus](/docker-compose/monitoring/prometheus.yaml) | cadvisor | monitoring | `ghcr.io/google/cadvisor` | v0.61.0 |
 | [ntfy](/docker-compose/network-services/ntfy.yaml) | ntfy | network-services | `binwiederhier/ntfy` | v2.37.2 |
 | [socket-proxy](/docker-compose/network-services/socket-proxy.yaml) | socket-proxy | network-services | `tecnativa/docker-socket-proxy` | latest |
 | [termix](/docker-compose/network-services/termix.yaml) | termix | network-services | `ghcr.io/lukegus/termix` | 26.11.1 |
@@ -49,12 +49,12 @@ Generated from the image versions in the [docker compose files](/docker-compose/
 | [oddjobs](/docker-compose/single-services/oddjobs.yaml) | odd-jobs | single-services | `git.hogwartsnetwork.co.uk/hogwartsimages/odd-jobs` | 19.10.26 |
 | [paperless](/docker-compose/single-services/paperless.yaml) | broker | single-services | `docker.io/valkey/valkey` | 9-alpine |
 | [paperless](/docker-compose/single-services/paperless.yaml) | webserver | single-services | `ghcr.io/paperless-ngx/paperless-ngx` | 3.4.2 |
-| [paperless](/docker-compose/single-services/paperless.yaml) | gotenberg | single-services | `docker.io/gotenberg/gotenberg` | 9.2 |
+| [paperless](/docker-compose/single-services/paperless.yaml) | gotenberg | single-services | `docker.io/gotenberg/gotenberg` | 9.3 |
 | [paperless](/docker-compose/single-services/paperless.yaml) | tika | single-services | `docker.io/apache/tika` | 3.3.3.0 |
 | [rackpad](/docker-compose/single-services/rackpad.yaml) | rackpad | single-services | `ghcr.io/kobii-git/rackpad` | 1.8.7 |
 | [semaphore](/docker-compose/single-services/semaphore.yaml) | semaphore | single-services | `semaphoreui/semaphore` | v2.19.17 |
 | [spoolman](/docker-compose/single-services/spoolman.yaml) | spoolman | single-services | `ghcr.io/donkie/spoolman` | 0.27.1 |
 | [tankbook](/docker-compose/single-services/tankbook.yaml) | db | single-services | `postgres` | 16-alpine |
 | [tankbook](/docker-compose/single-services/tankbook.yaml) | app | single-services | `ghcr.io/tankbook/tankbook-app` | 1.0.1 |
-| [trek](/docker-compose/single-services/trek.yaml) | app | single-services | `mauriceboe/trek` | 5.1.1 |
+| [trek](/docker-compose/single-services/trek.yaml) | app | single-services | `mauriceboe/trek` | 5.1.2 |
 | [vaultwarden](/docker-compose/single-services/vaultwarden.yaml) | vaultwarden | single-services | `vaultwarden/server` | 1.37.5 |
