@@ -40,7 +40,7 @@ Set up by [ansible/backups.yml](/ansible/backups.yml) and the [rustic role](/ans
 | Stack `.env` files (Nemoir, Paperless, Rackpad) | Wherever the stacks are deployed from | Keep copies, or move the values into Komodo |
 | Paperless export / consume folders | `/home/tomt/export`, `/mnt/consume` on dobby | Not backed up |
 | Router and switch configs | `/var/backups/rustic/network` on dumbledore, from [network-backup.yml](/ansible/network-backup.yml) | In the nightly backup once network-backup.yml runs. Run it after any change made by hand |
-| Non-Swarm services (Ollama, meshhub) | Their own hosts | Volumes are only covered if the host runs the Rustic role. WGDashboard runs on flitwick, so its volumes are backed up |
+| Non-Swarm services (Ollama, meshhub) | Their own hosts | Volumes are only covered if the host runs the Rustic role |
 | Traefik certificates | `traefik-letsencrypt` volume on each manager | Not needed, re-issued automatically |
 
 ## Break-Glass Kit
@@ -63,7 +63,7 @@ Services pinned to a node only come back once that node's data is restored.
 | Node | Role | Pinned services |
 | --- | --- | --- |
 | dumbledore | Swarm manager, Traefik VIP holder, Rustic prune, restore test | Traefik (`traefik` label), Komodo Core (Postgres, FerretDB), VoidAuth (SSO), ntfy, Rackpad, Tankbook |
-| flitwick | Swarm manager, Traefik backup | Traefik (`traefik` label), Nemoir, Open WebUI (`ai` label) |
+| flitwick | Swarm manager, Traefik backup | Traefik (`traefik` label), Nemoir, Open WebUI (`ai` label), WGDashboard (pinned, holds the WireGuard keys) |
 | dobby | Worker | Gitea, Gitea Mirror, Immich, Jellyfin, Paperless, Vaultwarden, Grafana, Prometheus, Alertmanager, Loki, TREK |
 | winky | Worker | Spoolman, Odd Jobs |
 | dobby / winky | `media` label | Radarr, Sonarr, Seerr, Spindle (whichever node they were last on) |

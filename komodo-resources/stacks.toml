@@ -495,7 +495,7 @@ SMTP_PASSWORD=[[SMTP_PASSWORD]]
 [[stack]]
 name = "wireguard"
 [stack.config]
-server = "dumbledore"
+swarm = "hogwarts"
 linked_repo = "HogwartsNetwork"
 run_directory = "docker-compose/network-services"
 file_paths = ["wireguard.yaml"]

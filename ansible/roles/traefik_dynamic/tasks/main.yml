@@ -16,3 +16,19 @@
   loop: "{{ query('ansible.builtin.fileglob', traefik_dynamic_src ~ '/*.yaml') }}"
   loop_control:
     label: "{{ item | basename }}"
+
+- name: Find dynamic config files on the node
+  ansible.builtin.find:
+    paths: "{{ traefik_dynamic_dir }}"
+    patterns: "*.yaml"
+  register: traefik_dynamic_existing
+
+# Routes deleted from the repo would otherwise stay live in Traefik
+- name: Remove dynamic config files that are no longer in the repo
+  ansible.builtin.file:
+    path: "{{ item.path }}"
+    state: absent
+  loop: "{{ traefik_dynamic_existing.files }}"
+  loop_control:
+    label: "{{ item.path | basename }}"
+  when: (item.path | basename) not in (query('ansible.builtin.fileglob', traefik_dynamic_src ~ '/*.yaml') | map('basename') | list)
