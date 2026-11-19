@@ -100,7 +100,7 @@ services:
   # One per node on the host network, per-container CPU and memory for the service panels.
   # Only the labels naming the stack and service are kept, and only CPU and memory are collected.
   cadvisor:
-    image: ghcr.io/google/cadvisor:v0.61.0
+    image: ghcr.io/google/cadvisor:v0.61.1
     command:
       - "--port=9338"
       - "--docker_only=true"
