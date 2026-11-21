@@ -1,6 +1,6 @@
 services:
   traefik:
-    image: traefik:v3.7
+    image: traefik:v3.7.17
     hostname: traefik.hogwarts
     command:
       # Docker provider
