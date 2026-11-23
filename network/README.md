@@ -63,6 +63,8 @@ Within each /24:
 |ollivander|3D printer|40 IoT|10.10.40.10|
 |sonorus|Office speaker|50 Media|10.10.50.10|
 |howler|Office speaker|50 Media|10.10.50.11|
+|firetv-living-room|Fire TV Stick|50 Media|10.10.50.12|
+|firetv-bedroom|Fire TV Stick|50 Media|10.10.50.13|
 |dobby|Ceph interface|70 Ceph|10.10.70.20|
 |winky|Ceph interface|70 Ceph|10.10.70.21|
 |tom-phone|WireGuard peer|99 WireGuard|10.10.99.2|
