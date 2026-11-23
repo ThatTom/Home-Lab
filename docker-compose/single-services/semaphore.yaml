@@ -24,9 +24,9 @@ services:
           }
         }
     volumes:
-      # Database and config on the NAS so Semaphore can run on any node, repo clones stay local
-      - semaphore-data:/var/lib/semaphore:nocopy
-      - semaphore-config:/etc/semaphore:nocopy
+      # Database and config.json (holds the key its stored secrets are encrypted with) on winky's local disk
+      - semaphore-data-local:/var/lib/semaphore
+      - semaphore-config-local:/etc/semaphore
       - semaphore_tmp:/tmp/semaphore
     networks:
       - diagon-alley
@@ -39,6 +39,10 @@ services:
     deploy:
       # Never more than one copy, SQLite can only be opened by one Semaphore at a time
       replicas: 1
+      placement:
+        constraints:
+          # Data is on winky's local disk (backed up by Rustic)
+          - node.hostname == winky
       restart_policy:
         condition: on-failure
       labels:
@@ -54,13 +58,12 @@ services:
         - "traefik.http.services.semaphore-api.loadbalancer.server.port=3000"
 
 volumes:
-  semaphore-data:
-    name: semaphore-data
-    external: true    # NFS share, created on every node by ansible/swarm.yml
+  # Local, not the old semaphore-data/semaphore-config NFS volumes, which still exist on every node under those names
+  semaphore-data-local:
+    name: semaphore-data-local
 
-  semaphore-config:
-    name: semaphore-config
-    external: true    # NFS share, created on every node by ansible/swarm.yml
+  semaphore-config-local:
+    name: semaphore-config-local
 
   semaphore_tmp:
 

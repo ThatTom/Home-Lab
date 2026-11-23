@@ -74,7 +74,7 @@ A [second workflow](/.gitea/workflows/komodo.yaml) does the same for the komodo 
 
 Each node in turn is checked against the rest of the cluster, drained, upgraded, rebooted if it needs it, and made active again once the Swarm sees it as ready. The run stops at the first failure and leaves that node drained to look at. Services pinned to a node are down while it's drained.
 
-Draining the node Semaphore is running on would stop the run halfway, so that node is skipped. Drain it by hand first so Semaphore moves elsewhere, or run the playbook from another machine with `-e os_patch_skip_controller=false`. docker.yml does the same and skips restarting Docker on Semaphore's node, pass `-e docker_skip_controller=false` to restart it from another machine.
+Draining the node Semaphore is running on would stop the run halfway, so that node (winky, where Semaphore is pinned) is skipped. Run the playbook for it from another machine with `-e os_patch_skip_controller=false`. docker.yml does the same and skips restarting Docker on Semaphore's node, pass `-e docker_skip_controller=false` to restart it from another machine.
 
 ### Network devices (network-*.yml)
 

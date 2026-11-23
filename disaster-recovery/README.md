@@ -28,13 +28,13 @@ Set up by [ansible/backups.yml](/ansible/backups.yml) and the [rustic role](/ans
   - Raw Postgres data directories (the dumps replace them)
   - Cache volumes (`*cache*`) and Semaphore's temp volume
   - Loki's log storage (`loki-data`), logs start again from empty after a restore
-  - NFS volumes (media, Termix, Semaphore), which live on gringotts
+  - NFS volumes (media), which live on gringotts
 
 ### Not covered by these backups
 
 | Item | Where it is | Risk |
 | --- | --- | --- |
-| Media, Termix and Semaphore data | gringotts NFS shares | Needs the NAS's own backup/redundancy |
+| Media | gringotts NFS shares | Needs the NAS's own backup/redundancy |
 | Komodo `core.env` / `periphery.env` | `~/komodo` on dumbledore | Not backed up, keep a copy in the break-glass kit |
 | Komodo backups path (`COMPOSE_KOMODO_BACKUPS_PATH`) | Host folder on dumbledore | Not backed up |
 | Stack `.env` files (Nemoir, Paperless, Rackpad) | Wherever the stacks are deployed from | Keep copies, or move the values into Komodo |
@@ -65,15 +65,15 @@ Services pinned to a node only come back once that node's data is restored.
 | dumbledore | Swarm manager, Traefik VIP holder, Rustic prune, restore test | Traefik (`traefik` label), Komodo Core (Postgres, FerretDB), VoidAuth (SSO), ntfy, Rackpad, Tankbook |
 | flitwick | Swarm manager, Traefik backup | Traefik (`traefik` label), Nemoir, Open WebUI (`ai` label), WGDashboard (pinned, holds the WireGuard keys) |
 | dobby | Worker | Gitea, Gitea Mirror, Immich, Jellyfin, Paperless, Vaultwarden, Grafana, Prometheus, Alertmanager, Loki, TREK |
-| winky | Worker | Spoolman, Odd Jobs |
+| winky | Worker | Spoolman, Odd Jobs, Termix, Semaphore |
 | dobby / winky | `media` label | Radarr, Sonarr, Seerr, Spindle (whichever node they were last on) |
-| Any | | Homepage, Termix, Semaphore (data on gringotts), blackbox_exporter, Gitea runners, node_exporter, cAdvisor, Alloy, Komodo Periphery, socket-proxy |
+| Any | | Homepage, blackbox_exporter, Gitea runners, node_exporter, cAdvisor, Alloy, Komodo Periphery, socket-proxy |
 
 Knock-on effects to plan for:
 
 - **dumbledore down** - SSO (VoidAuth) and Komodo are unavailable, so log in with local accounts where services have them
 - **dobby down** - Gitea is unavailable, so Semaphore and Komodo cannot pull the repo. Use your local clone (see [Running Ansible Without Semaphore](#running-ansible-without-semaphore)). Prometheus and Alertmanager also run there, so no alerts are sent while it is down. healthchecks.io emails you when their Watchdog heartbeat stops arriving
-- **gringotts down** - Semaphore and Termix are unavailable (their data is on the NAS), run Ansible from another machine
+- **winky down** - Semaphore and Termix are unavailable (their data is on winky), run Ansible from another machine and SSH in directly
 
 ## Recovering a Single Node
 
@@ -280,5 +280,5 @@ Every few months, by hand:
 
 - **Security updates** are installed daily by unattended-upgrades ([updates.yml](/ansible/updates.yml)), which never reboots and never upgrades Docker
 - **Everything else** is installed by [patch.yml](/ansible/patch.yml), one node at a time: drain, upgrade, reboot if needed, wait for the node to rejoin, make it active again. It stops at the first failure and leaves that node drained to look at. Services pinned to a node are down while it's drained
-- **The node running Semaphore** is skipped by a run from Semaphore, since draining it would stop the run. Either drain that node by hand first (`docker node update --availability drain <node>`, Semaphore moves to another node, then make it active again) and run patch.yml again, or patch it from another machine ([without Semaphore](#running-ansible-without-semaphore)) with `patch.yml --limit <node> -e os_patch_skip_controller=false`
+- **The node running Semaphore** is skipped by a run from Semaphore, since draining it would stop the run. Semaphore is pinned to winky, so it can't move elsewhere: patch winky from another machine ([without Semaphore](#running-ansible-without-semaphore)) with `patch.yml --limit winky -e os_patch_skip_controller=false`
 - `RebootRequired` alerts when a node has needed a reboot for over 8 days

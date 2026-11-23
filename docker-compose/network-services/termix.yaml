@@ -4,11 +4,15 @@ services:
     environment:
       TZ: UTC
     volumes:
-      - termix-data:/app/data:nocopy
+      - termix-local:/app/data
     networks:
       - diagon-alley
     deploy:
       replicas: 1
+      placement:
+        constraints:
+          # Data is on winky's local disk (backed up by Rustic)
+          - node.hostname == winky
       restart_policy:
         condition: on-failure
       labels:
@@ -24,9 +28,10 @@ services:
         - "traefik.http.services.termix.loadbalancer.server.port=8080"
 
 volumes:
-  termix-data:
-    name: termix-data
-    external: true    # NFS share, created on every node by ansible/swarm.yml
+  # Local, not the old termix-data NFS volume, which still exists on every node under that name.
+  # Its plugin sandbox writes files as other users, which the NFS share refuses.
+  termix-local:
+    name: termix-local
 
 networks:
   diagon-alley:
