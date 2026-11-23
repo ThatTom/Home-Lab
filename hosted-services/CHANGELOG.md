@@ -16,13 +16,13 @@ Generated from the image versions in the [docker compose files](/docker-compose/
 | [core](/docker-compose/komodo/core.yaml) | ferretdb | komodo | `ghcr.io/ferretdb/ferretdb` | 2.7.0 |
 | [core](/docker-compose/komodo/core.yaml) | core | komodo | `ghcr.io/moghtech/komodo-core` | 2.3.4 |
 | [periphery](/docker-compose/komodo/periphery.yaml) | periphery | komodo | `ghcr.io/moghtech/komodo-periphery` | 2.3.4 |
-| [jellyfin](/docker-compose/media/consume/jellyfin.yaml) | jellyfin | media/consume | `ghcr.io/jellyfin/jellyfin` | 10.11.11 |
+| [jellyfin](/docker-compose/media/consume/jellyfin.yaml) | jellyfin | media/consume | `ghcr.io/jellyfin/jellyfin` | 12.4 |
 | [bazarr](/docker-compose/media/management/bazarr.yaml) | bazarr | media/management | `ghcr.io/hotio/bazarr` | release-v1.6.2 |
 | [radarr](/docker-compose/media/management/radarr.yaml) | radarr | media/management | `ghcr.io/hotio/radarr` | release-6.3.0.10514 |
 | [seerr](/docker-compose/media/management/seerr.yaml) | seerr | media/management | `ghcr.io/seerr-team/seerr` | v3.5.2 |
 | [sonarr](/docker-compose/media/management/sonarr.yaml) | sonarr | media/management | `ghcr.io/hotio/sonarr` | release-4.0.19.2979 |
 | [spindle](/docker-compose/media/management/spindle.yaml) | spindle | media/management | `ghcr.io/thattom/spindle` | 2804e1f |
-| [tdarr](/docker-compose/media/management/tdarr.yaml) | tdarr | media/management | `ghcr.io/haveagitgat/tdarr` | 3.08.00 |
+| [tdarr](/docker-compose/media/management/tdarr.yaml) | tdarr | media/management | `ghcr.io/haveagitgat/tdarr` | 3.09.00 |
 | [grafana](/docker-compose/monitoring/grafana.yaml) | grafana | monitoring | `grafana/grafana-enterprise` | 13.2.3 |
 | [loki](/docker-compose/monitoring/loki.yaml) | loki | monitoring | `grafana/loki` | 3.7.8 |
 | [loki](/docker-compose/monitoring/loki.yaml) | alloy | monitoring | `grafana/alloy` | v1.22.0 |
@@ -31,15 +31,15 @@ Generated from the image versions in the [docker compose files](/docker-compose/
 | [prometheus](/docker-compose/monitoring/prometheus.yaml) | blackbox-exporter | monitoring | `prom/blackbox-exporter` | v0.29.1 |
 | [prometheus](/docker-compose/monitoring/prometheus.yaml) | node-exporter | monitoring | `prom/node-exporter` | v1.12.1 |
 | [prometheus](/docker-compose/monitoring/prometheus.yaml) | cadvisor | monitoring | `ghcr.io/google/cadvisor` | v0.61.1 |
-| [ntfy](/docker-compose/network-services/ntfy.yaml) | ntfy | network-services | `binwiederhier/ntfy` | v2.37.2 |
+| [ntfy](/docker-compose/network-services/ntfy.yaml) | ntfy | network-services | `binwiederhier/ntfy` | v2.38.0 |
 | [socket-proxy](/docker-compose/network-services/socket-proxy.yaml) | socket-proxy | network-services | `tecnativa/docker-socket-proxy` | latest |
-| [termix](/docker-compose/network-services/termix.yaml) | termix | network-services | `ghcr.io/lukegus/termix` | 26.11.2 |
+| [termix](/docker-compose/network-services/termix.yaml) | termix | network-services | `ghcr.io/lukegus/termix` | 26.11.3 |
 | [traefik](/docker-compose/network-services/traefik.yaml) | traefik | network-services | `traefik` | v3.7.17 |
 | [voidauth](/docker-compose/network-services/voidauth.yaml) | voidauth | network-services | `voidauth/voidauth` | 1.19.1 |
 | [wireguard](/docker-compose/network-services/wireguard.yaml) | wgdashboard | network-services | `ghcr.io/wgdashboard/wgdashboard` | v4.3.4 |
 | [homepage](/docker-compose/single-services/homepage.yaml) | homepage | single-services | `ghcr.io/gethomepage/homepage` | v2.8.0 |
 | [immich](/docker-compose/single-services/immich.yaml) | immich-server | single-services | `ghcr.io/immich-app/immich-server` | v3.4.2 |
-| [immich](/docker-compose/single-services/immich.yaml) | immich-machine-learning | single-services | `ghcr.io/immich-app/immich-machine-learning` | v3.4.1 |
+| [immich](/docker-compose/single-services/immich.yaml) | immich-machine-learning | single-services | `ghcr.io/immich-app/immich-machine-learning` | v3.4.2 |
 | [immich](/docker-compose/single-services/immich.yaml) | redis | single-services | `docker.io/valkey/valkey` | 9 + digest |
 | [immich](/docker-compose/single-services/immich.yaml) | database | single-services | `ghcr.io/immich-app/postgres` | 14-vectorchord0.4.3-pgvectors0.2.0 + digest |
 | [joplin](/docker-compose/single-services/joplin.yaml) | db | single-services | `postgres` | 16-alpine |
@@ -49,7 +49,7 @@ Generated from the image versions in the [docker compose files](/docker-compose/
 | [oddjobs](/docker-compose/single-services/oddjobs.yaml) | odd-jobs | single-services | `git.hogwartsnetwork.co.uk/hogwartsimages/odd-jobs` | 19.10.26 |
 | [paperless](/docker-compose/single-services/paperless.yaml) | broker | single-services | `docker.io/valkey/valkey` | 9-alpine |
 | [paperless](/docker-compose/single-services/paperless.yaml) | webserver | single-services | `ghcr.io/paperless-ngx/paperless-ngx` | 3.5.1 |
-| [paperless](/docker-compose/single-services/paperless.yaml) | gotenberg | single-services | `docker.io/gotenberg/gotenberg` | 9.4 |
+| [paperless](/docker-compose/single-services/paperless.yaml) | gotenberg | single-services | `docker.io/gotenberg/gotenberg` | 9.5 |
 | [paperless](/docker-compose/single-services/paperless.yaml) | tika | single-services | `docker.io/apache/tika` | 3.3.3.0 |
 | [rackpad](/docker-compose/single-services/rackpad.yaml) | rackpad | single-services | `ghcr.io/kobii-git/rackpad` | 1.8.7 |
 | [semaphore](/docker-compose/single-services/semaphore.yaml) | semaphore | single-services | `semaphoreui/semaphore` | v2.20.24 |
