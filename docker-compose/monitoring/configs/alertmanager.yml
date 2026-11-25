@@ -21,6 +21,21 @@ route:
         - instance =~ "10\\.10\\.10\\.[234]:80|10\\.10\\.20\\.2:443"
       receiver: muted
 
+    # Restarts during the nightly Komodo deploy (komodo-resources/auto-update.toml) aren't sent.
+    # An alert still firing when the window ends is sent then, one that resolved inside it is never sent.
+    - matchers:
+        - alertname =~ "ServiceDown|ContainerMissing"
+      receiver: ntfy
+      mute_time_intervals: [nightly-deploy]
+
+time_intervals:
+  # UTC
+  - name: nightly-deploy
+    time_intervals:
+      - times:
+          - start_time: "02:55"
+            end_time: "03:30"
+
 receivers:
   - name: muted
 

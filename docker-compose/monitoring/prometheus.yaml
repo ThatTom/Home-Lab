@@ -144,11 +144,11 @@ configs:
     file: ./configs/prometheus.yml
 
   alert-rules:
-    name: prometheus-alert-rules-v7
+    name: prometheus-alert-rules-v8
     file: ./configs/alert-rules.yml
 
   alertmanager:
-    name: alertmanager-config-v4
+    name: alertmanager-config-v5
     file: ./configs/alertmanager.yml
 
   blackbox:

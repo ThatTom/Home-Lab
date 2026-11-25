@@ -10,9 +10,10 @@ name = "Hogwarts NTFY"
 enabled = true
 endpoint.type = "Ntfy"
 endpoint.params.url = "https://ntfy.hogwartsnetwork.co.uk/homelab-alerts"
+# Container and stack state alerts come from Prometheus instead (ServiceDown, ContainerMissing in
+# docker-compose/monitoring/configs/alert-rules.yml): Komodo sent one per restart during the nightly
+# deploy, and its maintenance windows drop alerts for anything still down after the window ends
 alert_types = [
   "ServerUnreachable",
-  "SwarmUnhealthy",
-  "ContainerStateChange",
-  "StackStateChange"
+  "SwarmUnhealthy"
 ]

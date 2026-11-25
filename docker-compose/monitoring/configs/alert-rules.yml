@@ -176,6 +176,19 @@ groups:
           summary: "{{ $labels.instance }} is down"
           description: "The {{ $labels.job }} check for {{ $labels.instance }} has failed for 5 minutes."
 
+      # Catches services with no Traefik route, which the probes can't see. A service that had containers
+      # an hour ago but has none now. Removing a service on purpose fires this once, briefly, ~30 minutes later.
+      - alert: ContainerMissing
+        expr: >-
+          count by (stack, service) (container_memory_working_set_bytes{job="cadvisor", service!=""} offset 1h)
+          unless count by (stack, service) (container_memory_working_set_bytes{job="cadvisor", service!=""})
+        for: 30m
+        labels:
+          severity: critical
+        annotations:
+          summary: "{{ $labels.service }} has no running containers"
+          description: "{{ $labels.service }} in the {{ $labels.stack }} stack had containers an hour ago but has none now. Check docker service ps {{ $labels.service }} or the stack in Komodo."
+
       - alert: CertificateExpiringSoon
         expr: probe_ssl_earliest_cert_expiry - time() < 14 * 86400
         for: 1h
