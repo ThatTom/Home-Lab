@@ -57,7 +57,7 @@ networks:
 
 configs:
   grafana-datasources:
-    name: grafana-datasources-v2
+    name: grafana-datasources-v3
     file: ./configs/grafana-datasources.yaml
 
   grafana-dashboard-provider:
