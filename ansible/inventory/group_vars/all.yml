@@ -42,6 +42,7 @@ swarm_overlay_networks:
   - name: komodo-link
     attachable: true
   - name: monitoring-internal
+  - name: tcubedlabs          # tcubedlabs services and their Cloudflare tunnel, kept off diagon-alley
 
 # NFS shares on gringotts, created as Docker volumes on every node (swarm.yml).
 nas_address: 10.10.20.30

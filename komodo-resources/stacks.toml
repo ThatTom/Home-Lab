@@ -14,6 +14,20 @@ file_paths = ["bazarr.yaml"]
 ##
 
 [[stack]]
+name = "cloudflared"
+[stack.config]
+swarm = "hogwarts"
+linked_repo = "HogwartsNetwork"
+run_directory = "docker-compose/tcubedlabs"
+file_paths = ["cloudflared.yaml"]
+env_file_path = "cloudflared.env"
+environment = """
+TCUBEDLABS_TUNNEL_TOKEN=[[TCUBEDLABS_TUNNEL_TOKEN]]
+"""
+
+##
+
+[[stack]]
 name = "gitea"
 [stack.config]
 swarm = "hogwarts"
