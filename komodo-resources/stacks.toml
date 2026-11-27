@@ -15,6 +15,7 @@ file_paths = ["bazarr.yaml"]
 
 [[stack]]
 name = "cloudflared"
+tags = ["tcubedlabs"]
 [stack.config]
 swarm = "hogwarts"
 linked_repo = "HogwartsNetwork"
@@ -151,6 +152,7 @@ SMTP_PASSWORD=[[SMTP_PASSWORD]]
 
 [[stack]]
 name = "libredesk"
+tags = ["tcubedlabs"]
 [stack.config]
 swarm = "hogwarts"
 linked_repo = "HogwartsNetwork"
@@ -366,6 +368,7 @@ SEMAPHORE_OIDC_CLIENT_SECRET=[[SEMAPHORE_OIDC_CLIENT_SECRET]]
 
 [[stack]]
 name = "solidinvoice"
+tags = ["tcubedlabs"]
 [stack.config]
 swarm = "hogwarts"
 linked_repo = "HogwartsNetwork"
