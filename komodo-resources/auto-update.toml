@@ -82,6 +82,13 @@ executions = [
 ]
 
 [[procedure.config.stage]]
+name = "libredesk"
+enabled = true
+executions = [
+  { execution.type = "DeployStackIfChanged", execution.params.stack = "libredesk", enabled = true }
+]
+
+[[procedure.config.stage]]
 name = "loki"
 enabled = true
 executions = [
@@ -156,6 +163,13 @@ name = "semaphore"
 enabled = true
 executions = [
   { execution.type = "DeployStackIfChanged", execution.params.stack = "semaphore", enabled = true }
+]
+
+[[procedure.config.stage]]
+name = "solidinvoice"
+enabled = true
+executions = [
+  { execution.type = "DeployStackIfChanged", execution.params.stack = "solidinvoice", enabled = true }
 ]
 
 [[procedure.config.stage]]

@@ -1,0 +1,107 @@
+services:
+  db:
+    image: postgres:17-alpine
+    environment:
+      POSTGRES_DB: libredesk
+      POSTGRES_USER: libredesk
+      POSTGRES_PASSWORD: ${LIBREDESK_DB_PASSWORD}
+    volumes:
+      - libredesk-db:/var/lib/postgresql/data
+    networks:
+      - libredesk-internal
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U libredesk -d libredesk"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+      start_period: 30s
+    deploy:
+      # Data in a local volume, so it stays on one node
+      replicas: 1
+      placement:
+        constraints:
+          - node.hostname == winky
+      restart_policy:
+        condition: on-failure
+
+  redis:
+    image: redis:7-alpine
+    volumes:
+      - libredesk-redis:/data
+    networks:
+      - libredesk-internal
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+      start_period: 10s
+    deploy:
+      replicas: 1
+      placement:
+        constraints:
+          - node.hostname == winky
+      restart_policy:
+        condition: on-failure
+
+  app:
+    image: libredesk/libredesk:v2.9.2
+    # Installs the schema on an empty database (skipped once it exists), applies any upgrades, then starts
+    command: sh -c "./libredesk --install --idempotent-install --yes && ./libredesk --upgrade --yes && ./libredesk"
+    depends_on:
+      - db
+      - redis
+    # Overrides the config.toml built into the image, LIBREDESK_<SECTION>__<KEY>
+    environment:
+      LIBREDESK_APP__ENV: prod
+      LIBREDESK_APP__LOG_LEVEL: info
+      # 32 characters, never change it once set or stored inbox passwords can't be decrypted
+      LIBREDESK_APP__ENCRYPTION_KEY: ${LIBREDESK_ENCRYPTION_KEY}
+      # Set by cloudflared to the visitor's IP, used for rate limiting and audit logs
+      LIBREDESK_APP__SERVER__CLIENT_IP_HEADER: Cf-Connecting-Ip
+      LIBREDESK_DB__HOST: db
+      LIBREDESK_DB__PORT: 5432
+      LIBREDESK_DB__USER: libredesk
+      LIBREDESK_DB__PASSWORD: ${LIBREDESK_DB_PASSWORD}
+      LIBREDESK_DB__DATABASE: libredesk
+      LIBREDESK_REDIS__ADDRESS: redis:6379
+      # Only read by the first install, for the "System" admin login
+      LIBREDESK_SYSTEM_USER_PASSWORD: ${LIBREDESK_SYSTEM_USER_PASSWORD}
+    volumes:
+      # Attachments, upload.fs.upload_path is relative to the /libredesk working directory
+      - libredesk-uploads:/libredesk/uploads
+    networks:
+      - libredesk-internal
+      - tcubedlabs
+    # Alpine based, so busybox wget is available. /health fails when the database doesn't answer.
+    healthcheck:
+      test: ["CMD", "wget", "-qO-", "http://localhost:9000/health"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+      start_period: 60s
+    deploy:
+      # Shares winky with the database, as uploads are a local volume.
+      # Reached through the Cloudflare tunnel (cloudflared.yaml) as http://libredesk_app:9000
+      replicas: 1
+      placement:
+        constraints:
+          - node.hostname == winky
+      restart_policy:
+        condition: on-failure
+
+volumes:
+  libredesk-db:
+    name: libredesk-db
+
+  libredesk-redis:
+    name: libredesk-redis
+
+  libredesk-uploads:
+    name: libredesk-uploads
+
+networks:
+  libredesk-internal:
+
+  tcubedlabs:
+    external: true

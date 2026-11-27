@@ -150,6 +150,22 @@ SMTP_PASSWORD=[[SMTP_PASSWORD]]
 ##
 
 [[stack]]
+name = "libredesk"
+[stack.config]
+swarm = "hogwarts"
+linked_repo = "HogwartsNetwork"
+run_directory = "docker-compose/tcubedlabs"
+file_paths = ["libredesk.yaml"]
+env_file_path = "libredesk.env"
+environment = """
+LIBREDESK_DB_PASSWORD=[[LIBREDESK_DB_PASSWORD]]
+LIBREDESK_ENCRYPTION_KEY=[[LIBREDESK_ENCRYPTION_KEY]]
+LIBREDESK_SYSTEM_USER_PASSWORD=[[LIBREDESK_SYSTEM_USER_PASSWORD]]
+"""
+
+##
+
+[[stack]]
 name = "loki"
 [stack.config]
 swarm = "hogwarts"
@@ -344,6 +360,20 @@ SEMAPHORE_ADMIN_EMAIL=admin@hogwartsnetwork.co.uk
 SEMAPHORE_OIDC_ISSUER=https://auth.hogwartsnetwork.co.uk/oidc
 SEMAPHORE_OIDC_CLIENT_ID=sAJjNdNXSqtStgDE
 SEMAPHORE_OIDC_CLIENT_SECRET=[[SEMAPHORE_OIDC_CLIENT_SECRET]]
+"""
+
+##
+
+[[stack]]
+name = "solidinvoice"
+[stack.config]
+swarm = "hogwarts"
+linked_repo = "HogwartsNetwork"
+run_directory = "docker-compose/tcubedlabs"
+file_paths = ["solidinvoice.yaml"]
+env_file_path = "solidinvoice.env"
+environment = """
+SOLIDINVOICE_DB_PASSWORD=[[SOLIDINVOICE_DB_PASSWORD]]
 """
 
 ##

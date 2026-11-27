@@ -1,0 +1,68 @@
+services:
+  db:
+    image: postgres:16-alpine
+    environment:
+      POSTGRES_DB: solidinvoice
+      POSTGRES_USER: solidinvoice
+      POSTGRES_PASSWORD: ${SOLIDINVOICE_DB_PASSWORD}
+    volumes:
+      - solidinvoice-db:/var/lib/postgresql/data
+    networks:
+      - solidinvoice-internal
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U solidinvoice -d solidinvoice"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+      start_period: 30s
+    deploy:
+      # Data in a local volume, so it stays on one node
+      replicas: 1
+      placement:
+        constraints:
+          - node.hostname == winky
+      restart_policy:
+        condition: on-failure
+
+  app:
+    image: solidinvoice/solidinvoice:3.1.3
+    depends_on:
+      - db
+    environment:
+      SOLIDINVOICE_DATABASE_URL: postgresql://solidinvoice:${SOLIDINVOICE_DB_PASSWORD}@db:5432/solidinvoice?serverVersion=16&charset=utf8
+      SOLIDINVOICE_ALLOW_REGISTRATION: "false"
+    volumes:
+      # Config, secrets and uploaded files (logos, attachments)
+      - solidinvoice-data:/etc/solidinvoice
+    networks:
+      - solidinvoice-internal
+      - tcubedlabs
+    # Alpine based, so busybox wget is available. /health is answered by Caddy before PHP.
+    healthcheck:
+      test: ["CMD", "wget", "-qO-", "http://localhost:8765/health"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+      start_period: 60s
+    deploy:
+      # Shares winky with the database, as /etc/solidinvoice is a local volume.
+      # Reached through the Cloudflare tunnel (cloudflared.yaml) as http://solidinvoice_app:8765
+      replicas: 1
+      placement:
+        constraints:
+          - node.hostname == winky
+      restart_policy:
+        condition: on-failure
+
+volumes:
+  solidinvoice-db:
+    name: solidinvoice-db
+
+  solidinvoice-data:
+    name: solidinvoice-data
+
+networks:
+  solidinvoice-internal:
+
+  tcubedlabs:
+    external: true
