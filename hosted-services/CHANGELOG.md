@@ -8,7 +8,7 @@ Generated from the image versions in the [docker compose files](/docker-compose/
 | --- | --- | --- | --- | --- |
 | [ollama](/docker-compose/ai/ollama.yaml) | ollama | ai | `ollama/ollama` | 0.35.0 |
 | [openwebui](/docker-compose/ai/openwebui.yaml) | open-webui | ai | `ghcr.io/open-webui/open-webui` | v0.13.5 |
-| [gitea-mirror](/docker-compose/git/gitea-mirror.yaml) | gitea-mirror | git | `ghcr.io/raylabshq/gitea-mirror` | v3.56.1 |
+| [gitea-mirror](/docker-compose/git/gitea-mirror.yaml) | gitea-mirror | git | `ghcr.io/raylabshq/gitea-mirror` | v3.58.1 |
 | [gitea-runner](/docker-compose/git/gitea-runner.yaml) | gitea-runner-pi | git | `gitea/runner` | 6.0.0 |
 | [gitea-runner](/docker-compose/git/gitea-runner.yaml) | gitea-runner-lenovo | git | `gitea/runner` | 6.0.0 |
 | [gitea](/docker-compose/git/gitea.yaml) | server | git | `gitea/gitea` | 28.4 |
@@ -29,7 +29,7 @@ Generated from the image versions in the [docker compose files](/docker-compose/
 | [prometheus](/docker-compose/monitoring/prometheus.yaml) | prometheus | monitoring | `prom/prometheus` | v3.16.0 |
 | [prometheus](/docker-compose/monitoring/prometheus.yaml) | alertmanager | monitoring | `prom/alertmanager` | v0.35.0 |
 | [prometheus](/docker-compose/monitoring/prometheus.yaml) | blackbox-exporter | monitoring | `prom/blackbox-exporter` | v0.29.1 |
-| [prometheus](/docker-compose/monitoring/prometheus.yaml) | node-exporter | monitoring | `prom/node-exporter` | v1.12.1 |
+| [prometheus](/docker-compose/monitoring/prometheus.yaml) | node-exporter | monitoring | `prom/node-exporter` | v1.13.1 |
 | [prometheus](/docker-compose/monitoring/prometheus.yaml) | cadvisor | monitoring | `ghcr.io/google/cadvisor` | v0.61.1 |
 | [ntfy](/docker-compose/network-services/ntfy.yaml) | ntfy | network-services | `binwiederhier/ntfy` | v2.38.1 |
 | [socket-proxy](/docker-compose/network-services/socket-proxy.yaml) | socket-proxy | network-services | `tecnativa/docker-socket-proxy` | latest |
@@ -58,3 +58,9 @@ Generated from the image versions in the [docker compose files](/docker-compose/
 | [tankbook](/docker-compose/single-services/tankbook.yaml) | app | single-services | `ghcr.io/tankbook/tankbook-app` | 1.0.1 |
 | [trek](/docker-compose/single-services/trek.yaml) | app | single-services | `mauriceboe/trek` | 5.1.4 |
 | [vaultwarden](/docker-compose/single-services/vaultwarden.yaml) | vaultwarden | single-services | `vaultwarden/server` | 1.37.5 |
+| [cloudflared](/docker-compose/tcubedlabs/cloudflared.yaml) | tunnel | tcubedlabs | `cloudflare/cloudflared` | 2026.11.1 |
+| [libredesk](/docker-compose/tcubedlabs/libredesk.yaml) | db | tcubedlabs | `postgres` | 17-alpine |
+| [libredesk](/docker-compose/tcubedlabs/libredesk.yaml) | redis | tcubedlabs | `redis` | 7-alpine |
+| [libredesk](/docker-compose/tcubedlabs/libredesk.yaml) | app | tcubedlabs | `libredesk/libredesk` | v2.9.2 |
+| [solidinvoice](/docker-compose/tcubedlabs/solidinvoice.yaml) | db | tcubedlabs | `postgres` | 16-alpine |
+| [solidinvoice](/docker-compose/tcubedlabs/solidinvoice.yaml) | app | tcubedlabs | `solidinvoice/solidinvoice` | 3.1.3 |
