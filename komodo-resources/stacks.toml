@@ -158,9 +158,9 @@ run_directory = "docker-compose/tcubedlabs"
 file_paths = ["libredesk.yaml"]
 env_file_path = "libredesk.env"
 environment = """
-LIBREDESK_DB_PASSWORD=[[LIBREDESK_DB_PASSWORD]]
-LIBREDESK_ENCRYPTION_KEY=[[LIBREDESK_ENCRYPTION_KEY]]
-LIBREDESK_SYSTEM_USER_PASSWORD=[[LIBREDESK_SYSTEM_USER_PASSWORD]]
+LIBREDESK_DB_PASSWORD='[[LIBREDESK_DB_PASSWORD]]'
+LIBREDESK_ENCRYPTION_KEY='[[LIBREDESK_ENCRYPTION_KEY]]'
+LIBREDESK_SYSTEM_USER_PASSWORD='[[LIBREDESK_SYSTEM_USER_PASSWORD]]'
 """
 
 ##
@@ -373,7 +373,7 @@ run_directory = "docker-compose/tcubedlabs"
 file_paths = ["solidinvoice.yaml"]
 env_file_path = "solidinvoice.env"
 environment = """
-SOLIDINVOICE_DB_PASSWORD=[[SOLIDINVOICE_DB_PASSWORD]]
+SOLIDINVOICE_DB_PASSWORD='[[SOLIDINVOICE_DB_PASSWORD]]'
 """
 
 ##
