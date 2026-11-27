@@ -74,8 +74,9 @@ services:
       - libredesk-internal
       - tcubedlabs
     # Alpine based, so busybox wget is available. /health fails when the database doesn't answer.
+    # 127.0.0.1 not localhost, which resolves to ::1 first and the app only listens on IPv4
     healthcheck:
-      test: ["CMD", "wget", "-qO-", "http://localhost:9000/health"]
+      test: ["CMD", "wget", "-qO-", "http://127.0.0.1:9000/health"]
       interval: 30s
       timeout: 5s
       retries: 3
